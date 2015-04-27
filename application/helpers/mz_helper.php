@@ -1,5 +1,16 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+// helper by denimaru
+if (!function_exists('getNumberFormat')){	
+	function getNumberFormat($data)
+	{
+		$val = number_format($data,'2',',','.');
+
+		return $val;
+	}
+}
+// end of helper by denimaru
+
 if (!function_exists('print_mz')){	
 	function print_mz($data)
 	{

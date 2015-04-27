@@ -38,7 +38,7 @@
             <td valign="middle"><span class="muted"><?php echo $row->address;?></span></td>
             <td valign="middle"><span class="muted"><?php echo $row->line_business;?></span></td>
             <td valign="middle"><span class="muted"><?php echo $row->resign_reason;?></span></td>
-            <td valign="middle"><span class="muted"><?php echo $row->last_salary;?></span></td>
+            <td valign="middle"><span class="muted"><?php echo getNumberFormat($row->last_salary);?></span></td>
             <td valign="middle">
                 <button type="button" class="btn btn-info btn-small" data-toggle="modal" data-target="#editexperienceModal<?php echo $row->id?>" title="<?php echo lang('edit_button')?>"><i class="icon-paste"></i></button>
                 <button class='btn btn-danger btn-small' type="submit" name="remove_levels" value="Delete" data-toggle="modal" data-target="#deleteexperienceModal<?php echo $row->id?>" title="<?php echo lang('delete_button')?>"><i class="icon-warning-sign"></i></button>
