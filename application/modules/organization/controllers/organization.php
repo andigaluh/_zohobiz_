@@ -67,7 +67,7 @@ class Organization extends MX_Controller {
 				if($this->has_child($results,$results[$i]->id))
 				{
 					$sub_menu= $this->get_menu($results,$results[$i]->id);
-					$menu.='<li><span><i class="icon-minus-sign"></i>&nbsp;'.$results[$i]->title.'&nbsp;-&nbsp;'.$results[$i]->organization_class.$btnedit.$btndelete.$sub_menu.$btnadd.'</li>';
+					$menu.='<li><span><i class="icon-plus-sign"></i>&nbsp;'.$results[$i]->title.'&nbsp;-&nbsp;'.$results[$i]->organization_class.$btnedit.$btndelete.$sub_menu.$btnadd.'</li>';
 				}
 				else
 				{
@@ -269,7 +269,7 @@ class Organization extends MX_Controller {
                     
                     $this->template->add_css('jquery-ui-1.10.1.custom.min.css');
                     $this->template->add_css('plugins/select2/select2.css');
-                    $this->template->add_css('main.css');
+                    $this->template->add_css('tree.css');
                 }
 
                 if ( ! empty($data['title']))
