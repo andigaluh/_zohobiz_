@@ -1,4 +1,3 @@
-<script src="<?php echo assets_url('js/edit_user.js'); ?>"></script>
 <table class="table table-bordered" id="tabel">
     <thead>
         <tr>
