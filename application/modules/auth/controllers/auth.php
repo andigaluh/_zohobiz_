@@ -3046,16 +3046,8 @@ class Auth extends MX_Controller {
                     $this->template->add_css('pace-theme-flash.css');
                     $this->template->add_css('datepicker.css');
                 }
-                elseif(in_array($view, array('auth/detail',
-                                             'auth/detail_course',
+                elseif(in_array($view, array('auth/detail_course',
                                              'auth/detail_certificate',
-                                             'auth/detail_education',
-                                             'auth/detail_experience',
-                                             'auth/detail_sk',
-                                             'auth/detail_sti',
-                                             'auth/detail_jabatan',
-                                             'auth/detail_award',
-                                             'auth/detail_ikatan_dinas',
                                              'auth/table/table_course',
                                              'auth/table/table_education',
                                              'auth/table/table_experience',
@@ -3079,12 +3071,37 @@ class Auth extends MX_Controller {
                     $this->template->add_js('breakpoints.js');
                     $this->template->add_js('pace.min.js');
                     $this->template->add_js('bootstrap-datepicker.js');
-                    //$this->template->add_js('edit_user.js');
+                    $this->template->add_js('core.js');
+                    $this->template->add_js('purl.js');
+                    $this->template->add_js('select2.min.js');
+
+                    $this->template->add_css('jquery-ui-1.10.1.custom.min.css');
+                    $this->template->add_css('plugins/select2/select2.css');
+                    $this->template->add_css('pace-theme-flash.css');
+                    $this->template->add_css('datepicker.css');
+                }elseif(in_array($view, array('auth/detail_ikatan_dinas',
+                                              'auth/detail_award',
+                                              'auth/detail_jabatan',
+                                              'auth/detail_sti',
+                                              'auth/detail_sk',
+                                              'auth/detail_experience',
+                                              'auth/detail_education',
+                                              'auth/detail')))
+                {
+                    $this->template->set_layout('default');
+
+                    $this->template->add_js('jquery.min.js');
+                    $this->template->add_js('bootstrap.min.js');
+                    $this->template->add_js('main.js');
+                    $this->template->add_js('jquery-ui-1.10.1.custom.min.js');
+                    $this->template->add_js('jqueryblockui.js');
+                    $this->template->add_js('jquery.sidr.min.js');
+                    $this->template->add_js('breakpoints.js');
+                    $this->template->add_js('pace.min.js');
+                    $this->template->add_js('bootstrap-datepicker.js');
                     $this->template->add_js('date_form.js');
                     $this->template->add_js('core.js');
                     $this->template->add_js('purl.js');
-
-                    
                     $this->template->add_js('select2.min.js');
                     
                     $this->template->add_css('jquery-ui-1.10.1.custom.min.css');

@@ -28,7 +28,7 @@
 
             <!-- <td valign="middle"><?php echo $row->id;?></td> -->
             <td valign="middle"><span class="muted"><?php echo $row->description;?></span></td>
-            <td valign="middle"><span class="muted"><?php echo $row->registration_date;?></span></td>
+            <td valign="middle"><span class="muted"><?php echo getDateFormat($row->registration_date);?></span></td>
             <td valign="middle"><span class="muted"><?php echo $row->status;?></span></td>
             <td valign="middle">
                 <button type="button" class="btn btn-info btn-small" data-toggle="modal" data-target="#editCourseModal<?php echo $row->id?>" title="<?php echo lang('edit_button')?>"><i class="icon-paste"></i></button>
@@ -74,7 +74,7 @@
                     <div class="col-md-9">
                         <div class="input-with-icon right">
                             <div class="input-append success date no-padding">
-                                <input type="text" class="form-control" id="registration_date" name="registration_date" value="<?php echo $row->registration_date?>">
+                                <input type="text" class="form-control" id="registration_date" name="registration_date" value="<?php echo getDateFormat($row->registration_date)?>">
                                 <span class="add-on"><span class="arrow"></span><i class="icon-th"></i></span> 
                             </div>
                         </div>
@@ -130,10 +130,11 @@
 $(document).ready(function(){
                  //Date Pickers
               $('.input-append.date').datepicker({
-                    format: "dd-mm-yyyy",
+                    format: "dd M yyyy",
                     autoclose: true,
                     todayHighlight: true
                });
+              $('.select2').select2();
                 $('#formupdate<?php echo $row->id?>').submit(function(response){
                     $.post($('#formupdate<?php echo $row->id?>').attr('action'), $('#formupdate<?php echo $row->id?>').serialize(),function(json){
                         if(json.st == 0){

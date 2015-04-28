@@ -37,7 +37,7 @@
             <!--<td valign="middle"><span class="muted"><?php echo $row->ijazah_number;?></span></td>-->
             <!--<td valign="middle"><span class="muted"><?php echo $row->ijazah_history;?></span></td>-->
             <td valign="middle"><span class="muted"><?php echo $row->institution;?></span></td>
-            <td valign="middle"><span class="muted"><?php echo $row->activation_date;?></span></td>
+            <td valign="middle"><span class="muted"><?php echo getDateFormat($row->activation_date);?></span></td>
            <!-- <td valign="middle"><span class="muted"><?php echo $row->published_place;?></span></td>-->
             <td valign="middle"><span class="muted"><?php echo $row->position;?></span></td>
             <!--<td valign="middle"><span class="muted"><?php echo $row->receivedby;?></span></td>-->
@@ -120,7 +120,7 @@
                         <div class="col-md-9">
                                 <div class="input-with-icon right">
                                     <div class="input-append success date no-padding">
-                                        <input type="text" class="form-control" name="activation_date" value="<?php echo $row->activation_date?>">
+                                        <input type="text" class="form-control" name="activation_date" value="<?php echo getDateFormat($row->activation_date)?>">
                                         <span class="add-on"><span class="arrow"></span><i class="icon-th"></i></span> 
                                     </div>
                                 </div>
@@ -207,10 +207,11 @@
 $(document).ready(function(){
                 //Date Pickers
               $('.input-append.date').datepicker({
-                    format: "dd-mm-yyyy",
+                    format: "dd M yyyy",
                     autoclose: true,
-                    todayHighlight: true
+                    todayHighlight: false
                });
+              $('.select2').select2();
                 $('#formupdate<?php echo $row->id?>').submit(function(response){
                     $.post($('#formupdate<?php echo $row->id?>').attr('action'), $('#formupdate<?php echo $row->id?>').serialize(),function(json){
                         if(json.st == 0){
