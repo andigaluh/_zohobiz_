@@ -30,11 +30,11 @@
                 </div>
             </td>
             <!--<td valign="middle"><?php echo $row->id;?></td>-->
-            <td valign="middle"><span class="muted"><?php echo $row->sk_date;?></span></td>
+            <td valign="middle"><span class="muted"><?php echo getDateFormat($row->sk_date);?></span></td>
             <td valign="middle"><span class="muted"><?php echo $row->sk_no;?></span></td>
             <td valign="middle"><span class="muted"><?php echo $row->position;?></span></td>
             <td valign="middle"><span class="muted"><?php echo $row->departement;?></span></td>
-            <td valign="middle"><span class="muted"><?php echo $row->effective_date;?></span></td>
+            <td valign="middle"><span class="muted"><?php echo getDateFormat($row->effective_date);?></span></td>
             <td valign="middle"><span class="muted"><?php echo $row->location;?></span></td>
             <td valign="middle"><span class="muted"><?php echo $row->sign_name;?></span></td>
             <td valign="middle"><span class="muted"><?php echo $row->sign_position;?></span></td>
@@ -114,7 +114,7 @@ $(function(){
                     <div class="col-md-9">
                             <div class="input-with-icon right">
                                 <div class="input-append success date no-padding">
-                                    <input type="text" class="form-control" name="sk_date" value="<?php echo $row->sk_date?>">
+                                    <input type="text" class="form-control" name="sk_date" value="<?php echo getDateFormat($row->sk_date)?>">
                                     <span class="add-on"><span class="arrow"></span><i class="icon-th"></i></span> 
                                 </div>
                             </div>
@@ -163,7 +163,7 @@ $(function(){
                     <div class="col-md-9">
                             <div class="input-with-icon right">
                                 <div class="input-append success date no-padding">
-                                    <input type="text" class="form-control" name="effective_date" value="<?php echo $row->effective_date?>">
+                                    <input type="text" class="form-control" name="effective_date" value="<?php echo getDateFormat($row->effective_date)?>">
                                     <span class="add-on"><span class="arrow"></span><i class="icon-th"></i></span> 
                                 </div>
                             </div>

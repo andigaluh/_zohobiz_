@@ -72,7 +72,7 @@
                                                             <?php echo lang('register_dob_label', 'dob');?>
                                                         </div>
                                                         <div class="col-md-7">
-                                                            : <?php echo strtoupper(date('d-m-Y',strtotime($bod)));?>
+                                                            : <?php echo strtoupper(getDateFormat($bod));?>
                                                         </div>                               
                                                     </div>
                                                     <div class="row">
