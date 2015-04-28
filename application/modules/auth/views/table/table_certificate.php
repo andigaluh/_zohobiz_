@@ -147,8 +147,27 @@ $(document).ready(function(){
 </div>
 
 <script type="text/javascript">
-$(function(){
- $('#formdelete<?php echo $row->id?>').submit(function(response){
+    $(document).ready(function(){
+             //Date Pickers
+              $('.input-append.date').datepicker({
+                    format: "dd-mm-yyyy",
+                    autoclose: true,
+                    todayHighlight: true
+               });
+                $('#formupdate<?php echo $row->id?>').submit(function(response){
+                    $.post($('#formupdate<?php echo $row->id?>').attr('action'), $('#formupdate<?php echo $row->id?>').serialize(),function(json){
+                        if(json.st == 0){
+                            $('#MsgBad2<?php echo $row->id?>').html(json.errors).fadeIn();
+                        }else{
+                            getTable();
+                            $("[data-dismiss=modal]").trigger({ type: "click" });
+                            $('#MsgBad2<?php echo $row->id?>').hide();
+                            $('#MsgGood').text('Data Updated').fadeIn().delay(3000).fadeOut("slow");
+                        }
+                    }, 'json');
+                    return false;
+                });
+                 $('#formdelete<?php echo $row->id?>').submit(function(response){
                     $.post($('#formdelete<?php echo $row->id?>').attr('action'), $('#formdelete<?php echo $row->id?>').serialize(),function(json){
                         if(json.st == 0){
                             $('#MsgBad').text('Delete Failed').fadeIn();
@@ -160,6 +179,8 @@ $(function(){
                     }, 'json');
                     return false;
                 });
+
+                //$('#course_status_id').select2();
             });
 </script>
 <?php } ?>

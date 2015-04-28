@@ -128,6 +128,12 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
+                 //Date Pickers
+              $('.input-append.date').datepicker({
+                    format: "dd-mm-yyyy",
+                    autoclose: true,
+                    todayHighlight: true
+               });
                 $('#formupdate<?php echo $row->id?>').submit(function(response){
                     $.post($('#formupdate<?php echo $row->id?>').attr('action'), $('#formupdate<?php echo $row->id?>').serialize(),function(json){
                         if(json.st == 0){
@@ -159,13 +165,13 @@ $(function(){
             });
 </script>
 <?php } ?>
-<script type="text/javascript">
+<!-- <script type="text/javascript">
     $(document).ready(function(){
     $("#order").click(function(){
       $('#tabel').load('<?php echo base_url()?>'+'auth/get_course/'+1+'/'+0+'/desc');
     });
 });
-</script>
+</script> -->
 <!-- <div class="row">
     <div class="col-md-6">
         <h4><?php echo lang('found_subheading')?>&nbsp;<span class="semi-bold"><?php echo $num_rows_course;?>&nbsp;<?php echo lang('course_subheading');?></span></h4>  

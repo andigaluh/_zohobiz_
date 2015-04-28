@@ -174,6 +174,13 @@ $(function(){
 </div>
 <script type="text/javascript">
     $(document).ready(function(){
+                  //Date Pickers
+                  $('.input-append.date').datepicker({
+                        format: "dd-mm-yyyy",
+                        autoclose: true,
+                        todayHighlight: true
+                   });
+
                 $('#formupdate<?php echo $row->id?>').submit(function(response){
                     $.post($('#formupdate<?php echo $row->id?>').attr('action'), $('#formupdate<?php echo $row->id?>').serialize(),function(json){
                         if(json.st == 0){
