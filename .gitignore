@@ -11,3 +11,7 @@ application/cache/*
 application/logs/*
 !application/logs/index.html
 !application/logs/.htaccess
+
+application/config/assets.php
+application/config/database.php
+application/config/config.php
