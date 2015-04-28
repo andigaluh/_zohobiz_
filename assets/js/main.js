@@ -233,7 +233,7 @@ $(document).ready(function(){
                             $("[data-dismiss=modal]").trigger({ type: "click" });
                             $('#MsgBad').hide();
                             $('#MsgGood').text('Data Saved').fadeIn().delay(3000).fadeOut("slow");
-                            $('#modaldialog').find('#formadd')[0].reset();
+                            $('#modaldialog').find('#formadd2')[0].reset();
                         }
                     }, 'json');
                     return false;

@@ -3079,7 +3079,8 @@ class Auth extends MX_Controller {
                     $this->template->add_js('breakpoints.js');
                     $this->template->add_js('pace.min.js');
                     $this->template->add_js('bootstrap-datepicker.js');
-                    $this->template->add_js('edit_user.js');
+                    //$this->template->add_js('edit_user.js');
+                    $this->template->add_js('date_form.js');
                     $this->template->add_js('core.js');
                     $this->template->add_js('purl.js');
 

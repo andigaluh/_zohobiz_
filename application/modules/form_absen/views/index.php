@@ -41,7 +41,7 @@
                               foreach($form_absen->result() as $absen){
 
                                   $id_cuti = $absen->id;
-                                  $session_id = GetNik($this->session->userdata('user_id'));
+                                  $session_id = get_nik($this->session->userdata('user_id'));
                                   $id_user = $this->session->userdata('user_id');
                                   $txt_app_lv1 = $txt_app_lv2 = $txt_app_lv3 = "-";
 

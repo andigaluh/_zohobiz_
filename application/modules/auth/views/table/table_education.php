@@ -31,8 +31,8 @@
             <!--<td valign="middle"><?php echo $row->id;?></td>-->
             <td valign="middle"><span class="muted"><?php echo $row->education;?></span></td>
             <td valign="middle"><span class="muted"><?php echo $row->description;?></span></td>
-            <td valign="middle"><span class="muted"><?php echo getDateFormat($row->start_date);?></span></td>
-            <td valign="middle"><span class="muted"><?php echo getDateFormat($row->end_date);?></span></td>
+            <td valign="middle"><span class="muted"><?php echo $row->start_date;?></span></td>
+            <td valign="middle"><span class="muted"><?php echo $row->end_date;?></span></td>
             <td valign="middle"><span class="muted"><?php echo $row->edu_group;?></span></td>
             <td valign="middle"><span class="muted"><?php echo $row->degree;?></span></td>
             <td valign="middle"><span class="muted"><?php echo $row->institution;?></span></td>
@@ -86,7 +86,7 @@
                     <div class="col-md-9">
                             <div class="input-with-icon right">
                                 <div class="input-append success date no-padding">
-                                    <input type="text" class="form-control" name="start_date" value="<?php echo getDateFormat($row->start_date)?>">
+                                    <input type="text" class="form-control" name="start_date" value="<?php echo $row->start_date?>">
                                     <span class="add-on"><span class="arrow"></span><i class="icon-th"></i></span> 
                                 </div>
                             </div>
@@ -98,7 +98,7 @@
                     <div class="col-md-9">
                             <div class="input-with-icon right">
                                 <div class="input-append success date no-padding">
-                                    <input type="text" class="form-control" name="end_date" value="<?php echo getDateFormat($row->end_date)?>">
+                                    <input type="text" class="form-control" name="end_date" value="<?php echo $row->end_date?>">
                                     <span class="add-on"><span class="arrow"></span><i class="icon-th"></i></span> 
                                 </div>
                             </div>
@@ -220,6 +220,43 @@ $(function(){
                     }, 'json');
                     return false;
                 });
+            });
+</script>
+<script type="text/javascript">
+    $(document).ready(function(){
+             //Date Pickers
+              $('.input-append.date').datepicker({
+                    format: "dd-mm-yyyy",
+                    autoclose: true,
+                    todayHighlight: true
+               });
+                $('#formupdate<?php echo $row->id?>').submit(function(response){
+                    $.post($('#formupdate<?php echo $row->id?>').attr('action'), $('#formupdate<?php echo $row->id?>').serialize(),function(json){
+                        if(json.st == 0){
+                            $('#MsgBad2<?php echo $row->id?>').html(json.errors).fadeIn();
+                        }else{
+                            getTable();
+                            $("[data-dismiss=modal]").trigger({ type: "click" });
+                            $('#MsgBad2<?php echo $row->id?>').hide();
+                            $('#MsgGood').text('Data Updated').fadeIn().delay(3000).fadeOut("slow");
+                        }
+                    }, 'json');
+                    return false;
+                });
+                 $('#formdelete<?php echo $row->id?>').submit(function(response){
+                    $.post($('#formdelete<?php echo $row->id?>').attr('action'), $('#formdelete<?php echo $row->id?>').serialize(),function(json){
+                        if(json.st == 0){
+                            $('#MsgBad').text('Delete Failed').fadeIn();
+                        }else{
+                            getTable();
+                            $("[data-dismiss=modal]").trigger({ type: "click" });
+                            $('#MsgGood').text('Data Deleted').fadeIn().delay(4000).fadeOut("slow");
+                        }
+                    }, 'json');
+                    return false;
+                });
+
+                //$('#course_status_id').select2();
             });
 </script>
 <?php } ?>

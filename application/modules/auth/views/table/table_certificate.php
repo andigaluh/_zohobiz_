@@ -26,8 +26,8 @@
                 </td>
                 <!--<td valign="middle"><?php echo $row->id;?></td>-->
                 <td valign="middle"><span class="muted"><?php echo $row->certification_type;?></span></td>
-                <td valign="middle"><span class="muted"><?php echo getDateFormat($row->start_date);?></span></td>
-                <td valign="middle"><span class="muted"><?php echo getDateFormat($row->end_date);?></span></td>
+                <td valign="middle"><span class="muted"><?php echo $row->start_date;?></span></td>
+                <td valign="middle"><span class="muted"><?php echo $row->end_date;?></span></td>
                 <td valign="middle">
                     <button type="button" class="btn btn-info btn-small" data-toggle="modal" data-target="#editcertificateModal<?php echo $row->id?>" title="<?php echo lang('edit_button')?>"><i class="icon-paste"></i></button>
                     <button class='btn btn-danger btn-small' type="submit" name="remove_levels" value="Delete" data-toggle="modal" data-target="#deletecertificateModal<?php echo $row->id?>" title="<?php echo lang('delete_button')?>"><i class="icon-warning-sign"></i></button>
@@ -76,7 +76,7 @@
                 <div class="col-md-9">
                         <div class="input-with-icon right">
                             <div class="input-append success date no-padding">
-                                <input type="text" class="form-control" name="start_date" value="<?php echo getDateFormat($row->start_date)?>">
+                                <input type="text" class="form-control" name="start_date" value="<?php echo $row->start_date?>">
                                 <span class="add-on"><span class="arrow"></span><i class="icon-th"></i></span> 
                             </div>
                         </div>
@@ -87,7 +87,7 @@
                 <div class="col-md-9">
                         <div class="input-with-icon right">
                             <div class="input-append success date no-padding">
-                                <input type="text" class="form-control" name="end_date" value="<?php echo getDateFormat($row->end_date)?>">
+                                <input type="text" class="form-control" name="end_date" value="<?php echo $row->end_date?>">
                                 <span class="add-on"><span class="arrow"></span><i class="icon-th"></i></span> 
                             </div>
                         </div>
@@ -147,8 +147,27 @@ $(document).ready(function(){
 </div>
 
 <script type="text/javascript">
-$(function(){
- $('#formdelete<?php echo $row->id?>').submit(function(response){
+    $(document).ready(function(){
+             //Date Pickers
+              $('.input-append.date').datepicker({
+                    format: "dd-mm-yyyy",
+                    autoclose: true,
+                    todayHighlight: true
+               });
+                $('#formupdate<?php echo $row->id?>').submit(function(response){
+                    $.post($('#formupdate<?php echo $row->id?>').attr('action'), $('#formupdate<?php echo $row->id?>').serialize(),function(json){
+                        if(json.st == 0){
+                            $('#MsgBad2<?php echo $row->id?>').html(json.errors).fadeIn();
+                        }else{
+                            getTable();
+                            $("[data-dismiss=modal]").trigger({ type: "click" });
+                            $('#MsgBad2<?php echo $row->id?>').hide();
+                            $('#MsgGood').text('Data Updated').fadeIn().delay(3000).fadeOut("slow");
+                        }
+                    }, 'json');
+                    return false;
+                });
+                 $('#formdelete<?php echo $row->id?>').submit(function(response){
                     $.post($('#formdelete<?php echo $row->id?>').attr('action'), $('#formdelete<?php echo $row->id?>').serialize(),function(json){
                         if(json.st == 0){
                             $('#MsgBad').text('Delete Failed').fadeIn();
@@ -160,6 +179,8 @@ $(function(){
                     }, 'json');
                     return false;
                 });
+
+                //$('#course_status_id').select2();
             });
 </script>
 <?php } ?>

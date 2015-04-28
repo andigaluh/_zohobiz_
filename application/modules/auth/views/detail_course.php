@@ -9,11 +9,32 @@
     </div>
     <div class="clearfix"></div>
     <div class="content">
+        <!-- <ul class="breadcrumb">
+            <li>
+                <p>KARYAWAN</p>
+            </li> <i class="icon-angle-right"></i> 
+            <li>
+                <a href="#" class="active">User Management</a>
+            </li>
+        </ul> -->
         <div class="page-title">
             <a href="<?php echo site_url('auth')?>"><i class="icon-custom-left"></i></a>
             <h3><?php echo lang('list_of_subheading')?>&nbsp;<span class="semi-bold"><?php echo lang('users_course_subheading');?></span></h3> 
         </div>
-        
+        <!-- <div class="row">
+            <div class="col-md-12">
+                <div class="search-bar grid simple ">      
+                    <select name="dep" id="sdep" class="simple-dropdown select2">
+                        <option value="" selected="selected">Semua departmen</option>
+                        <option value="1">Factory Management</option>
+                        <option value="2">Process</option>
+                        <option value="3">Engineering Sec. Mechanical</option>
+                        <option value="4">Engineering Sec. Power Plant</option>                                    
+                    </select>
+                    <button type="button" class="btn btn-primary btn-cons"><i class="icon-search"></i>&nbsp;&nbsp;Cari</button>
+                </div>
+            </div>
+        </div> -->
         <div class="row">
             <div class="col-md-12">
                 <div class="grid simple ">
@@ -27,7 +48,15 @@
                                 <div class="col-md-4">
                                     <h4><?php echo lang('employee_information_subheading')?></h4>
                                     <div class="form-group">
+                                        <!-- <div class="input-with-icon right"> -->
                                             <div class="row">
+                                               <!--  <div class="col-md-6">
+                                                    <?php if($s_photo && file_exists('./uploads/'.$u_folder.'/'.$s_photo)) {?>
+                                                    <img alt="" src="<?php echo base_url()?>uploads/<?php echo $u_folder.'/225x225/'.$s_photo?>">
+                                                    <?php }else{ ?>
+                                                    <img alt="" src="<?php echo base_url()?>assets/img/no-image.png" class="img-responsive">
+                                                    <?php } ?>
+                                                </div> -->
                                                 <div class="col-md-12">
                                                     <div class="row">
                                                         <div class="col-md-5">
@@ -50,7 +79,7 @@
                                                             <?php echo lang('register_dob_label', 'dob');?>
                                                         </div>
                                                         <div class="col-md-7">
-                                                            : <?php echo strtoupper(getDateFormat($bod));?>
+                                                            : <?php echo strtoupper(date('d-m-Y',strtotime($bod)));?>
                                                         </div>                               
                                                     </div>
                                                     <div class="row">
@@ -257,5 +286,4 @@
     {
         $('#tabel').load('<?php echo site_url('auth/get_course/'.$user->id); ?>');
     }
-    
 </script>
