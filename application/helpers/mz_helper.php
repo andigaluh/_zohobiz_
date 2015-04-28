@@ -11,6 +11,17 @@ if (!function_exists('getNumberFormat')){
 }
 // end of helper by denimaru
 
+// helper by andi
+if (!function_exists('getDateFormat')){	
+	function getDateFormat($data)
+	{
+		$val = date('d M Y',strtotime($data));
+
+		return $val;
+	}
+}
+// end of helper by andi
+
 if (!function_exists('print_mz')){	
 	function print_mz($data)
 	{

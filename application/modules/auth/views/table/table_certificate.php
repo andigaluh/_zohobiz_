@@ -26,8 +26,8 @@
                 </td>
                 <!--<td valign="middle"><?php echo $row->id;?></td>-->
                 <td valign="middle"><span class="muted"><?php echo $row->certification_type;?></span></td>
-                <td valign="middle"><span class="muted"><?php echo $row->start_date;?></span></td>
-                <td valign="middle"><span class="muted"><?php echo $row->end_date;?></span></td>
+                <td valign="middle"><span class="muted"><?php echo getDateFormat($row->start_date);?></span></td>
+                <td valign="middle"><span class="muted"><?php echo getDateFormat($row->end_date);?></span></td>
                 <td valign="middle">
                     <button type="button" class="btn btn-info btn-small" data-toggle="modal" data-target="#editcertificateModal<?php echo $row->id?>" title="<?php echo lang('edit_button')?>"><i class="icon-paste"></i></button>
                     <button class='btn btn-danger btn-small' type="submit" name="remove_levels" value="Delete" data-toggle="modal" data-target="#deletecertificateModal<?php echo $row->id?>" title="<?php echo lang('delete_button')?>"><i class="icon-warning-sign"></i></button>
@@ -76,7 +76,7 @@
                 <div class="col-md-9">
                         <div class="input-with-icon right">
                             <div class="input-append success date no-padding">
-                                <input type="text" class="form-control" name="start_date" value="<?php echo $row->start_date?>">
+                                <input type="text" class="form-control" name="start_date" value="<?php echo getDateFormat($row->start_date)?>">
                                 <span class="add-on"><span class="arrow"></span><i class="icon-th"></i></span> 
                             </div>
                         </div>
@@ -87,7 +87,7 @@
                 <div class="col-md-9">
                         <div class="input-with-icon right">
                             <div class="input-append success date no-padding">
-                                <input type="text" class="form-control" name="end_date" value="<?php echo $row->end_date?>">
+                                <input type="text" class="form-control" name="end_date" value="<?php echo getDateFormat($row->end_date)?>">
                                 <span class="add-on"><span class="arrow"></span><i class="icon-th"></i></span> 
                             </div>
                         </div>
@@ -150,10 +150,11 @@ $(document).ready(function(){
     $(document).ready(function(){
              //Date Pickers
               $('.input-append.date').datepicker({
-                    format: "dd-mm-yyyy",
+                    format: "dd M yyyy",
                     autoclose: true,
-                    todayHighlight: true
+                    todayHighlight: false
                });
+              $('.select2').select2();
                 $('#formupdate<?php echo $row->id?>').submit(function(response){
                     $.post($('#formupdate<?php echo $row->id?>').attr('action'), $('#formupdate<?php echo $row->id?>').serialize(),function(json){
                         if(json.st == 0){
