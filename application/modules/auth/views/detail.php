@@ -94,7 +94,7 @@
                                                             <?php echo lang('register_dob_label', 'dob');?>
                                                         </div>
                                                         <div class="col-md-7">
-                                                            : <?php echo strtoupper(date('d-m-Y',strtotime($bod)));?>
+                                                            : <?php echo strtoupper(getDateFormat($bod));?>
                                                         </div>                               
                                                     </div>
                                                     <div class="row">
@@ -195,7 +195,7 @@
                                             <div class="col-md-9">
                                                     <div class="input-with-icon right">
                                                         <div class="input-append success date no-padding">
-                                                            <input type="text" class="form-control" id="seniority_date" name="seniority_date" value="<?php echo $row->seniority_date?>">
+                                                            <input type="text" class="form-control" id="seniority_date" name="seniority_date" value="<?php echo getDateFormat($row->seniority_date)?>">
                                                             <span class="add-on"><span class="arrow"></span><i class="icon-th"></i></span> 
                                                         </div>
                                                     </div>

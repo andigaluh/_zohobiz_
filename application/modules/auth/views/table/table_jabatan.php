@@ -37,11 +37,11 @@
             <td valign="middle"><span class="muted"><?php echo $row->position;?></span></td>
             <td valign="middle"><span class="muted"><?php echo $row->groups;?></span></td>
             <td valign="middle"><span class="muted"><?php echo $row->grade;?></span></td>
-            <td valign="middle"><span class="muted"><?php echo $row->start_date;?></span></td>
-            <td valign="middle"><span class="muted"><?php echo $row->end_date;?></span></td>
+            <td valign="middle"><span class="muted"><?php echo getDateFormat($row->start_date);?></span></td>
+            <td valign="middle"><span class="muted"><?php echo getDateFormat($row->end_date);?></span></td>
             <!--<td valign="middle"><span class="muted"><?php //echo $row->branch;?></span></td>-->
             <!--<td valign="middle"><span class="muted"><?php //echo $row->personnel_action;?></span></td>-->
-            <td valign="middle"><span class="muted"><?php echo $row->sk_date;?></span></td>
+            <td valign="middle"><span class="muted"><?php echo getDateFormat($row->sk_date);?></span></td>
             <td valign="middle">
                <button type="button" class="btn btn-info btn-small" data-toggle="modal" data-target="#editjabatanModal<?php echo $row->id?>" title="<?php echo lang('edit_button')?>"><i class="icon-paste"></i></button>
                <button class='btn btn-danger btn-small' type="submit" name="remove_levels" value="Delete" data-toggle="modal" data-target="#deletejabatanModal<?php echo $row->id?>" title="<?php echo lang('edit_button')?>"><i class="icon-warning-sign"></i></button>
@@ -182,7 +182,7 @@ $(function(){
                 <div class="col-md-9">
                         <div class="input-with-icon right">
                             <div class="input-append success date no-padding">
-                                <input type="text" class="form-control" name="start_date" value="<?php echo $row->start_date?>">
+                                <input type="text" class="form-control" name="start_date" value="<?php echo getDateFormat($row->start_date)?>">
                                 <span class="add-on"><span class="arrow"></span><i class="icon-th"></i></span> 
                             </div>
                         </div>
@@ -194,7 +194,7 @@ $(function(){
                 <div class="col-md-9">
                         <div class="input-with-icon right">
                             <div class="input-append success date no-padding">
-                                <input type="text" class="form-control" name="end_date" value="<?php echo $row->end_date?>">
+                                <input type="text" class="form-control" name="end_date" value="<?php echo getDateFormat($row->end_date)?>">
                                 <span class="add-on"><span class="arrow"></span><i class="icon-th"></i></span> 
                             </div>
                         </div>
@@ -206,7 +206,7 @@ $(function(){
                 <div class="col-md-9">
                         <div class="input-with-icon right">
                             <div class="input-append success date no-padding">
-                                <input type="text" class="form-control" name="sk_date" value="<?php echo $row->end_date?>">
+                                <input type="text" class="form-control" name="sk_date" value="<?php echo getDateFormat($row->end_date)?>">
                                 <span class="add-on"><span class="arrow"></span><i class="icon-th"></i></span> 
                             </div>
                         </div>
