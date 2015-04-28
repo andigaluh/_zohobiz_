@@ -38,9 +38,10 @@ class Person_model extends CI_Model
             $this->db->like('users_course.title', $filter);
         }
 
-        if($sort){
+        /*if($sort){
             $this->db->order_by('users_course.title', $sort);
-        }
+        }*/
+        $this->db->order_by('users_course.created_on', 'desc');
 
         $query = $this->db->get();
         return $query;
@@ -58,6 +59,8 @@ class Person_model extends CI_Model
             $this->db->like('certification_type.title', $filter);
         }
 
+        $this->db->order_by('users_certificate.created_on', 'desc');
+
         $query = $this->db->get();
         return $query;
     }
@@ -71,7 +74,7 @@ class Person_model extends CI_Model
         $this->db->join('education_center', 'users_education.education_center_id = education_center.id','left');
 
         $this->db->where('users_education.user_id', $id);
-        $this->db->order_by('users_education.id','asc');
+        $this->db->order_by('users_education.created_on','desc');
         $this->db->where('users_education.is_deleted', 0);
 
         if($filter){
@@ -93,7 +96,7 @@ class Person_model extends CI_Model
         $this->db->join('resign_reason', 'users_experience.resign_reason_id = resign_reason.id');
 
         $this->db->where('users_experience.user_id', $id);
-        $this->db->order_by('users_experience.id','asc');
+        $this->db->order_by('users_experience.created_on','desc');
         $this->db->where('users_experience.is_deleted', 0);
 
         if($filter){
@@ -111,7 +114,7 @@ class Person_model extends CI_Model
         $this->db->join('position', 'users_sk.position_id = position.id');
 
         $this->db->where('users_sk.user_id', $id);
-        $this->db->order_by('users_sk.id','asc');
+        $this->db->order_by('users_sk.created_on','desc');
         $this->db->where('users_sk.is_deleted', 0);
 
         if($filter){
@@ -131,7 +134,7 @@ class Person_model extends CI_Model
         $this->db->join('users as received', 'users_sti.receivedby_id = received.id', 'left');
 
         $this->db->where('user_id', $id);
-        $this->db->order_by('users_sti.id','asc');
+        $this->db->order_by('users_sti.created_on','desc');
         $this->db->where('users_sti.is_deleted', 0);
 
         if($filter){
@@ -159,6 +162,8 @@ class Person_model extends CI_Model
             $this->db->like('organization.title', $filter);
         }
 
+        $this->db->order_by('users_jabatan.created_on','desc');
+
         $query = $this->db->get();
         return $query;
     }
@@ -175,6 +180,8 @@ class Person_model extends CI_Model
             $this->db->like('users_awardwarning.title', $filter);
         }
 
+        $this->db->order_by('users_awardwarning.created_on','desc');
+
         $query = $this->db->get();
         return $query;
     }
@@ -190,6 +197,8 @@ class Person_model extends CI_Model
         if($filter){
             $this->db->like('users_ikatan_dinas.title', $filter);
         }
+
+        $this->db->order_by('users_ikatan_dinas.created_on','desc');
 
         $query = $this->db->get();
         return $query;
