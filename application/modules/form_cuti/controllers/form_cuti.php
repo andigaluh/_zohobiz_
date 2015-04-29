@@ -20,9 +20,9 @@ class Form_cuti extends MX_Controller {
         $this->load->helper('language');
     }
 
-    function index($ftitle = "fn:",$sort_by = "id", $sort_order = "asc", $offset = 0)
+    function index($ftitle = "fn:",$sort_by = "id", $sort_order = "desc", $offset = 0)
     {
-
+        $user_id = $this->session->userdata('user_id');
         if (!$this->ion_auth->logged_in())
         {
             //redirect them to the login page
@@ -44,7 +44,7 @@ class Form_cuti extends MX_Controller {
             
             //set sort by
             $this->data['sort_by'] = $sort_by;
-           
+              
             //set filter by title
             $this->data['ftitle_param'] = $ftitle; 
             $exp_ftitle = explode(":",$ftitle);
