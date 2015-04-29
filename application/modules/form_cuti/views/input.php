@@ -38,7 +38,6 @@
                     <div class="row form-row">
                       <div class="col-md-3">
                         <label class="form-label text-right">No</label>
-                        
                       </div>
                       <div class="col-md-9">
                         <input name="no" id="no" type="text"  class="form-control" placeholder="No" value="<?php echo $user->id; ?>" disabled="disabled">
