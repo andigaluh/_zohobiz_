@@ -95,7 +95,7 @@ $(function(){
 
 <!--Edit Modal-->
 <?php foreach($user_ikatan_dinas->result() as $row){?>
-<div class="modal fade" id="editikatan_dinasModal<?php echo $row->id?>" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="overflow:hidden;">
+<div class="modal fade" id="editikatan_dinasModal<?php echo $row->id?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <?php echo form_open('auth/edit_ikatan_dinas/'.$row->id, array('id'=>'formupdate'.$row->id))?>
     <div class="modal-dialog">
         <div class="modal-content">

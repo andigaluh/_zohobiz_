@@ -62,6 +62,8 @@ $config['tables']['users_spd_dalam']  = 'users_spd_dalam';
 $config['tables']['users_spd_luar']  = 'users_spd_luar';
 $config['tables']['transportation']  = 'transportation';
 $config['tables']['city']  = 'city';
+$config['tables']['users_keterangan_absen']  = 'users_keterangan_absen';
+$config['tables']['keterangan_absen']  = 'keterangan_absen';
 
 
 /*

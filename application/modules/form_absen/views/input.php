@@ -29,7 +29,7 @@
                         <label class="form-label text-right">No</label>
                       </div>
                       <div class="col-md-9">
-                        <input name="form3LastName" id="form3LastName" type="text"  class="form-control" placeholder="Nama" value="<?php echo $absen_id?>" disabled="disabled">
+                        <input name="form3LastName" id="form3LastName" type="text"  class="form-control" placeholder="Nama" value="" disabled="disabled">
                       </div>
                     </div>
                     
@@ -49,7 +49,7 @@
                         <label class="form-label text-right">Nama</label>
                       </div>
                       <div class="col-md-9">
-                        <input name="form3LastName" id="form3LastName" type="text"  class="form-control" placeholder="Nama" value="<?php echo $user ?>" disabled="disabled">
+                        <input name="form3LastName" id="form3LastName" type="text"  class="form-control" placeholder="Nama" value="" disabled="disabled">
                       </div>
                     </div>
                     <div class="row form-row">
@@ -67,8 +67,8 @@
                       <div class="col-md-9">
                         <div class="radio">
                         <?php 
-                        if($keterangan_absen->num_rows>0){
-                          foreach($keterangan_absen->result() as $row){?>
+                        if($num_rows_keterangan_absen > 0){
+                          foreach($keterangan_absen as $row){?>
                           <input id="tidak_absen_in" type="radio" name="keterangan" value="<?php echo $row->id?>">
                           <label for="tidak_absen_in"><?php echo $row->title?></label>
                         <?php }}else{?>

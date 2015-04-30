@@ -3111,6 +3111,7 @@ class Auth extends MX_Controller {
                     $this->template->add_css('plugins/select2/select2.css');
                     $this->template->add_css('pace-theme-flash.css');
                     $this->template->add_css('datepicker.css');
+                    $this->template->add_css('dcustom.css');
                 }
            /* }*/
 

@@ -58,7 +58,7 @@
 
 <!--Edit Modal-->
 <?php foreach($user_award->result() as $row){?>
-<div class="modal fade" id="editawardModal<?php echo $row->id?>" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="editawardModal<?php echo $row->id?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <?php echo form_open('auth/edit_award/'.$row->id, array('id'=>'formupdate'.$row->id))?> 
     <div class="modal-dialog">
         <div class="modal-content">
@@ -156,7 +156,7 @@
 
 <?php foreach($user_award->result() as $row){?>
 <!--Delete Modal-->
-<div class="modal fade" id="deleteawardModal<?php echo $row->id?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteawardModal<?php echo $row->id?>" tabindex="-1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
         <div class="modal-header">
