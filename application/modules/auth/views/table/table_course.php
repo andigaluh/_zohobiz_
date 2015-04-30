@@ -49,9 +49,33 @@
 </table>
 
 <?php foreach($user_course->result() as $row){?>
+
+<!--Delete Modal-->
+<div class="modal fade" id="deleteCourseModal<?php echo $row->id?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel"><?php echo lang('delete_confirmation').' for '.$row->description; ?></h4>
+        </div>
+      <?php echo form_open('auth/delete_course/'.$row->id, array("id"=>"formdelete".$row->id))?>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="display:none"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <p><?php echo lang('delete_this_data').$row->description.' ?'; ?></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="icon-ban-circle"></i>&nbsp;<?php echo lang('cancel_button')?></button> 
+        <button type="submit" class="btn btn-danger lnkBlkWhtArw" style="margin-top: 3px;"><i class="icon-warning-sign"></i>&nbsp;<?php echo lang('delete_button')?></button>
+      </div>
+        <?php echo form_close()?>
+    </div>
+  </div>
+</div>
+<!--End of Delete Modal-->
+
 <!--Edit Modal-->
 <?php echo form_open('auth/edit_course/'.$row->id, array('id'=>'formupdate'.$row->id))?>
-<div class="modal fade" id="editCourseModal<?php echo $row->id?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="editCourseModal<?php echo $row->id?>" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -104,28 +128,6 @@
 <?php echo form_close()?>  
 <!-- End Edit Modal-->
 
-<!--Delete Modal-->
-<div class="modal fade" id="deleteCourseModal<?php echo $row->id?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel"><?php echo lang('delete_confirmation').' for '.$row->description; ?></h4>
-        </div>
-      <?php echo form_open('auth/delete_course/'.$row->id, array("id"=>"formdelete".$row->id))?>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="display:none"><span aria-hidden="true">&times;</span></button>
-      <div class="modal-body">
-        <p><?php echo lang('delete_this_data').$row->description.' ?'; ?></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="icon-ban-circle"></i>&nbsp;<?php echo lang('cancel_button')?></button> 
-        <button type="submit" class="btn btn-danger lnkBlkWhtArw" style="margin-top: 3px;"><i class="icon-warning-sign"></i>&nbsp;<?php echo lang('delete_button')?></button>
-      </div>
-        <?php echo form_close()?>
-    </div>
-  </div>
-</div>
-
 <script type="text/javascript">
 $(document).ready(function(){
                  //Date Pickers
@@ -134,7 +136,7 @@ $(document).ready(function(){
                     autoclose: true,
                     todayHighlight: true
                });
-              $('.select2').select2();
+              $('select.select2').select2();
                 $('#formupdate<?php echo $row->id?>').submit(function(response){
                     $.post($('#formupdate<?php echo $row->id?>').attr('action'), $('#formupdate<?php echo $row->id?>').serialize(),function(json){
                         if(json.st == 0){

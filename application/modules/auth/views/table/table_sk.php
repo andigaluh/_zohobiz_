@@ -96,7 +96,7 @@ $(function(){
 <!--Edit Modal-->
 <?php foreach($user_sk->result() as $row){?>
 <?php echo form_open('auth/edit_sk/'.$row->id, array('id'=>'formupdate'.$row->id))?> 
-<div class="modal fade" id="editskModal<?php echo $row->id?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="editskModal<?php echo $row->id?>" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" id="modal-dialog">
         <div class="modal-content">
         <div class="modal-header">
@@ -208,7 +208,7 @@ $(function(){
                     autoclose: true,
                     todayHighlight: false
                });
-              $('.select2').select2();
+              $('select.select2').select2();
                 $('#formupdate<?php echo $row->id?>').submit(function(response){
                     $.post($('#formupdate<?php echo $row->id?>').attr('action'), $('#formupdate<?php echo $row->id?>').serialize(),function(json){
                         if(json.st == 0){

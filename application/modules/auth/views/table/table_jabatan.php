@@ -104,7 +104,7 @@ $(function(){
 <!--Edit Modal-->
 
 <?php foreach($user_jabatan->result() as $row){?>
-<div class="modal fade" id="editjabatanModal<?php echo $row->id?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="editjabatanModal<?php echo $row->id?>" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="overflow:hidden;">
   <?php echo form_open('auth/edit_jabatan/'.$row->id, array('id'=>'formupdate'.$row->id))?> 
   <div class="modal-dialog">
     <div class="modal-content">
@@ -232,7 +232,7 @@ $(function(){
                     autoclose: true,
                     todayHighlight: false
                });
-              $('.select2').select2();
+              $('select.select2').select2();
                 $('#formupdate<?php echo $row->id?>').submit(function(response){
                     $.post($('#formupdate<?php echo $row->id?>').attr('action'), $('#formupdate<?php echo $row->id?>').serialize(),function(json){
                         if(json.st == 0){

@@ -55,7 +55,7 @@
 
 <!--Edit MOdal-->
  <?php echo form_open('auth/edit_education/'.$row->id, array('id'=>'formupdate'.$row->id))?>
-<div class="modal fade" id="editeducationModal<?php echo $row->id?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="editeducationModal<?php echo $row->id?>" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -230,7 +230,7 @@ $(function(){
                     autoclose: true,
                     todayHighlight: false
                });
-              $('.select2').select2();
+              $('select.select2').select2();
                 $('#formupdate<?php echo $row->id?>').submit(function(response){
                     $.post($('#formupdate<?php echo $row->id?>').attr('action'), $('#formupdate<?php echo $row->id?>').serialize(),function(json){
                         if(json.st == 0){

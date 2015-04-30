@@ -193,7 +193,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-2 page_limit">
-                                                <?php echo form_open(uri_string());?>
+                                                <!-- <?php echo form_open(uri_string());?>
                                                 <?php 
                                                     $selectComponentData = array(
                                                         10  => '10',
@@ -203,8 +203,8 @@
                                                         100 => '100',);
                                                     $selectComponentJs = 'class="select2" onChange="this.form.submit()" id="limit"';
                                                     echo "Per page: ".form_dropdown('limit', $selectComponentData, $limit, $selectComponentJs);
-                                                ?>
-                                                <?php echo form_close();?>
+                                                ?> 
+                                                <?php echo form_close();?> -->
                                             </div>
                                             <div class="col-md-10">
                                                 <ul class="pagination">
@@ -258,7 +258,7 @@
                     <?php echo lang('course_status', 'course_status');?>
                 </div>
                 <div class="col-md-9">
-                    <select name="course_status_id" class="select2" id="course_status_id" style="width:100%">
+                    <select name="course_status_id" class="select2" id="course_status_idx" style="width:100%">
                         <?php
                             foreach ($course_status->result_array() as $key => $value) {
                             $selected = ($course_status_id <> 0 && $course_status_id == $value['id']) ? 'selected = selected' : '';
