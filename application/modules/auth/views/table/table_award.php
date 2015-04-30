@@ -56,51 +56,9 @@
     </tbody>
 </table>
 
-<?php foreach($user_award->result() as $row){?>
-<!--Delete Modal-->
-<div class="modal fade" id="deleteawardModal<?php echo $row->id?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel"><?php echo lang('delete_confirmation').' for '.$row->description; ?></h4>
-        </div>
-      <?php echo form_open('auth/delete_award/'.$row->id, array("id"=>"formdelete".$row->id))?>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="display:none"><span aria-hidden="true">&times;</span></button>
-      <div class="modal-body">
-        <p><?php echo lang('delete_this_data').$row->description.' ?'; ?></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="icon-ban-circle"></i>&nbsp;<?php echo lang('cancel_button')?></button> 
-        <button type="submit" class="btn btn-danger lnkBlkWhtArw" style="margin-top: 3px;"><i class="icon-warning-sign"></i>&nbsp;<?php echo lang('delete_button')?></button>
-      </div>
-        <?php echo form_close()?>
-    </div>
-  </div>
-</div>
-
-<script type="text/javascript">
-$(function(){
- $('#formdelete<?php echo $row->id?>').submit(function(response){
-                    $.post($('#formdelete<?php echo $row->id?>').attr('action'), $('#formdelete<?php echo $row->id?>').serialize(),function(json){
-                        if(json.st == 0){
-                            $('#MsgBad').text('Delete Failed').fadeIn();
-                        }else{
-                            getTable();
-                            $("[data-dismiss=modal]").trigger({ type: "click" });
-                            $('#MsgGood').text('Data Deleted').fadeIn().delay(4000).fadeOut("slow");
-                        }
-                    }, 'json');
-                    return false;
-                });
-            });
-</script>
-<?php } ?>
-
-
 <!--Edit Modal-->
 <?php foreach($user_award->result() as $row){?>
-<div class="modal fade" id="editawardModal<?php echo $row->id?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="editawardModal<?php echo $row->id?>" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <?php echo form_open('auth/edit_award/'.$row->id, array('id'=>'formupdate'.$row->id))?> 
     <div class="modal-dialog">
         <div class="modal-content">
@@ -195,15 +153,63 @@ $(function(){
     </div>
     <?php echo form_close()?> 
 </div>
+
+<?php foreach($user_award->result() as $row){?>
+<!--Delete Modal-->
+<div class="modal fade" id="deleteawardModal<?php echo $row->id?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel"><?php echo lang('delete_confirmation').' for '.$row->description; ?></h4>
+        </div>
+      <?php echo form_open('auth/delete_award/'.$row->id, array("id"=>"formdelete".$row->id))?>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="display:none"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <p><?php echo lang('delete_this_data').$row->description.' ?'; ?></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="icon-ban-circle"></i>&nbsp;<?php echo lang('cancel_button')?></button> 
+        <button type="submit" class="btn btn-danger lnkBlkWhtArw" style="margin-top: 3px;"><i class="icon-warning-sign"></i>&nbsp;<?php echo lang('delete_button')?></button>
+      </div>
+        <?php echo form_close()?>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+$(function(){
+ $('#formdelete<?php echo $row->id?>').submit(function(response){
+                    $.post($('#formdelete<?php echo $row->id?>').attr('action'), $('#formdelete<?php echo $row->id?>').serialize(),function(json){
+                        if(json.st == 0){
+                            $('#MsgBad').text('Delete Failed').fadeIn();
+                        }else{
+                            getTable();
+                            $("[data-dismiss=modal]").trigger({ type: "click" });
+                            $('#MsgGood').text('Data Deleted').fadeIn().delay(4000).fadeOut("slow");
+                        }
+                    }, 'json');
+                    return false;
+                });
+            });
+</script>
+<?php } ?>
 <script type="text/javascript">
     $(document).ready(function(){
+
+        $('.modal').on('shown.bs.modal', function() {
+  //Make sure the modal and backdrop are siblings (changes the DOM)
+  $(this).before($('.modal-backdrop'));
+  //Make sure the z-index is higher than the backdrop
+  $(this).css("z-index", parseInt($('.modal-backdrop').css('z-index')) + 1);
+});
                 //Date Pickers
                   $('.input-append.date').datepicker({
                         format: "dd M yyyy",
                         autoclose: true,
                         todayHighlight: false
                    });
-                  $('.select2').select2();
+                  $('select.select2').select2();
                 $('#formupdate<?php echo $row->id?>').submit(function(response){
                     $.post($('#formupdate<?php echo $row->id?>').attr('action'), $('#formupdate<?php echo $row->id?>').serialize(),function(json){
                         if(json.st == 0){

@@ -3046,8 +3046,8 @@ class Auth extends MX_Controller {
                     $this->template->add_css('pace-theme-flash.css');
                     $this->template->add_css('datepicker.css');
                 }
-                elseif(in_array($view, array('auth/detail_course',
-                                             'auth/detail_certificate',
+                elseif(in_array($view, array(//'auth/detail_course',
+                                             //'auth/detail_certificate',
                                              'auth/table/table_course',
                                              'auth/table/table_education',
                                              'auth/table/table_experience',
@@ -3071,6 +3071,7 @@ class Auth extends MX_Controller {
                     $this->template->add_js('breakpoints.js');
                     $this->template->add_js('pace.min.js');
                     $this->template->add_js('bootstrap-datepicker.js');
+                    $this->template->add_js('date_form.js');
                     $this->template->add_js('core.js');
                     $this->template->add_js('purl.js');
                     $this->template->add_js('select2.min.js');
@@ -3079,13 +3080,15 @@ class Auth extends MX_Controller {
                     $this->template->add_css('plugins/select2/select2.css');
                     $this->template->add_css('pace-theme-flash.css');
                     $this->template->add_css('datepicker.css');
-                }elseif(in_array($view, array('auth/detail_ikatan_dinas',
+                }elseif(in_array($view, array('auth/detail_course',
+                                              'auth/detail_ikatan_dinas',
                                               'auth/detail_award',
                                               'auth/detail_jabatan',
                                               'auth/detail_sti',
                                               'auth/detail_sk',
                                               'auth/detail_experience',
                                               'auth/detail_education',
+                                              'auth/detail_certificate',
                                               'auth/detail')))
                 {
                     $this->template->set_layout('default');
