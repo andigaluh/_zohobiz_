@@ -1,8 +1,9 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-class form_absen extends MX_Controller {
+class Form_absen extends MX_Controller {
 
-	public $data;
+    public $data;
+
     function __construct()
     {
         parent::__construct();
@@ -11,235 +12,136 @@ class form_absen extends MX_Controller {
         $this->load->helper('url');
         
         $this->load->database();
-		$this->load->model('person/person_model','person_model');
         $this->load->model('form_absen/form_absen_model','form_absen_model');
         
         $this->form_validation->set_error_delimiters($this->config->item('error_start_delimiter', 'ion_auth'), $this->config->item('error_end_delimiter', 'ion_auth'));
 
         $this->lang->load('auth');
         $this->load->helper('language');
-        
     }
 
-    function index()
+    function index($ftitle = "fn:",$sort_by = "id", $sort_order = "desc", $offset = 0)
     {
+        $user_id = $this->session->userdata('user_id');
         if (!$this->ion_auth->logged_in())
         {
             //redirect them to the login page
             redirect('auth/login', 'refresh');
         }
+        elseif (!$this->ion_auth->is_admin()) //remove this elseif if you want to enable this for non-admins
+        {
+            //redirect them to the home page because they must be an administrator to view this
+            //return show_error('You must be an administrator to view this page.');
+            return show_error('You must be an administrator to view this page.');
+        }
         else
         {
-            $sess_id = $this->session->userdata('user_id');
-            $form_absen = $this->data['form_absen'] = $this->form_absen_model->form_absen();
+            //set the flash data error message if there is one
+            $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+
+            //set sort order
+            $this->data['sort_order'] = $sort_order;
+            
+            //set sort by
+            $this->data['sort_by'] = $sort_by;
+              
+            //set filter by title
+            $this->data['ftitle_param'] = $ftitle; 
+            $exp_ftitle = explode(":",$ftitle);
+            $ftitle_re = str_replace("_", " ", $exp_ftitle[1]);
+            $ftitle_post = (strlen($ftitle_re) > 0) ? array('form_absen.title'=>$ftitle_re) : array() ;
+            
+            //set default limit in var $config['list_limit'] at application/config/ion_auth.php 
+            $this->data['limit'] = $limit = (strlen($this->input->post('limit')) > 0) ? $this->input->post('limit') : 10 ;
+
+            $this->data['offset'] = 6;
+
+            //list of filterize all form_absen  
+            $this->data['form_absen_all'] = $this->form_absen_model->like($ftitle_post)->where('is_deleted',0)->form_absen()->result();
+            
+            $this->data['num_rows_all'] = $this->form_absen_model->like($ftitle_post)->where('is_deleted',0)->form_absen()->num_rows();
+
+            //list of filterize limit form_absen for pagination  
+            $this->data['form_absen'] = $this->form_absen_model->like($ftitle_post)->where('is_deleted',0)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->form_absen()->result();
+
+            $this->data['_num_rows'] = $this->form_absen_model->like($ftitle_post)->where('is_deleted',0)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->form_absen()->num_rows();
+
             $this->_render_page('form_absen/index', $this->data);
         }
     }
 
-    function detail($id)
+    function input($ftitle = "fn:",$sort_by = "id", $sort_order = "asc", $offset = 0)
     {
-        
-    
+        $user_id = $this->session->userdata('user_id');
+
         if (!$this->ion_auth->logged_in())
         {
             //redirect them to the login page
             redirect('auth/login', 'refresh');
         }
-        else
+        elseif (!$this->ion_auth->is_admin()) //remove this elseif if you want to enable this for non-admins
         {
-            $user_id = $this->db->select('user_id')->where('id', $id)->get('users_keterangan_absen')->row('user_id');
-            
-            $this->get_user_info($user_id);
-            
-            //$this->data['comp_session'] = $this->form_absen_model->render_session()->result();
-            
-            $form_absen = $this->data['form_absen'] = $this->form_absen_model->form_absen($id);
-            if($form_absen->num_rows>0){
-                $this->get_app_name($id);
-            }
-            
-            $this->_render_page('form_absen/detail', $this->data);
-        }
-    }
-
-
-     function input()
-    {
-        if (!$this->ion_auth->logged_in())
-        {
-            redirect('auth/login', 'refresh');
+            //redirect them to the home page because they must be an administrator to view this
+            //return show_error('You must be an administrator to view this page.');
+            return show_error('You must be an administrator to view this page.');
         }
         else
         {
-            $sess_id = $this->session->userdata('user_id');
-            $absen_id = $this->db->select('id')->order_by('id', 'asc')->get('users_keterangan_absen')->last_row();
-            
-            $this->data['absen_id'] = $absen_id->id+1;
-            $this->data['user_name'] = $this->form_absen_model->get_app_name($sess_id);
-            $this->data['keterangan_absen'] = $this->form_absen_model->get_keterangan_absen();
-            //print_mz($this->form_absen_model->get_app_name($sess_id));
-            $this->get_user_info();
-            
+            //set the flash data error message if there is one
+            $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+
+            // render data
+            $this->data['keterangan_absen'] = $this->form_absen_model->render_keterangan()->result();
+            $this->data['num_rows_keterangan_absen'] = $this->form_absen_model->render_keterangan()->num_rows();
+
             $this->_render_page('form_absen/input', $this->data);
         }
     }
 
-    function add()
+    public function add()
     {
-        if (!$this->ion_auth->logged_in())
-        {
-            redirect('auth/login', 'refresh');
-        }
-        else
-        {
-            $this->form_validation->set_rules('date_tidak_hadir', 'Tanggal Tidak Absen', 'trim|required');
-            $this->form_validation->set_rules('keterangan', 'Keterangan', 'trim|required');
-            $this->form_validation->set_rules('alasan', 'Alasan', 'trim|required');
 
-            if($this->form_validation->run() == FALSE)
-            {
+        $this->form_validation->set_rules('start_cuti', 'Tanggal Mulai Cuti', 'trim|required');
+        $this->form_validation->set_rules('end_cuti', 'Tanggal Terakhir Cuti', 'trim|required');
+        $this->form_validation->set_rules('alasan_cuti', 'Alasan Cuti', 'trim|required');
+        $this->form_validation->set_rules('user_pengganti', 'User Pengganti', 'trim|required');
+        $this->form_validation->set_rules('alamat', 'Alamat Cuti', 'trim|required');
+        
+        if($this->form_validation->run() == FALSE)
+        {
             echo json_encode(array('st'=>0, 'errors'=>validation_errors('<div class="alert alert-danger" role="alert">', '</div>')));
+        }
+        else
+        {
+            $user_id    = $this->input->post('user_id');
+
+            $start_cuti = $this->input->post('start_cuti');
+            $end_cuti = $this->input->post('end_cuti');
+
+            $year_now = date('Y');
+            $comp_session_now_arr = $this->form_absen_model->where('comp_session.year',$year_now)->render_session()->result();
+            foreach ($comp_session_now_arr as $csn) {
+                $comp_session_now = $csn->id;
             }
-            else
+
+            $additional_data = array(
+                'id_comp_session'       => $comp_session_now,
+                'date_mulai_cuti'       => date('Y-m-d', strtotime($this->input->post('start_cuti'))),
+                'date_selesai_cuti'     => date('Y-m-d', strtotime($this->input->post('end_cuti'))),
+                'jumlah_hari'           => $this->input->post('jml_cuti'),
+                'alasan_cuti_id'        => $this->input->post('alasan_cuti'),
+                'user_pengganti'        => $this->input->post('user_pengganti'),
+                'alamat_cuti'           => $this->input->post('alamat'),
+                'created_on'            => date('Y-m-d',strtotime('now')),
+                'created_by'            => $this->session->userdata('user_id')
+            );
+
+            if ($this->form_validation->run() == true && $this->form_absen_model->create_($user_id,$additional_data))
             {
-                $user_id= $this->session->userdata('user_id');
-
-                $data = array(
-                    'user_id' => $user_id,
-                    'id_comp_session' => 1,
-                    'date_tidak_hadir' => date('Y-m-d', strtotime($this->input->post('date_tidak_hadir'))),
-                    'keterangan_id' => $this->input->post('keterangan'),
-                    'alasan' => $this->input->post('alasan'),
-                    'created_on'            => date('Y-m-d',strtotime('now')),
-                    'created_by'            => $user_id
-                    );
-
-                    if ($this->form_validation->run() == true && $this->form_absen_model->add($data))
-                    {
-                         echo json_encode(array('st' =>1));     
-                    }
+                $this->index();   
             }
-
         }
     }
-
-    function approval_spv($id)
-    {
-        $sess_id = $this->session->userdata('user_id');
-        $user_absen_id = $this->db->select('user_id')->from('users_keterangan_absen')->where('id', $id)->get()->row('user_id');
-        if (!$this->ion_auth->logged_in())
-        {
-            //redirect them to the login page
-            redirect('auth/login', 'refresh');
-        }
-        elseif(is_authorized($sess_id, $user_absen_id) == FALSE)
-        {
-
-            return show_error('You do not have authorization to view this page.');
-        }
-        else
-        {
-            $user_id = $this->db->select('user_id')->where('id', $id)->get('users_keterangan_absen')->row('user_id');
-            
-            $this->get_user_info($user_id);
-            $form_absen = $this->data['form_absen'] = $this->form_absen_model->form_absen($id);
-            if($form_absen->num_rows>0){
-                $this->get_app_name($id);
-            }
-
-            $this->_render_page('form_absen/approval/supervisor');
-        }
-    }
-
-    function approval_kbg($id)
-    {
-        $sess_id = $this->session->userdata('user_id');
-        $user_absen_id = $this->db->select('user_id')->from('users_keterangan_absen')->where('id', $id)->get()->row('user_id');
-        if (!$this->ion_auth->logged_in())
-        {
-            //redirect them to the login page
-            redirect('auth/login', 'refresh');
-        }
-        elseif(is_authorized($sess_id, $user_absen_id) == FALSE)
-        {
-
-            return show_error('You do not have authorization to view this page.');
-        }
-        else
-        {
-            $user_id = $this->db->select('user_id')->where('id', $id)->get('users_keterangan_absen')->row('user_id');
-            
-            $this->get_user_info($user_id);
-            $form_absen = $this->data['form_absen'] = $this->form_absen_model->form_absen($id);
-            if($form_absen->num_rows>0){
-                $this->get_app_name($id);
-            }
-
-            $this->_render_page('form_absen/approval/kabagian');
-        }
-    }
-
-    function do_approve_spv($id)
-    {
-        $user_id = $this->session->userdata('user_id');
-        $date_now = date('Y-m-d');
-
-        $data = array(
-        'is_app_lv1' => 1, 
-        'user_app_lv1' => $user_id, 
-        'date_app_lv1' => $date_now);
-
-
-       if ($this->form_absen_model->update($id,$data)) {
-           return TRUE;
-       }
-    }
-
-    function do_approve_kbg($id)
-    {
-        $user_id = $this->session->userdata('user_id');
-        $date_now = date('Y-m-d');
-
-        $data = array(
-        'is_app_lv2' => 1, 
-        'user_app_lv2' => $user_id, 
-        'date_app_lv2' => $date_now);
-
-
-       if ($this->form_absen_model->update($id,$data)) {
-           return TRUE;
-       }
-    }
-
-    function get_app_name($id)
-    {
-        $form_absen = $this->form_absen_model->form_absen($id);
-        foreach($form_absen->result() as $absen){
-            $user_app_lv1 = $absen->user_app_lv1;
-            $user_app_lv2 = $absen->user_app_lv2;
-        }
-
-        $this->data['name_app_lv1'] = $this->form_absen_model->get_app_name($user_app_lv1);
-        $this->data['name_app_lv2'] = $this->form_absen_model->get_app_name($user_app_lv2);
-
-        return $this->data;
-    }
-
-    function get_user_info($user_id)
-    {
-            $user = $this->person_model->getUsers($user_id)->row();
-            $url = 'http://admin:12345678@localhost/hris_api/users/employement/EMPLID/'.$user->nik.'/format/json';
-            $headers = get_headers($url);
-            $response = substr($headers[0], 9, 3);
-            if ($response != "404") {
-                $getuser_info = file_get_contents($url);
-                $user_info = json_decode($getuser_info, true);
-                return $this->data['user_info'] = $user_info;
-            } else {
-                //$this->data['user_info'] = $this->form_cuti_model->where('users.id',$user_id)->form_cuti_input()->result();
-            }
-    }
-
 
     function _get_csrf_nonce()
     {
@@ -324,7 +226,7 @@ class form_absen extends MX_Controller {
                     $this->template->add_js('bootstrap-datepicker.js');
                     $this->template->add_js('bootstrap-timepicker.js');
                     $this->template->add_js('form_absen.js');
-                    //$this->template->add_js('form_cuti.js');
+                    //$this->template->add_js('form_absen.js');
                     
                     $this->template->add_css('jquery-ui-1.10.1.custom.min.css');
                     $this->template->add_css('plugins/select2/select2.css');
@@ -375,3 +277,6 @@ class form_absen extends MX_Controller {
         }
     }
 }
+
+/* End of file form_absen.php */
+/* Location: ./application/modules/form_absen/controllers/form_absen.php */

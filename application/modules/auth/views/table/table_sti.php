@@ -60,7 +60,7 @@
 <?php foreach($user_sti->result() as $row){?>
 <!--Edit Modal-->
 
-<div class="modal fade" id="editstiModal<?php echo $row->id?>" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="editstiModal<?php echo $row->id?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
         <?php echo form_open('auth/edit_sti/'.$row->id, array('id'=>'formupdate'.$row->id))?>

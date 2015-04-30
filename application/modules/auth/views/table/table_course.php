@@ -75,7 +75,7 @@
 
 <!--Edit Modal-->
 <?php echo form_open('auth/edit_course/'.$row->id, array('id'=>'formupdate'.$row->id))?>
-<div class="modal fade" id="editCourseModal<?php echo $row->id?>" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="editCourseModal<?php echo $row->id?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
