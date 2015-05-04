@@ -19,8 +19,8 @@
             </div>
             <div class="grid-body no-border">
             <?php 
-            if($form_absen->num_rows()>0){
-              foreach($form_absen->result() as $absen){?>
+            if($_num_rows>0){
+              foreach($form_absen as $user){?>
               <form class="form-no-horizontal-spacing" id=""> 
                 <div class="row column-seperation">
                   <div class="col-md-12">    
@@ -29,7 +29,7 @@
                         <label class="form-label text-right">No</label>
                       </div>
                       <div class="col-md-9">
-                        <input name="form3LastName" id="form3LastName" type="text"  class="form-control" placeholder="Nama" value="<?php echo $absen->id?>" disabled="disabled">
+                        <input name="form3LastName" id="form3LastName" type="text"  class="form-control" placeholder="Nama" value="<?php echo $user->id?>" disabled="disabled">
                       </div>
                     </div>
                     <div class="row form-row">
@@ -38,17 +38,19 @@
                       </div>
                       <div class="col-md-8">
                         <div class="input-append success no-padding">
-                          <input type="text" class="form-control" name="date_tidak_hadir" value="<?php echo $absen->date?>" disabled="disabled">
+                          <input type="text" class="form-control" name="date_tidak_hadir" value="<?php echo $user->date_tidak_hadir?>" disabled="disabled">
                           <!-- <span class="add-on"><span class="arrow"></span><i class="icon-th"></i></span> --> 
                         </div>
                       </div>
                     </div>
+                    <?php foreach ($user_info as $ui) { ?>
+                    <input type="hidden" name="user_id" value="<?php echo $ui->id ?>">
                     <div class="row form-row">
                       <div class="col-md-3">
                         <label class="form-label text-right">Nama</label>
                       </div>
                       <div class="col-md-9">
-                        <input name="form3LastName" id="form3LastName" type="text"  class="form-control" placeholder="Nama" value="<?php echo $absen->name?>" disabled="disabled">
+                        <input name="nama" id="nama" type="text"  class="form-control" placeholder="Nama" value="<?php echo $ui->first_name.' '.$ui->last_name ?>" disabled="disabled">
                       </div>
                     </div>
                     <div class="row form-row">
@@ -56,9 +58,10 @@
                         <label class="form-label text-right">Dept/Bagian</label>
                       </div>
                       <div class="col-md-9">
-                        <input name="form3LastName" id="form3LastName" type="text"  class="form-control" placeholder="Nama" value="<?php echo $user_info['ORGANIZATION']; ?>" disabled="disabled">
+                        <input name="org_nm" id="org_nm" type="text"  class="form-control" placeholder="Dept/Bagian" value="<?php echo $ui->org_nm ?>" disabled="disabled">
                       </div>
                     </div>
+                    <?php } ?>
                     <div class="row form-row">
                       <div class="col-md-3">
                         <label class="form-label text-right">Keterangan</label>
@@ -66,12 +69,19 @@
                       <div class="col-md-9">
                         <div class="radio">
                           <?php 
-                        if($absen->keterangan_id!=0){?>
-                          <input checked="checked" id="tidak_absen_in" type="radio" name="keterangan" value="<?php echo $absen->keterangan_id?>">
-                          <label for="<?php echo $absen->keterangan_absen;?>"><?php echo $absen->keterangan_absen;?></label>
-                        <?php }else{?>
-                          <input checked="checked" id="tidak_absen_in" type="radio" name="keterangan" value="0">
-                          <label for="nO dATA">No Data</label>
+                        if($num_rows_keterangan_absen > 0){
+                          foreach($keterangan_absen as $row){
+                            if ($user->keterangan_id == $row->id) {
+                              $checked = "checked";
+                            }else {
+                              $checked = "";
+                            }
+                            ?>
+                          <input id="tidak_absen_in<?php echo $row->id?>" type="radio" name="keterangan" value="<?php echo $row->id?>" <?php echo $checked ?> disabled="disabled">
+                          <label for="tidak_absen_in<?php echo $row->id?>"><?php echo $row->title?></label>
+                        <?php }}else{?>
+                          <input id="tidak_absen_in" type="radio" name="keterangan" value="0" disabled="disabled">
+                          <label for="tidak_absen_in">No Data</label>
                           <?php } ?>
                         </div>
                       </div>
@@ -81,7 +91,7 @@
                         <label class="form-label text-right">Alasan</label>
                       </div>
                       <div class="col-md-9">
-                        <input name="form3LastName" id="form3LastName" type="text"  class="form-control" placeholder="Alasan" value="<?php echo $absen->alasan?>" disabled="disabled">
+                        <input name="form3LastName" id="form3LastName" type="text"  class="form-control" placeholder="Alasan" value="<?php echo $user->alasan?>" disabled="disabled">
                       </div>
                     </div>
                   </div>
@@ -92,16 +102,16 @@
                         <div class="col-md-6">
                           Hormat Saya,<br/>
                           <p class="wf-approve-sp">
-                            <span class="semi-bold"><?php echo $absen->name?></span><br/>
-                            <span class="small"><?php echo $absen->created_on?></span><br/>
+                            <span class="semi-bold"><?php echo $user->first_name?></span><br/>
+                            <span class="small"><?php echo $user->created_on?></span><br/>
                           </p>
                         </div>
                         <div class="col-md-6">
                           Mengetahui,<br/>
                           <p class="wf-approve-sp">
-                            <?php if($absen->is_app_lv2==1){?>
-                            <span class="semi-bold"><?php echo $name_app_lv2?></span><br/>
-                            <span class="small"><?php echo $absen->date_app_lv2?></span>
+                            <?php if($user->is_app_lv2==1){?>
+                            <span class="semi-bold"><?php echo $user_app_lv2_nm?></span><br/>
+                            <span class="small"><?php echo getDateFormat($user->date_app_lv2) ?></span>
                             <?php } ?>
                           </p>
                           <p class="">(Ka. Cabang / Ka. Bagian)</p>
@@ -113,9 +123,9 @@
                         <div class="col-md-12">
                           &nbsp;<br/>
                           <p class="wf-approve-sp">
-                            <?php if($absen->is_app_lv1==1){?>
-                            <span class="semi-bold"><?php echo $name_app_lv1?></span><br/>
-                            <span class="small"><?php echo $absen->date_app_lv1?></span>
+                            <?php if($user->is_app_lv1==1){?>
+                            <span class="semi-bold"><?php echo $user_app_lv1_nm?></span><br/>
+                            <span class="small"><?php echo getDateFormat($user->date_app_lv1) ?></span>
                             <?php } ?>
                           </p>
                           <p class="">(Supervisor)</p>
