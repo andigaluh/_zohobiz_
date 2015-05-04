@@ -298,7 +298,7 @@ class Form_absen_model extends CI_Model
             //default selects
             $this->db->select(array(
                 $this->tables['users_keterangan_absen'].'.*',
-                $this->tables['users_keterangan_absen'].'.id as id',
+               // $this->tables['users_keterangan_absen'].'.id as id',
                 $this->tables['users_keterangan_absen'].'.id as form_absen_id',
 
                 $this->tables['users'].'.first_name as first_name',
@@ -317,6 +317,16 @@ class Form_absen_model extends CI_Model
         $this->trigger_events('extra_where');
 
         //run each where that was passed
+
+        if (isset($this->_ion_where) && !empty($this->_ion_where))
+        {
+            foreach ($this->_ion_where as $where)
+            {
+                $this->db->where($where);
+            }
+
+            $this->_ion_where = array();
+        }
 
         if (isset($this->_ion_like) && !empty($this->_ion_like))
         {
@@ -627,7 +637,13 @@ class Form_absen_model extends CI_Model
                 $this->tables['users'].'.*',
                 $this->tables['users'].'.id as id',
                 $this->tables['users'].'.id as user_id',
+
+                $this->tables['users_employement'].'.organization_id as org_id',
+                $this->tables['organization'].'.title as org_nm'
             ));
+
+             $this->db->join('users_employement', 'users.id = users_employement.user_id', 'left');
+             $this->db->join('organization', 'users_employement.user_id = organization.id', 'left');
         }
 
         $this->trigger_events('extra_where');
@@ -762,7 +778,7 @@ class Form_absen_model extends CI_Model
 
     public function delete($id)
     {
-        $this->trigger_events('pre_delete_frm_cuti');
+        $this->trigger_events('pre_delete_frm_absen');
 
         $this->db->trans_begin();
 
@@ -778,14 +794,14 @@ class Form_absen_model extends CI_Model
         if ($this->db->trans_status() === FALSE)
         {
             $this->db->trans_rollback();
-            $this->trigger_events(array('post_delete_frm_cuti', 'post_delete_frm_cuti_unsuccessful'));
+            $this->trigger_events(array('post_delete_frm_absen', 'post_delete_frm_absen_unsuccessful'));
             $this->set_error('delete_unsuccessful');
             return FALSE;
         }
 
         $this->db->trans_commit();
 
-        $this->trigger_events(array('post_delete_frm_cuti', 'post_delete_frm_cuti_successful'));
+        $this->trigger_events(array('post_delete_frm_absen', 'post_delete_frm_absen_successful'));
         $this->set_message('delete_successful');
         return TRUE;
     }
@@ -806,16 +822,16 @@ class Form_absen_model extends CI_Model
         $id = $this->db->insert_id();
 
         // report success
-        $this->set_message('frm_cuti_creation_successful');
+        $this->set_message('frm_absen_creation_successful');
         // return the brand new id
         return $id;
     }
 
     public function update($id, array $data)
     {
-        $this->trigger_events('pre_update_frm_cuti');
+        $this->trigger_events('pre_update_frm_absen');
 
-        $frm_cuti = $this->frm_cuti($id)->row();
+        $frm_absen = $this->frm_absen($id)->row();
 
         $this->db->trans_begin();
 
@@ -823,22 +839,103 @@ class Form_absen_model extends CI_Model
         $data = $this->_filter_data($this->tables['users_keterangan_absen'], $data);
 
         $this->trigger_events('extra_where');
-        $this->db->update($this->tables['users_keterangan_absen'], $data, array('id' => $frm_cuti->id));
+        $this->db->update($this->tables['users_keterangan_absen'], $data, array('id' => $frm_absen->id));
 
         if ($this->db->trans_status() === FALSE)
         {
             $this->db->trans_rollback();
 
-            $this->trigger_events(array('post_update_frm_cuti', 'post_update_frm_cuti_unsuccessful'));
+            $this->trigger_events(array('post_update_frm_absen', 'post_update_frm_absen_unsuccessful'));
             $this->set_error('update_unsuccessful');
             return FALSE;
         }
 
         $this->db->trans_commit();
 
-        $this->trigger_events(array('post_update_frm_cuti', 'post_update_frm_cuti_unsuccessful'));
+        $this->trigger_events(array('post_update_frm_absen', 'post_update_frm_absen_unsuccessful'));
         $this->set_message('update_successful');
         return TRUE;
+    }
+
+    public function render_session()
+    {
+         $this->trigger_events('form_cuti_input');
+
+        if (isset($this->_ion_select) && !empty($this->_ion_select))
+        {
+            foreach ($this->_ion_select as $select)
+            {
+                $this->db->select($select);
+            }
+
+            $this->_ion_select = array();
+        }
+        else
+        {
+            //default selects
+            $this->db->select(array(
+                $this->tables['comp_session'].'.*',
+                $this->tables['comp_session'].'.id as id',
+                $this->tables['comp_session'].'.id as user_id',
+
+                $this->tables['comp_session'].'.title as title',
+                $this->tables['comp_session'].'.year as year'
+            ));
+
+
+            $this->db->where('comp_session.is_deleted', 0);
+        }
+
+        $this->trigger_events('extra_where');
+
+        //run each where that was passed
+
+        if (isset($this->_ion_where) && !empty($this->_ion_where))
+        {
+            foreach ($this->_ion_where as $where)
+            {
+                $this->db->where($where);
+            }
+
+            $this->_ion_where = array();
+        }
+
+        if (isset($this->_ion_like) && !empty($this->_ion_like))
+        {
+            foreach ($this->_ion_like as $like)
+            {
+                $this->db->or_like($like);
+            }
+
+            $this->_ion_like = array();
+        }
+
+        if (isset($this->_ion_limit) && isset($this->_ion_offset))
+        {
+            $this->db->limit($this->_ion_limit, $this->_ion_offset);
+
+            $this->_ion_limit  = NULL;
+            $this->_ion_offset = NULL;
+        }
+        else if (isset($this->_ion_limit))
+        {
+            $this->db->limit($this->_ion_limit);
+
+            $this->_ion_limit  = NULL;
+        }
+
+        //set the order
+        if (isset($this->_ion_order_by) && isset($this->_ion_order))
+        {
+            $this->db->order_by($this->_ion_order_by, $this->_ion_order);
+
+            $this->_ion_order    = NULL;
+            $this->_ion_order_by = NULL;
+        }
+
+        $this->response = $this->db->get($this->tables['comp_session']);
+
+        return $this;
     }
 
     public function trigger_events($events)
@@ -1033,9 +1130,9 @@ class Form_absen_model extends CI_Model
         return $filtered_data;
     }
 
-    public function frm_cuti($id = NULL)
+    public function frm_absen($id = NULL)
     {
-        $this->trigger_events('frm_cuti');
+        $this->trigger_events('frm_absen');
 
         $this->limit(1);
         $this->where($this->tables['users_keterangan_absen'].'.id', $id);

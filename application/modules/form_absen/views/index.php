@@ -36,17 +36,25 @@
                                 <?php if ($num_rows_all > 0) {
                                   foreach ($form_absen as $user) { ?>
                                   <tr>
-                                    <td><a href="#"><?php echo getDateFormat($user->date_tidak_hadir) ?></a></td>
+                                    <td><a href="<?php echo site_url('form_absen/detail/'.$user->id.'') ?>"><?php echo getDateFormat($user->date_tidak_hadir) ?></a></td>
                                     <td><?php echo $user->first_name.' '.$user->last_name ?></td>
                                     <td><?php echo $user->keterangan_absen ?></td>
                                     <td style="text-align:center;">
                                       <a href="#">
-                                        <button type='button' class='btn btn-info btn-small' title='Make Approval'><i class='icon-paste'></i></button>
+                                        <?php if ($user->is_app_lv1 == 1) { ?>
+                                        <a href="<?php echo site_url('form_absen/supervisor/'.$user->id.'') ?>">Ya</a>
+                                        <?php } else { ?>
+                                        <a href="<?php echo site_url('form_absen/supervisor/'.$user->id.'') ?>"><button type='button' class='btn btn-info btn-small' title='Make Approval'><i class='icon-paste'></i></button></a>
+                                        <?php } ?>
                                       </a>
                                     </td>
                                     <td style="text-align:center;">
                                       <a href="#">
-                                        <button type='button' class='btn btn-info btn-small' title='Make Approval'><i class='icon-paste'></i></button>
+                                        <?php if ($user->is_app_lv2 == 1) { ?>
+                                        <a href="<?php echo site_url('form_absen/kabagian/'.$user->id.'') ?>">Ya</a>
+                                        <?php } else { ?>
+                                        <a href="<?php echo site_url('form_absen/kabagian/'.$user->id.'') ?>"><button type='button' class='btn btn-info btn-small' title='Make Approval'><i class='icon-paste'></i></button></a>
+                                        <?php } ?>
                                       </a>
                                     </td>
                                   </tr>
