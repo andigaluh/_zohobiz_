@@ -1,6 +1,26 @@
 $(document).ready(function() {				
 	$(".select2").select2();
 
+    $('#name').on("change",function(ev){
+        //$(".select2").select2();
+        var user_id = $(this).val();
+            $.ajax({
+                type: 'POST',
+                url: 'get_user_info',
+                data: {id: user_id},
+                dataType: 'json',
+                success: function(data) {
+
+                    $('#organization').val(data.org_nm);
+                    $('#position').val(data.org_pos);
+                    $('#seniority_date').val(data.seniority_date);
+                    $('#get_user_pengganti').html(data.get_user_pengganti);
+                }
+            });
+            ev.preventDefault();
+         
+    });
+
     //Date Pickers
 
       $('.input-append.date')

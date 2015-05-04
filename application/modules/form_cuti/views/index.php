@@ -39,6 +39,8 @@ BEGIN PAGE CONTAINER-->
                                   <?php foreach ($form_cuti as $user) :?>
                                   <?php
                                   $id_cuti = $user->id;
+                                  $user_id = $user->user_id;
+                                  $user_pengajuan = $this->form_cuti_model->where('users.id',$user_id)->render_emp()->row();
 
                                   // approval cuti
                                   $txt_app_lv1 = $txt_app_lv2 = $txt_app_lv3 = "-";
@@ -69,7 +71,7 @@ BEGIN PAGE CONTAINER-->
                                   <!-- <tr class="itemcuti" id="<?php echo $id_cuti; ?>"> -->
                                   <tr class="itemcuti" id="<?php echo $id_cuti; ?>">
                                     <td valign="middle">
-                                      <a href="#" id="viewcuti-<?php echo $id_cuti; ?>"><?php echo $user->first_name.' '.$user->last_name; ?></a>
+                                      <a href="#" id="viewcuti-<?php echo $id_cuti; ?>"><?php echo $user_pengajuan->first_name.' '.$user_pengajuan->last_name; ?></a>
                                     </td>
                                     <td valign="middle">
                                       <?php echo getDateFormat($user->date_mulai_cuti); ?>
@@ -91,7 +93,7 @@ BEGIN PAGE CONTAINER-->
                                     </td>
                                   </tr>
                                   <tr id="cutidetail-<?php echo $id_cuti; ?>" style="display:none">
-                                    <td class="detail" colspan="6">
+                                    <td class="detail" colspan="7">
                                       <div class="row">
                                         <form action="#" method="enctype">
                                           <div class="col-md-12">
@@ -115,7 +117,7 @@ BEGIN PAGE CONTAINER-->
                                                         <label class="form-label text-right"><?php echo lang('name') ?></label>
                                                       </div>
                                                       <div class="col-md-9">
-                                                        <input name="name" id="name" type="text"  class="form-control" placeholder="Nama" value="<?php echo $user->first_name.' '.$user->last_name; ?>" disabled="disabled">
+                                                        <input name="name" id="name" type="text"  class="form-control" placeholder="Nama" value="<?php echo $user_pengajuan->first_name.' '.$user_pengajuan->last_name; ?>" disabled="disabled">
                                                       </div>
                                                     </div>
                                                     <div class="row form-row">
@@ -123,7 +125,7 @@ BEGIN PAGE CONTAINER-->
                                                         <label class="form-label text-right"><?php echo lang('dept_div') ?></label>
                                                       </div>
                                                       <div class="col-md-9">
-                                                        <input name="organization" id="organization" type="text"  class="form-control" placeholder="Organization" value="<?php echo $user->organization_title; ?>" disabled="disabled">
+                                                        <input name="organization" id="organization" type="text"  class="form-control" placeholder="Organization" value="<?php echo $user_pengajuan->organization_title; ?>" disabled="disabled">
                                                       </div>
                                                     </div>
                                                     <div class="row form-row">
@@ -131,7 +133,7 @@ BEGIN PAGE CONTAINER-->
                                                         <label class="form-label text-right"><?php echo lang('position') ?></label>
                                                       </div>
                                                       <div class="col-md-9">
-                                                        <input name="position" id="position" type="text"  class="form-control" placeholder="Jabatan" value="<?php echo $user->position_title; ?>" disabled="disabled">
+                                                        <input name="position" id="position" type="text"  class="form-control" placeholder="Jabatan" value="<?php echo $user_pengajuan->position_title; ?>" disabled="disabled">
                                                       </div>
                                                     </div>
                                                     <div class="row form-row">
@@ -200,70 +202,6 @@ BEGIN PAGE CONTAINER-->
                                                     </div>
                                                   </div>
                                                 </div>
-                                                <!-- <div class="row form-row">
-                                                  <div class="col-md-2">
-                                                    <label class="form-label text-right"><?php echo lang('count_cuti') ?></label>
-                                                  </div>
-                                                  <div class="col-md-10">
-                                                    <input name="courseid" id="courseid" type="text"  class="form-control" placeholder="courseid" value="<?php echo $user->jumlah_hari; ?>" disabled="disabled">
-                                                  </div>
-                                                </div>
-                                                <div class="row form-row">
-                                                  <div class="col-md-2">
-                                                    <label class="form-label text-right"><?php echo lang('year') ?></label>
-                                                  </div>
-                                                  <div class="col-md-10">
-                                                    <input name="description" id="description" type="text"  class="form-control" placeholder="Description" value="<?php echo $user->comp_session; ?>" disabled="disabled">
-                                                  </div>
-                                                </div>
-                                                <div class="row form-row">
-                                                  <div class="col-md-2">
-                                                    <label class="form-label text-right"><?php echo lang('start_cuti') ?></label>
-                                                  </div>
-                                                  <div class="col-md-10">
-                                                    <input name="registration_date" id="registration_date" type="text"  class="form-control" placeholder="Registration Date" value="<?php echo date('d-m-Y',strtotime($user->date_mulai_cuti)); ?>" disabled="disabled">
-                                                  </div>
-                                                </div>
-                                                <div class="row form-row">
-                                                  <div class="col-md-2">
-                                                    <label class="form-label text-right"><?php echo lang('end_cuti') ?></label>
-                                                  </div>
-                                                  <div class="col-md-10">
-                                                    <input name="status" id="status" type="text"  class="form-control" placeholder="Status" value="<?php echo date('d-m-Y',strtotime($user->date_selesai_cuti)); ?>" disabled="disabled">
-                                                  </div>
-                                                </div>
-                                                <div class="row form-row">
-                                                  <div class="col-md-2">
-                                                    <label class="form-label text-right"><?php echo lang('count_day') ?></label>
-                                                  </div>
-                                                  <div class="col-md-10">
-                                                    <input name="status" id="status" type="text"  class="form-control" placeholder="Status" value="<?php echo $user->jumlah_hari; ?> hari" disabled="disabled">
-                                                  </div>
-                                                </div>
-                                                <div class="row form-row">
-                                                  <div class="col-md-2">
-                                                    <label class="form-label text-right"><?php echo lang('reason') ?></label>
-                                                  </div>
-                                                  <div class="col-md-10">
-                                                    <input name="status" id="status" type="text"  class="form-control" placeholder="Status" value="<?php echo $user->alasan_cuti; ?>" disabled="disabled">
-                                                  </div>
-                                                </div>
-                                                <div class="row form-row">
-                                                  <div class="col-md-2">
-                                                    <label class="form-label text-right"><?php echo lang('replacement') ?></label>
-                                                  </div>
-                                                  <div class="col-md-10">
-                                                    <input name="status" id="status" type="text"  class="form-control" placeholder="Status" value="<?php echo $user_pengganti; ?>" disabled="disabled">
-                                                  </div>
-                                                </div>
-                                                <div class="row form-row">
-                                                  <div class="col-md-2">
-                                                    <label class="form-label text-right"><?php echo lang('addr_cuti') ?></label>
-                                                  </div>
-                                                  <div class="col-md-10">
-                                                    <input name="status" id="status" type="text"  class="form-control" placeholder="Status" value="<?php echo $user->alamat_cuti; ?>" disabled="disabled">
-                                                  </div>
-                                                </div> -->
                                               </div>
                                             </div>
                                           </div>

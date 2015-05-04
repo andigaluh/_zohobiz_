@@ -32,7 +32,39 @@ class Form_cuti extends MX_Controller {
         {
             //redirect them to the home page because they must be an administrator to view this
             //return show_error('You must be an administrator to view this page.');
-            return show_error('You must be an administrator to view this page.');
+            //set the flash data error message if there is one
+            $id = $this->ion_auth->user()->row()->id;
+
+            $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+
+            //set sort order
+            $this->data['sort_order'] = $sort_order;
+            
+            //set sort by
+            $this->data['sort_by'] = $sort_by;
+              
+            //set filter by title
+            $this->data['ftitle_param'] = $ftitle; 
+            $exp_ftitle = explode(":",$ftitle);
+            $ftitle_re = str_replace("_", " ", $exp_ftitle[1]);
+            $ftitle_post = (strlen($ftitle_re) > 0) ? array('form_cuti.title'=>$ftitle_re) : array() ;
+            
+            //set default limit in var $config['list_limit'] at application/config/ion_auth.php 
+            $this->data['limit'] = $limit = (strlen($this->input->post('limit')) > 0) ? $this->input->post('limit') : 10 ;
+
+            $this->data['offset'] = 6;
+
+            //list of filterize all form_cuti  
+            $this->data['form_cuti_all'] = $this->form_cuti_model->like($ftitle_post)->where('users_cuti.is_deleted',0)->where('users_cuti.user_id',$id)->form_cuti()->result();
+            
+            $this->data['num_rows_all'] = $this->form_cuti_model->like($ftitle_post)->where('users_cuti.is_deleted',0)->where('users_cuti.user_id',$id)->form_cuti()->num_rows();
+
+            //list of filterize limit form_cuti for pagination  
+            $this->data['form_cuti'] = $this->form_cuti_model->like($ftitle_post)->where('users_cuti.is_deleted',0)->where('users_cuti.user_id',$id)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->form_cuti()->result();
+
+            $this->data['_num_rows'] = $this->form_cuti_model->like($ftitle_post)->where('users_cuti.is_deleted',0)->where('users_cuti.user_id',$id)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->form_cuti()->num_rows();
+
+            $this->_render_page('form_cuti/index', $this->data);
         }
         else
         {
@@ -57,14 +89,14 @@ class Form_cuti extends MX_Controller {
             $this->data['offset'] = 6;
 
             //list of filterize all form_cuti  
-            $this->data['form_cuti_all'] = $this->form_cuti_model->like($ftitle_post)->where('is_deleted',0)->form_cuti()->result();
+            $this->data['form_cuti_all'] = $this->form_cuti_model->like($ftitle_post)->where('users_cuti.is_deleted',0)->form_cuti()->result();
             
-            $this->data['num_rows_all'] = $this->form_cuti_model->like($ftitle_post)->where('is_deleted',0)->form_cuti()->num_rows();
+            $this->data['num_rows_all'] = $this->form_cuti_model->like($ftitle_post)->where('users_cuti.is_deleted',0)->form_cuti()->num_rows();
 
             //list of filterize limit form_cuti for pagination  
-            $this->data['form_cuti'] = $this->form_cuti_model->like($ftitle_post)->where('is_deleted',0)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->form_cuti()->result();
+            $this->data['form_cuti'] = $this->form_cuti_model->like($ftitle_post)->where('users_cuti.is_deleted',0)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->form_cuti()->result();
 
-            $this->data['_num_rows'] = $this->form_cuti_model->like($ftitle_post)->where('is_deleted',0)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->form_cuti()->num_rows();
+            $this->data['_num_rows'] = $this->form_cuti_model->like($ftitle_post)->where('users_cuti.is_deleted',0)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->form_cuti()->num_rows();
 
             $this->_render_page('form_cuti/index', $this->data);
         }
@@ -83,10 +115,6 @@ class Form_cuti extends MX_Controller {
         {
             //redirect them to the home page because they must be an administrator to view this
             //return show_error('You must be an administrator to view this page.');
-            return show_error('You must be an administrator to view this page.');
-        }
-        else
-        {
             //set the flash data error message if there is one
             $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
 
@@ -106,6 +134,30 @@ class Form_cuti extends MX_Controller {
             $this->data['_num_rows'] = $this->form_cuti_model->where('users.id',$user_id)->form_cuti_input()->num_rows();
 
             $this->_render_page('form_cuti/input', $this->data);
+        }
+        else
+        {
+            //set the flash data error message if there is one
+            $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+
+            $this->data['user_info'] = $this->form_cuti_model->where('users.id',$user_id)->form_cuti_input()->result();
+
+            $this->data['users'] = $this->form_cuti_model->where('users.active',1)->render_users()->result();
+            
+            //get user org_id
+            $data_result = $this->form_cuti_model->where('users.id',$user_id)->get_org_id()->result();
+            foreach ($data_result as $dr) {
+                $org_id = $dr->organization_id;
+            }
+
+            // form cuti yang akan diambil
+            $this->data['comp_session'] = $this->form_cuti_model->render_session()->result();
+            $this->data['alasan_cuti'] = $this->form_cuti_model->render_alasan()->result();
+            $this->data['user_pengganti'] = $this->form_cuti_model->where('users_employement.organization_id',$org_id)->render_pengganti()->result();
+
+            $this->data['_num_rows'] = $this->form_cuti_model->where('users.id',$user_id)->form_cuti_input()->num_rows();
+
+            $this->_render_page('form_cuti/input_admin', $this->data);
         }
     }
 
@@ -330,33 +382,69 @@ class Form_cuti extends MX_Controller {
         }
         else
         {
-            $user_id    = $this->input->post('user_id');
-
-            $start_cuti = $this->input->post('start_cuti');
-            $end_cuti = $this->input->post('end_cuti');
-
-            $year_now = date('Y');
-            $comp_session_now_arr = $this->form_cuti_model->where('comp_session.year',$year_now)->render_session()->result();
-            foreach ($comp_session_now_arr as $csn) {
-                $comp_session_now = $csn->id;
-            }
-
-            $additional_data = array(
-                'id_comp_session'       => $comp_session_now,
-                'date_mulai_cuti'       => date('Y-m-d', strtotime($this->input->post('start_cuti'))),
-                'date_selesai_cuti'     => date('Y-m-d', strtotime($this->input->post('end_cuti'))),
-                'jumlah_hari'           => $this->input->post('jml_cuti'),
-                'alasan_cuti_id'        => $this->input->post('alasan_cuti'),
-                'user_pengganti'        => $this->input->post('user_pengganti'),
-                'alamat_cuti'           => $this->input->post('alamat'),
-                'created_on'            => date('Y-m-d',strtotime('now')),
-                'created_by'            => $this->session->userdata('user_id')
-            );
-
-            if ($this->form_validation->run() == true && $this->form_cuti_model->create_($user_id,$additional_data))
+            if (!$this->ion_auth->is_admin()) //remove this elseif if you want to enable this for non-admins
             {
-                $this->index();   
+                $user_id    = $this->input->post('user_id');
+
+                $start_cuti = $this->input->post('start_cuti');
+                $end_cuti = $this->input->post('end_cuti');
+
+                $year_now = date('Y');
+                $comp_session_now_arr = $this->form_cuti_model->where('comp_session.year',$year_now)->render_session()->result();
+                foreach ($comp_session_now_arr as $csn) {
+                    $comp_session_now = $csn->id;
+                }
+
+                $additional_data = array(
+                    'id_comp_session'       => $comp_session_now,
+                    'date_mulai_cuti'       => date('Y-m-d', strtotime($this->input->post('start_cuti'))),
+                    'date_selesai_cuti'     => date('Y-m-d', strtotime($this->input->post('end_cuti'))),
+                    'jumlah_hari'           => $this->input->post('jml_cuti'),
+                    'alasan_cuti_id'        => $this->input->post('alasan_cuti'),
+                    'user_pengganti'        => $this->input->post('user_pengganti'),
+                    'alamat_cuti'           => $this->input->post('alamat'),
+                    'created_on'            => date('Y-m-d',strtotime('now')),
+                    'created_by'            => $this->session->userdata('user_id')
+                );
+
+                if ($this->form_validation->run() == true && $this->form_cuti_model->create_($user_id,$additional_data))
+                {
+                    //$this->index();
+                    redirect('form_cuti/index');   
+                } 
+            }else{
+                $user_id    = $this->input->post('user_id');
+
+                $name = $this->input->post('name');
+
+                $start_cuti = $this->input->post('start_cuti');
+                $end_cuti = $this->input->post('end_cuti');
+
+                $year_now = date('Y');
+                $comp_session_now_arr = $this->form_cuti_model->where('comp_session.year',$year_now)->render_session()->result();
+                foreach ($comp_session_now_arr as $csn) {
+                    $comp_session_now = $csn->id;
+                }
+
+                $additional_data = array(
+                    'id_comp_session'       => $comp_session_now,
+                    'date_mulai_cuti'       => date('Y-m-d', strtotime($this->input->post('start_cuti'))),
+                    'date_selesai_cuti'     => date('Y-m-d', strtotime($this->input->post('end_cuti'))),
+                    'jumlah_hari'           => $this->input->post('jml_cuti'),
+                    'alasan_cuti_id'        => $this->input->post('alasan_cuti'),
+                    'user_pengganti'        => $this->input->post('user_pengganti'),
+                    'alamat_cuti'           => $this->input->post('alamat'),
+                    'created_on'            => date('Y-m-d',strtotime('now')),
+                    'created_by'            => $this->session->userdata('user_id')
+                );
+
+                if ($this->form_validation->run() == true && $this->form_cuti_model->create_($name,$additional_data))
+                {
+                    //$this->index();
+                    redirect('form_cuti/index');   
+                }
             }
+            
         }
     }
 
@@ -410,6 +498,39 @@ class Form_cuti extends MX_Controller {
        if ($this->form_cuti_model->update($cuti_id,$additional_data)) {
            return TRUE;
        }
+    }
+
+    public function get_user_info()
+    {
+        $id = $this->input->post('id');
+        $data = array();
+        $user_pengganti = "";
+        $data_result = $this->form_cuti_model->where('users.id',$id)->render_emp()->result();
+            foreach ($data_result as $dr) {
+                $data['org_nm'] = $dr->organization_title;
+                $data['org_pos'] = $dr->position_title;
+                $data['seniority_date'] = getDateFormat($dr->seniority_date);
+                $user_pengganti_data = $this->form_cuti_model->where('users_employement.organization_id',$dr->organization_id)->render_pengganti()->result();
+                
+                $user_pengganti .= '<select name="user_pengganti" id="user_pengganti" class="select2" style="width:100%">';
+                foreach ($user_pengganti_data as $up) {
+                    $user_pengganti .= '<option value="'.$up->id.'">'.$up->first_name.' '.$up->last_name.'</option>';
+                }
+                $user_pengganti .= '</select>';
+                $data['get_user_pengganti'] = $user_pengganti;
+
+
+/*                <select name="user_pengganti" id="user_pengganti" class="select2" style="width:100%">     
+                           if ($user_pengganti > 0) {
+                            foreach ($user_pengganti as $up) {
+                              option value="<?php echo $up->id ?>"><?php echo $up->first_name.' '.$up->last_name; ?></option>
+                             }
+                          } >
+                          
+                        </select>*/
+            }
+        
+        echo json_encode($data);
     }
 
 
@@ -472,7 +593,7 @@ class Form_cuti extends MX_Controller {
                     $this->template->add_css('plugins/select2/select2.css');
                     
                 }
-                elseif(in_array($view, array('form_cuti/input')))
+                elseif(in_array($view, array('form_cuti/input','form_cuti/input_admin')))
                 {
 
                     $this->template->set_layout('default');
