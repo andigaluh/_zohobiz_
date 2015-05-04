@@ -34,7 +34,8 @@ class Auth extends MX_Controller {
         {
             //redirect them to the home page because they must be an administrator to view this
             //return show_error('You must be an administrator to view this page.');
-            return show_error('You must be an administrator to view this page.');
+            $id = $this->ion_auth->user()->row()->id;
+            redirect('auth/detail/'.$id);
         }
         else
         {
