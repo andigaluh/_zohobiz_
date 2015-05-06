@@ -154,7 +154,7 @@
                           <label class="form-label text-right">Pengganti</label>
                         </div>
                         <div class="col-md-9">
-                          <input name="pengganti_cuti" id="pengganti_cuti" type="text"  class="form-control" placeholder="Nama" value="<?php echo $user->first_name.' '.$user->last_name; ?>" disabled="disabled">
+                          <input name="pengganti_cuti" id="pengganti_cuti" type="text"  class="form-control" placeholder="Nama" value="<?php echo $user_pengganti->first_name.' '.$user_pengganti->last_name; ?>" disabled="disabled">
                         </div>
                       </div>
                     

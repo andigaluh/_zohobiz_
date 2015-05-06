@@ -456,6 +456,36 @@ class Ion_auth
     }
 
     /**
+     * is_superior1
+     *
+     * @return bool
+     * @author Andi Galuh
+     **/
+    public function is_superior1($id=false)
+    {
+        $this->ion_auth_model->trigger_events('is_superior1');
+
+        $superior1_group = $this->config->item('superior1_group', 'ion_auth');
+
+        return $this->in_group($superior1_group, $id);
+    }
+
+    /**
+     * is_superior2
+     *
+     * @return bool
+     * @author Andi Galuh
+     **/
+    public function is_superior2($id=false)
+    {
+        $this->ion_auth_model->trigger_events('is_superior2');
+
+        $superior2_group = $this->config->item('superior2_group', 'ion_auth');
+
+        return $this->in_group($superior2_group, $id);
+    }
+
+    /**
      * in_group
      *
      * @param mixed group(s) to check

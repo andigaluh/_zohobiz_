@@ -312,6 +312,7 @@ class Form_cuti_model extends CI_Model
                 $this->tables['users_employement'].'.organization_id as organization_id',
                 $this->tables['users_employement'].'.seniority_date as seniority_date',
                 $this->tables['organization'].'.title as organization_title',
+                $this->tables['organization'].'.parent_organization_id as parent_organization_id',
                 $this->tables['position'].'.title as position_title',
                 $this->tables['users_cuti_plafon'].'.hak_cuti as hak_cuti',
                 $this->tables['users_cuti_plafon'].'.id_comp_session as id_comp_session',
@@ -330,30 +331,6 @@ class Form_cuti_model extends CI_Model
 
             //$this->db->where('users_cuti.is_deleted', 0);
 
-
-            /*$this->db->select(array(
-                $this->tables['users'].'.*',
-                $this->tables['users'].'.id as id',
-                $this->tables['users'].'.id as user_id',
-
-                $this->tables['users'].'.first_name as first_name',
-                $this->tables['users'].'.last_name as last_name',
-                $this->tables['users_employement'].'.position_id as position_id',
-                $this->tables['users_employement'].'.organization_id as organization_id',
-                $this->tables['users_employement'].'.seniority_date as seniority_date',
-                $this->tables['organization'].'.title as organization_title',
-                $this->tables['position'].'.title as position_title',
-                $this->tables['users_cuti_plafon'].'.hak_cuti as hak_cuti',
-                $this->tables['users_cuti_plafon'].'.id_comp_session as id_comp_session',
-                $this->tables['comp_session'].'.year as session_year'
-                
-            ));
-
-            $this->db->join('users_employement', 'users.id = users_employement.user_id', 'left');
-            $this->db->join('organization', 'users_employement.organization_id = organization.id', 'left');
-            $this->db->join('position', 'users_employement.position_id = position.id', 'left');
-            $this->db->join('users_cuti_plafon', 'users.id = users_cuti_plafon.user_id', 'left');
-            $this->db->join('comp_session', 'users_cuti_plafon.id_comp_session = comp_session.id', 'left');*/
         }
 
         $this->trigger_events('extra_where');
@@ -522,7 +499,7 @@ class Form_cuti_model extends CI_Model
             $this->db->select(array(
                 $this->tables['users_cuti'].'.*',
                 $this->tables['users_cuti'].'.id as id',
-                $this->tables['users_cuti'].'.id as user_id',
+                $this->tables['users_cuti'].'.user_id as user_id',
 
                 $this->tables['users'].'.first_name as first_name',
                 $this->tables['users'].'.last_name as last_name',
@@ -788,7 +765,8 @@ class Form_cuti_model extends CI_Model
                 $this->tables['users_employement'].'.organization_id as organization_id',
                 $this->tables['users_employement'].'.seniority_date as seniority_date',
                 $this->tables['organization'].'.title as organization_title',
-                $this->tables['position'].'.title as position_title'
+                $this->tables['position'].'.title as position_title',
+                $this->tables['position'].'.parent_position_id as parent_position_id'
             ));
 
             $this->db->join('users_employement', 'users.id = users_employement.user_id', 'left');
