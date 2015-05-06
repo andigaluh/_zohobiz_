@@ -30,7 +30,7 @@
       <li class=""> <a href="javascript:;"> <i class="icon-plus-sign"></i> <span class="title">Form pengajuan</span> <span class="arrow "></span> </a>
         <ul class="sub-menu">
           <li > <a href="<?php echo site_url('form_cuti')?>">Cuti</a> </li>
-          <li > <a href="<?php echo site_url('form_cuti/approval_spv')?>">Approval Supervisor</a> </li>
+          <?php echo ($this->ion_auth->is_superior1()) ? '<li > <a href="'.site_url('form_cuti/index_superior1').'">Cuti - Subordinate appr</a> </li>' : "";?>
           <li > <a href="<?php echo site_url('form_cuti/approval_kbg')?>">Approval Kabagian</a> </li>
           <li > <a href="<?php echo site_url('form_cuti/approval_hr')?>">Approval HR</a> </li>
           <li > <a href="<?php echo site_url('form_spd_dalam') ?>">Perjalanan dinas - dalam kota</a> </li>          

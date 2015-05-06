@@ -130,10 +130,10 @@ $(document).ready(function() {
                 url: 'do_approve_spv',
                 data: $('#formAppLv1').serialize(),
                 success: function() {
-                    setTimeout(function(){
+                    /*setTimeout(function(){
                         location.reload()},
                         3000
-                    )
+                    )*/
                 }
             });
             ev.preventDefault(); 
