@@ -123,17 +123,17 @@ $(document).ready(function() {
             });
 
     //approval script
-    $('#btn_app_lv1').click(function(){
+    /*$('#btn_app_lv1').click(function(){
         $('#formAppLv1').submit(function(ev){
             $.ajax({
                 type: 'POST',
                 url: 'do_approve_spv',
                 data: $('#formAppLv1').serialize(),
                 success: function() {
-                    /*setTimeout(function(){
+                    setTimeout(function(){
                         location.reload()},
                         3000
-                    )*/
+                    )
                 }
             });
             ev.preventDefault(); 
@@ -172,7 +172,7 @@ $(document).ready(function() {
             });
             ev.preventDefault(); 
         });  
-    }); 	
+    });*/ 	
 	
 	//Iconic form validation sample	
 	   $('#form_iconic_validation').validate({
