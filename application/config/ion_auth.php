@@ -64,6 +64,9 @@ $config['tables']['transportation']  = 'transportation';
 $config['tables']['city']  = 'city';
 $config['tables']['users_keterangan_absen']  = 'users_keterangan_absen';
 $config['tables']['keterangan_absen']  = 'keterangan_absen';
+$config['tables']['users_training']  = 'users_training';
+$config['tables']['pembiayaan']  = 'pembiayaan';
+$config['tables']['penyelenggara']  = 'penyelenggara';
 
 
 /*

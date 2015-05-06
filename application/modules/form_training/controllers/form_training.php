@@ -1,8 +1,9 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-class form_training extends MX_Controller {
+class Form_training extends MX_Controller {
 
-  public $data;
+    public $data;
+
     function __construct()
     {
         parent::__construct();
@@ -11,323 +12,331 @@ class form_training extends MX_Controller {
         $this->load->helper('url');
         
         $this->load->database();
-    $this->load->model('person/person_model','person_model');
         $this->load->model('form_training/form_training_model','form_training_model');
         
         $this->form_validation->set_error_delimiters($this->config->item('error_start_delimiter', 'ion_auth'), $this->config->item('error_end_delimiter', 'ion_auth'));
 
         $this->lang->load('auth');
         $this->load->helper('language');
-        
     }
 
-    function index()
+    function index($ftitle = "fn:",$sort_by = "id", $sort_order = "desc", $offset = 0)
     {
+        $user_id = $this->session->userdata('user_id');
         if (!$this->ion_auth->logged_in())
         {
             //redirect them to the login page
             redirect('auth/login', 'refresh');
         }
+        elseif (!$this->ion_auth->is_admin()) //remove this elseif if you want to enable this for non-admins
+        {
+            //redirect them to the home page because they must be an administrator to view this
+            //return show_error('You must be an administrator to view this page.');
+            return show_error('You must be an administrator to view this page.');
+        }
         else
         {
-            if(is_admin()){
-                $form_training = $this->data['form_training'] = $this->form_training_model->form_training_admin();
-            }else{
-                $form_training = $this->data['form_training'] = $this->form_training_model->form_training();
-            }
+            //set the flash data error message if there is one
+            $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+
+            //set sort order
+            $this->data['sort_order'] = $sort_order;
+            
+            //set sort by
+            $this->data['sort_by'] = $sort_by;
+              
+            //set filter by title
+            $this->data['ftitle_param'] = $ftitle; 
+            $exp_ftitle = explode(":",$ftitle);
+            $ftitle_re = str_replace("_", " ", $exp_ftitle[1]);
+            $ftitle_post = (strlen($ftitle_re) > 0) ? array('form_training.title'=>$ftitle_re) : array() ;
+            
+            //set default limit in var $config['list_limit'] at application/config/ion_auth.php 
+            $this->data['limit'] = $limit = (strlen($this->input->post('limit')) > 0) ? $this->input->post('limit') : 10 ;
+            $this->data['offset'] = 6;
+
+            //list of filterize all form_training  
+            $this->data['form_training_all'] = $this->form_training_model->like($ftitle_post)->where('users_training.is_deleted',0)->form_training()->result();
+            
+            $this->data['num_rows_all'] = $this->form_training_model->like($ftitle_post)->where('users_training.is_deleted',0)->form_training()->num_rows();
+
+            //list of filterize limit form_training for pagination  
+            $this->data['form_training'] = $this->form_training_model->like($ftitle_post)->where('users_training.is_deleted',0)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->form_training()->result();
+
+            $this->data['_num_rows'] = $this->form_training_model->like($ftitle_post)->where('users_training.is_deleted',0)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->form_training()->num_rows();
+
             $this->_render_page('form_training/index', $this->data);
         }
     }
 
     function detail($id)
     {
+
         if (!$this->ion_auth->logged_in())
         {
             //redirect them to the login page
             redirect('auth/login', 'refresh');
         }
+        elseif (!$this->ion_auth->is_admin()) //remove this elseif if you want to enable this for non-admins
+        {
+            //redirect them to the home page because they must be an administrator to view this
+            //return show_error('You must be an administrator to view this page.');
+            return show_error('You must be an administrator to view this page.');
+        }
         else
         {
-            $form_training = $this->data['form_training'] = $this->form_training_model->form_training($id);
-            $user_id = $this->db->select('user_id')->where('id', $id)->get('users_training')->row('user_id');
-            
-            $this->get_user_info($user_id);
+            //set the flash data error message if there is one
+            $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+
+            $form_training = $this->data['form_training'] = $this->form_training_model->where('users_keterangan_training.id',$id)->form_training()->result();
+            $this->data['_num_rows'] = $this->form_training_model->where('users_keterangan_training.id',$id)->form_training()->num_rows();
+
+            foreach ($form_training as $fa) {
+                $user_id = $fa->user_id;
+                $is_app_lv1 = $fa->is_app_lv1;
+                $user_app_lv1 = $fa->user_app_lv1;
+                $is_app_lv2 = $fa->is_app_lv2;
+                $user_app_lv2 = $fa->user_app_lv2;
+            }
+
+            //approval check
+            if ($is_app_lv1 == 1) {
+                $user_info_lv1 = $this->form_training_model->where('users.id',$user_app_lv1)->get_user()->result();
+                foreach ($user_info_lv1 as $ui1) {
+                    $this->data['user_app_lv1_nm'] = $ui1->first_name." ".$ui1->last_name; 
+                }  
+            }else {
+                $this->data['user_app_lv1_nm'] = "";
+            }
+            if ($is_app_lv2 == 1) {
+                $user_info_lv2 = $this->form_training_model->where('users.id',$user_app_lv2)->get_user()->result();
+                foreach ($user_info_lv2 as $ui2) {
+                    $this->data['user_app_lv2_nm'] = $ui2->first_name." ".$ui1->last_name; 
+                }  
+            }else {
+                $this->data['user_app_lv2_nm'] = "";
+            }
+
+            // render data
+            $this->data['keterangan_training'] = $this->form_training_model->render_keterangan()->result();
+            $this->data['num_rows_keterangan_training'] = $this->form_training_model->render_keterangan()->num_rows();
+            $this->data['user_info'] = $this->form_training_model->where('users.id',$user_id)->get_user()->result();
+
             $this->_render_page('form_training/detail', $this->data);
         }
     }
 
-    function input()
+    function kabagian($id)
+    {
+
+        if (!$this->ion_auth->logged_in())
+        {
+            //redirect them to the login page
+            redirect('auth/login', 'refresh');
+        }
+        elseif (!$this->ion_auth->is_admin()) //remove this elseif if you want to enable this for non-admins
+        {
+            //redirect them to the home page because they must be an administrator to view this
+            //return show_error('You must be an administrator to view this page.');
+            return show_error('You must be an administrator to view this page.');
+        }
+        else
+        {
+            //set the flash data error message if there is one
+            $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+
+            $form_training = $this->data['form_training'] = $this->form_training_model->where('users_keterangan_training.id',$id)->form_training()->result();
+            $this->data['_num_rows'] = $this->form_training_model->where('users_keterangan_training.id',$id)->form_training()->num_rows();
+
+            foreach ($form_training as $fa) {
+                $user_id = $fa->user_id;
+                $is_app_lv1 = $fa->is_app_lv1;
+                $user_app_lv1 = $fa->user_app_lv1;
+                $is_app_lv2 = $fa->is_app_lv2;
+                $user_app_lv2 = $fa->user_app_lv2;
+            }
+
+            //approval check
+            if ($is_app_lv1 == 1) {
+                $user_info_lv1 = $this->form_training_model->where('users.id',$user_app_lv1)->get_user()->result();
+                foreach ($user_info_lv1 as $ui1) {
+                    $this->data['user_app_lv1_nm'] = $ui1->first_name." ".$ui1->last_name; 
+                }  
+            }else {
+                $this->data['user_app_lv1_nm'] = "";
+            }
+            if ($is_app_lv2 == 1) {
+                $user_info_lv2 = $this->form_training_model->where('users.id',$user_app_lv2)->get_user()->result();
+                foreach ($user_info_lv2 as $ui2) {
+                    $this->data['user_app_lv2_nm'] = $ui2->first_name." ".$ui1->last_name; 
+                }  
+            }else {
+                $this->data['user_app_lv2_nm'] = "";
+            }
+
+            // render data
+            $this->data['keterangan_training'] = $this->form_training_model->render_keterangan()->result();
+            $this->data['num_rows_keterangan_training'] = $this->form_training_model->render_keterangan()->num_rows();
+            $this->data['user_info'] = $this->form_training_model->where('users.id',$user_id)->get_user()->result();
+
+            $this->_render_page('form_training/approval/kabagian', $this->data);
+        }
+    }
+
+    function supervisor($id)
     {
         if (!$this->ion_auth->logged_in())
         {
             //redirect them to the login page
             redirect('auth/login', 'refresh');
         }
-
-        $sess_id = $this->session->userdata('user_id');
-        
-
-        $this->data['user_name'] = $this->form_training_model->get_app_name($sess_id);
-        $form_training = $this->data['training'] = $this->form_training_model->form_training($sess_id);
-
-        $this->get_user_info($sess_id);
-
-
-        $this->_render_page('form_training/input', $this->data);
-    }
-
-    function add()
-    {
-        if (!$this->ion_auth->logged_in())
+        elseif (!$this->ion_auth->is_admin()) //remove this elseif if you want to enable this for non-admins
         {
-            redirect('auth/login', 'refresh');
+            //redirect them to the home page because they must be an administrator to view this
+            //return show_error('You must be an administrator to view this page.');
+            return show_error('You must be an administrator to view this page.');
         }
         else
         {
-            $this->form_validation->set_rules('training_name', 'Nama Program Pelatihan', 'trim|required');
-            $this->form_validation->set_rules('tujuan_training', 'Tujuan Pelatihan', 'trim|required');
+            //set the flash data error message if there is one
+            $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
 
-            if($this->form_validation->run() == FALSE)
-            {
-            echo json_encode(array('st'=>0, 'errors'=>validation_errors('<div class="alert alert-danger" role="alert">', '</div>')));
-            }
-            else
-            {
-                $user_id= $this->session->userdata('user_id');
+            $form_training = $this->data['form_training'] = $this->form_training_model->where('users_keterangan_training.id',$id)->form_training()->result();
+            $this->data['_num_rows'] = $this->form_training_model->where('users_keterangan_training.id',$id)->form_training()->num_rows();
 
-                $data = array(
-                    'user_id' => $user_id,
-                    'id_comp_session' => 1,
-                    'training_name' => $this->input->post('training_name'),
-                    'tujuan_training' => $this->input->post('tujuan_training'),
-                    'created_on'            => date('Y-m-d',strtotime('now')),
-                    'created_by'            => $user_id
-                    );
-
-                    if ($this->form_validation->run() == true && $this->form_training_model->add($data))
-                    {
-                         echo json_encode(array('st' =>1));     
-                    }
+            foreach ($form_training as $fa) {
+                $user_id = $fa->user_id;
+                $is_app_lv1 = $fa->is_app_lv1;
+                $user_app_lv1 = $fa->user_app_lv1;
+                $is_app_lv2 = $fa->is_app_lv2;
+                $user_app_lv2 = $fa->user_app_lv2;
             }
 
+            //approval check
+           if ($is_app_lv1 == 1) {
+                $user_info_lv1 = $this->form_training_model->where('users.id',$user_app_lv1)->get_user()->result();
+                foreach ($user_info_lv1 as $ui1) {
+                    $this->data['user_app_lv1_nm'] = $ui1->first_name." ".$ui1->last_name; 
+                }  
+            }else {
+                $this->data['user_app_lv1_nm'] = "";
+            }
+            if ($is_app_lv2 == 1) {
+                $user_info_lv2 = $this->form_training_model->where('users.id',$user_app_lv2)->get_user()->result();
+                foreach ($user_info_lv2 as $ui2) {
+                    $this->data['user_app_lv2_nm'] = $ui2->first_name." ".$ui1->last_name; 
+                } 
+            }else {
+                $this->data['user_app_lv2_nm'] = "";
+            }
+
+            // render data
+            $this->data['keterangan_training'] = $this->form_training_model->render_keterangan()->result();
+            $this->data['num_rows_keterangan_training'] = $this->form_training_model->render_keterangan()->num_rows();
+            $this->data['user_info'] = $this->form_training_model->where('users.id',$user_id)->get_user()->result();
+
+            $this->_render_page('form_training/approval/supervisor', $this->data);
         }
     }
 
-    function approval_spv($id)
-    {
-        $sess_id = $this->session->userdata('user_id');
-        $user_training_id = $this->db->select('user_id')->from('users_keterangan_absen')->where('id', $id)->get()->row('user_id');
-        if (!$this->ion_auth->logged_in())
-        {
-            redirect('auth/login', 'refresh');
-        }
-        elseif(is_authorized($sess_id, $user_training_id) == FALSE)
-        {
-
-            return show_error('You do not have authorization to view this page.');
-        }
-        else
-        {
-            $user_id = $this->db->select('user_id')->where('id', $id)->get('users_training')->row('user_id');
-            
-            $this->get_user_info($user_id);
-            $form_training = $this->data['form_training'] = $this->form_training_model->form_training($id);
-            if($form_training->num_rows>0){
-                $this->get_app_name($id);
-            }
-        }
-
-        $this->_render_page('form_training/approval/supervisor', $this->data);
-    }
-
-    function approval_hrd($id)
-    {
-        $sess_id = $this->session->userdata('user_id');
-        $user_training_id = $this->db->select('user_id')->from('users_keterangan_absen')->where('id', $id)->get()->row('user_id');
-        if (!$this->ion_auth->logged_in())
-        {
-            redirect('auth/login', 'refresh');
-        }
-        elseif(is_authorized($sess_id, $user_training_id) == FALSE)
-        {
-
-            return show_error('You do not have authorization to view this page.');
-        }
-        else
-        {
-            $user_id = $this->db->select('user_id')->where('id', $id)->get('users_training')->row('user_id');
-            
-            $this->get_user_info($user_id);
-            $form_training = $this->data['form_training'] = $this->form_training_model->form_training($id);
-            $this->data['penyelenggara'] = GetAll('penyelenggara');
-            $this->data['pembiayaan'] = GetAll('pembiayaan');
-            if($form_training->num_rows>0){
-                $this->get_app_name($id);
-            }
-        }
-
-        $this->_render_page('form_training/approval/hrd', $this->data);
-    }
-
-    function do_approve_spv($id)
+    public function do_approve_spv()
     {
         $user_id = $this->session->userdata('user_id');
         $date_now = date('Y-m-d');
+        $form_training_id = $this->input->post('form_training_id');
 
-        $data = array(
-        'is_app_lv1' => 1, 
+        $additional_data = array(
+        'is_app_lv1' => 1,
         'user_app_lv1' => $user_id, 
         'date_app_lv1' => $date_now);
 
 
-       if ($this->form_training_model->update($id,$data)) {
-           return TRUE;
+       if ($this->form_training_model->update($form_training_id,$additional_data)) {
+           redirect('form_training','refresh');
        }
     }
 
-    function do_approve_hrd($id)
+    public function do_approve_kbg()
     {
         $user_id = $this->session->userdata('user_id');
         $date_now = date('Y-m-d');
+        $form_training_id = $this->input->post('form_training_id');
 
-        $data = array(
-        'penyelenggara_id' => $this->input->post('penyelenggara'),
-        'pembiayaan_id' => $this->input->post('pembiayaan'),
-        'besar_biaya' => $this->input->post('besar_biaya'),
-        'tempat' => $this->input->post('tempat'),
-        'tanggal'=> date('Y-m-d',strtotime($this->input->post('tanggal'))),
-        'jam'   => $this->input->post('jam'),
-        'is_app_lv2' => 1, 
+        $additional_data = array(
+        'is_app_lv2' => 1,
         'user_app_lv2' => $user_id, 
         'date_app_lv2' => $date_now);
 
 
-       if ($this->form_training_model->update($id,$data)) {
-           return TRUE;
+       if ($this->form_training_model->update($form_training_id,$additional_data)) {
+           redirect('form_training','refresh');
        }
     }
 
-    public function getTable()
+    function input($ftitle = "fn:",$sort_by = "id", $sort_order = "asc", $offset = 0)
     {
-        /* Array of database columns which should be read and sent back to DataTables. Use a space where
-         * you want to insert a non-database field (for example a counter or static image)
-         */
-        $aColumns = array('id', 'title', 'user_id');
-        
-        // DB table to use
-        $sTable = 'users_course';
-        //
-    
-        $iDisplayStart = $this->input->get_post('iDisplayStart', true);
-        $iDisplayLength = $this->input->get_post('iDisplayLength', true);
-        $iSortCol_0 = $this->input->get_post('iSortCol_0', true);
-        $iSortingCols = $this->input->get_post('iSortingCols', true);
-        $sSearch = $this->input->get_post('sSearch', true);
-        $sEcho = $this->input->get_post('sEcho', true);
-    
-        // Paging
-        if(isset($iDisplayStart) && $iDisplayLength != '-1')
+        $user_id = $this->session->userdata('user_id');
+
+        if (!$this->ion_auth->logged_in())
         {
-            $this->db->limit($this->db->escape_str($iDisplayLength), $this->db->escape_str($iDisplayStart));
+            //redirect them to the login page
+            redirect('auth/login', 'refresh');
         }
-        
-        // Ordering
-        if(isset($iSortCol_0))
+        elseif (!$this->ion_auth->is_admin()) //remove this elseif if you want to enable this for non-admins
         {
-            for($i=0; $i<intval($iSortingCols); $i++)
-            {
-                $iSortCol = $this->input->get_post('iSortCol_'.$i, true);
-                $bSortable = $this->input->get_post('bSortable_'.intval($iSortCol), true);
-                $sSortDir = $this->input->get_post('sSortDir_'.$i, true);
-    
-                if($bSortable == 'true')
-                {
-                    $this->db->order_by($aColumns[intval($this->db->escape_str($iSortCol))], $this->db->escape_str($sSortDir));
-                }
-            }
+            //redirect them to the home page because they must be an administrator to view this
+            //return show_error('You must be an administrator to view this page.');
+            return show_error('You must be an administrator to view this page.');
         }
-        
-        /* 
-         * Filtering
-         * NOTE this does not match the built-in DataTables filtering which does it
-         * word by word on any field. It's possible to do here, but concerned about efficiency
-         * on very large tables, and MySQL's regex functionality is very limited
-         */
-        if(isset($sSearch) && !empty($sSearch))
+        else
         {
-            for($i=0; $i<count($aColumns); $i++)
-            {
-                $bSearchable = $this->input->get_post('bSearchable_'.$i, true);
-                
-                // Individual column filtering
-                if(isset($bSearchable) && $bSearchable == 'true')
-                {
-                    $this->db->or_like($aColumns[$i], $this->db->escape_like_str($sSearch));
-                }
-            }
+            //set the flash data error message if there is one
+            $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+
+            // render data
+            $this->data['keterangan_training'] = $this->form_training_model->render_keterangan()->result();
+            $this->data['num_rows_keterangan_training'] = $this->form_training_model->render_keterangan()->num_rows();
+            $this->data['user_info'] = $this->form_training_model->where('user_id',$user_id)->get_user()->result();
+
+            $this->_render_page('form_training/input', $this->data);
         }
-        
-        // Select Data
-        $this->db->select('SQL_CALC_FOUND_ROWS '.str_replace(' , ', ' ', implode(', ', $aColumns)), false);
-        $rResult = $this->db->get($sTable);
-    
-        // Data set length after filtering
-        $this->db->select('FOUND_ROWS() AS found_rows');
-        $iFilteredTotal = $this->db->get()->row()->found_rows;
-    
-        // Total data set length
-        $iTotal = $this->db->count_all($sTable);
-    
-        // Output
-        $output = array(
-            'sEcho' => intval($sEcho),
-            'iTotalRecords' => $iTotal,
-            'iTotalDisplayRecords' => $iFilteredTotal,
-            'aaData' => array()
-        );
-        
-        foreach($rResult->result_array() as $aRow)
-        {
-            $row = array();
-            
-            foreach($aColumns as $col)
-            {
-                $row[] = $aRow[$col];
-            }
-    
-            $output['aaData'][] = $row;
-        }
-    
-        echo json_encode($output);
     }
 
-    function get_app_name($id)
+    public function add()
     {
-        $form_training = $this->form_training_model->form_training($id);
-        foreach($form_training->result() as $training){
-            $user_app_lv1 = $training->user_app_lv1;
-            $user_app_lv2 = $training->user_app_lv2;
+
+        $this->form_validation->set_rules('date_tidak_hadir', 'Tanggal Absen', 'trim|required');
+        $this->form_validation->set_rules('keterangan', 'Keterangan Absen', 'trim|required');
+        $this->form_validation->set_rules('alasan', 'Alasan Absen', 'trim|required');
+        
+        if($this->form_validation->run() == FALSE)
+        {
+            echo json_encode(array('st'=>0, 'errors'=>validation_errors('<div class="alert alert-danger" role="alert">', '</div>')));
         }
+        else
+        {
+            $user_id = $this->input->post('user_id');
 
-        $this->data['name_app_lv1'] = $this->form_training_model->get_app_name($user_app_lv1);
-        $this->data['name_app_lv2'] = $this->form_training_model->get_app_name($user_app_lv2);
-
-        return $this->data;
-    }
-
-    function get_user_info($user_id)
-    {
-        $user = $this->person_model->getUsers($user_id)->row();
-            $url = 'http://admin:12345678@localhost/hris_api/users/employement/EMPLID/'.$user->nik.'/format/json';
-            $headers = get_headers($url);
-            $response = substr($headers[0], 9, 3);
-            if ($response != "404") {
-                $getuser_info = file_get_contents($url);
-                $user_info = json_decode($getuser_info, true);
-                return $this->data['user_info'] = $user_info;
-            } else {
-                //$this->data['user_info'] = $this->form_cuti_model->where('users.id',$user_id)->form_cuti_input()->result();
+            $year_now = date('Y');
+            $comp_session_now_arr = $this->form_training_model->where('comp_session.year',$year_now)->render_session()->result();
+            foreach ($comp_session_now_arr as $csn) {
+                $comp_session_now = $csn->id;
             }
+
+            $additional_data = array(
+                'id_comp_session'       => $comp_session_now,
+                'date_tidak_hadir'      => date('Y-m-d', strtotime($this->input->post('date_tidak_hadir'))),
+                'keterangan_id'         => $this->input->post('keterangan'),
+                'alasan'                => $this->input->post('alasan'),
+                'created_on'            => date('Y-m-d',strtotime('now')),
+                'created_by'            => $this->session->userdata('user_id')
+            );
+
+            if ($this->form_validation->run() == true && $this->form_training_model->create_($user_id,$additional_data))
+            {
+                redirect('form_training','refresh');   
+            }
+        }
     }
 
     function _get_csrf_nonce()
@@ -380,21 +389,15 @@ class form_training extends MX_Controller {
 
                     $this->template->add_js('jquery.bootstrap.wizard.min.js');
                     $this->template->add_js('jquery.validate.min.js');
-                    
-                    $this->template->add_js('jquery.dataTables.min.js');
-                    $this->template->add_js('jquery.dataTables.delay.min.js');
-                    $this->template->add_js('javascript.js');
                     //$this->template->add_js('form_training.js');
 
                     
                     $this->template->add_css('jquery-ui-1.10.1.custom.min.css');
                     $this->template->add_css('plugins/select2/select2.css');
-                    $this->template->add_css('jquery.dataTables.css');
                     
                 }
                 elseif(in_array($view, array('form_training/input',
                                              'form_training/detail',
-                                             'form_training/approval/hrd',
                     )))
                 {
 
@@ -418,7 +421,7 @@ class form_training extends MX_Controller {
                     $this->template->add_js('jquery.validate.min.js');
                     $this->template->add_js('bootstrap-datepicker.js');
                     $this->template->add_js('bootstrap-timepicker.js');
-                    $this->template->add_js('form_training.js');
+                    $this->template->add_js('date_form.js');
                     
                     $this->template->add_css('jquery-ui-1.10.1.custom.min.css');
                     $this->template->add_css('plugins/select2/select2.css');
@@ -426,7 +429,7 @@ class form_training extends MX_Controller {
                     $this->template->add_css('bootstrap-timepicker.css');
                      
                 }elseif(in_array($view, array('form_training/approval/supervisor',
-                                              )))
+                                              'form_training/approval/kabagian')))
                 {
                     $this->template->set_layout('default');
 
@@ -446,6 +449,7 @@ class form_training extends MX_Controller {
 
                     $this->template->add_js('jquery.bootstrap.wizard.min.js');
                     $this->template->add_js('jquery.validate.min.js');
+                    $this->template->add_js('date_form.js');
                     $this->template->add_js('form_training.js');
 
                     
@@ -468,3 +472,6 @@ class form_training extends MX_Controller {
         }
     }
 }
+
+/* End of file form_training.php */
+/* Location: ./application/modules/form_training/controllers/form_training.php */
