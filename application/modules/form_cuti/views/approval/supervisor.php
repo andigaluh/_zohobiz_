@@ -20,7 +20,7 @@
                 <h4>Form <span class="semi-bold">Cuti</span> - Supervisor Approval</h4>
               </div>
               <div class="grid-body no-border">
-                <form class="form-no-horizontal-spacing" id="formAppLv1">
+                <form class="form-no-horizontal-spacing" id="formAppLv1" action="<?php echo site_url('form_cuti/do_approve_spv') ?>" method="post">
                   <div class="row column-seperation">
                     <div class="col-md-5">
                       <h4>Informasi karyawan</h4>
@@ -190,7 +190,7 @@
                             </p>   
                           <?php }else{ ?>
                             <input type="hidden" name="cuti_id" value="<?php echo $user->id ?>">
-                            <button id="btn_app_lv1" class="btn btn-success btn-cons"><i class="icon-ok"></i>Approve</button>
+                            <button type="submit" id="btn_app_lv1" class="btn btn-success btn-cons"><i class="icon-ok"></i>Approve</button>
                             <button class="btn btn-danger btn-cons"><i class="icon-remove"></i>Not Approve</button>
                             <p class="">(Supervisor)</p>
                           <?php } ?>

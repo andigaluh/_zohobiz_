@@ -227,7 +227,7 @@ class Form_cuti extends MX_Controller {
         }
     }
 
-    function approval_spv($ftitle = "fn:",$sort_by = "id", $sort_order = "asc", $offset = 0)
+    function approval_spv($cuti_id,$ftitle = "fn:",$sort_by = "id", $sort_order = "asc", $offset = 0)
     {
 
         if (!$this->ion_auth->logged_in())
@@ -244,7 +244,7 @@ class Form_cuti extends MX_Controller {
         else
         {
             //get user_id
-            $user_id = 1;
+            $user_id = $this->session->userdata('user_id');
 
             //set the flash data error message if there is one
             $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
@@ -257,10 +257,10 @@ class Form_cuti extends MX_Controller {
 
             //list of filterize limit form_cuti for pagination  
             //$cuti_details = $this->data['form_cuti'] = $this->form_cuti_model->like($ftitle_post)->where('users_cuti.id',$user_id)->form_cuti_supervisor()->result();
-            $cuti_details = $this->data['form_cuti'] = $this->form_cuti_model->where('users_cuti.id',$user_id)->form_cuti_supervisor()->result();
+            $cuti_details = $this->data['form_cuti'] = $this->form_cuti_model->where('users_cuti.id',$cuti_id)->form_cuti_supervisor()->result();
 
             //$this->data['_num_rows'] = $this->form_cuti_model->like($ftitle_post)->where('users_cuti.id',$user_id)->form_cuti()->num_rows();
-            $this->data['_num_rows'] = $this->form_cuti_model->where('users_cuti.id',$user_id)->form_cuti()->num_rows();
+            $this->data['_num_rows'] = $this->form_cuti_model->where('users_cuti.id',$cuti_id)->form_cuti()->num_rows();
 
             foreach ($cuti_details as $cuti_detail) {
                 $id_user = $cuti_detail->user_id;
@@ -536,7 +536,7 @@ class Form_cuti extends MX_Controller {
 
 
        if ($this->form_cuti_model->update($cuti_id,$additional_data)) {
-           return TRUE;
+           redirect('form_cuti/index_superior1','refresh');
        }
     }
 

@@ -44,7 +44,14 @@ BEGIN PAGE CONTAINER-->
 
                                   // approval cuti
                                   $txt_app_lv1 = $txt_app_lv2 = $txt_app_lv3 = "-";
-                                  $txt_app_lv1 = ($user->is_app_lv1 == 1) ? "Ya" : ($this->ion_auth->is_superior1()) ? '<a href="'.site_url('form_cuti/approval_spv/'.$id_cuti).'">approve</a>' : "-";
+                                  /*$txt_app_lv1 = ($user->is_app_lv1 == 1) ? "Ya" : ($this->ion_auth->is_superior1()) ? '<a href="'.site_url('form_cuti/approval_spv/'.$id_cuti).'">approve</a>' : "-";*/
+                                  if ($user->is_app_lv1 == 1) {
+                                    $txt_app_lv1 = "Ya";
+                                  }elseif ($this->ion_auth->is_superior1()) {
+                                    $txt_app_lv1 = "<a href='".site_url('form_cuti/approval_spv/'.$id_cuti)."'>approve</a>";
+                                  }else{
+                                    $txt_app_lv1 = "-";
+                                  }
                                   
                                   if ($user->is_app_lv2 == 1) {
                                       $txt_app_lv2 = "Ya";
