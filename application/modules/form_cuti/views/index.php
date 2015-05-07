@@ -22,7 +22,7 @@ BEGIN PAGE CONTAINER-->
                 </div>
                   <div class="grid-body no-border">
                           <!-- <table class="table table-striped table-flip-scroll cf"> -->
-                          <table class="table table-bordered">
+                          <table class="table table-bordered" id="table_cuti">
                               <thead>
                                 <tr>
                                   <th width="15%"><?php echo lang('name') ?></th>
@@ -99,12 +99,13 @@ BEGIN PAGE CONTAINER-->
                                     </td>
                                   </tr>
                                   <tr id="cutidetail-<?php echo $id_cuti; ?>" style="display:none">
-                                    <td class="detail" colspan="7">
+                                    <td class="detail" colspan="8">
                                       <div class="row">
-                                        <form action="#" method="enctype">
+                                        <form action="<?php echo site_url('form_cuti/delete/'.$id_cuti)?>" method="enctype" id="cuti_delete" onsubmit="return confirm('Are you sure you want to delete this record?');">
                                           <div class="col-md-12">
                                             <div class="grid simple">
                                               <div class="grid-title no-border">
+                                                <input type="hidden" name="cuti_id" id="cuti_id" value="<?php echo $id_cuti; ?>">
                                                 <h4>ID : #<?php echo $id_cuti; ?></h4>
                                               </div>
                                               <div class="grid-body no-border">
@@ -206,6 +207,11 @@ BEGIN PAGE CONTAINER-->
                                                         <input name="status" id="status" type="text"  class="form-control" placeholder="Status" value="<?php echo $user->alamat_cuti; ?>" disabled="disabled">
                                                       </div>
                                                     </div>
+                                                  </div>
+                                                </div>
+                                                <div class="row">
+                                                  <div class="col-md-12 text-right">
+                                                    <button id="delete_cuti" name="delete_cuti" value="1" class="btn btn-danger" type="submit">delete</button>
                                                   </div>
                                                 </div>
                                               </div>
