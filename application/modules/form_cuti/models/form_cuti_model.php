@@ -320,8 +320,8 @@ class Form_cuti_model extends CI_Model
 
             $this->db->join('alasan_cuti', 'users_cuti.alasan_cuti_id = alasan_cuti.id', 'left');
             $this->db->join('comp_session', 'users_cuti.id_comp_session = comp_session.id', 'left');
-            $this->db->join('users', 'users_cuti.user_pengganti = users.id', 'left');
-            //$this->db->join('users', 'users_cuti.user_id = users.id', 'left');
+            //$this->db->join('users', 'users_cuti.user_pengganti = users.id', 'left');
+            $this->db->join('users', 'users_cuti.user_id = users.id', 'left');
 
             //add by andi
             $this->db->join('users_employement', 'users.id = users_employement.user_id', 'left');

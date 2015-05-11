@@ -54,7 +54,7 @@
                         <?php
                             echo '<option value="0">Top Level</option>';
 							if($q_parent->num_rows()>0){
-                            foreach ($parent->result_array() as $key => $value) {
+                            foreach ($q_parent->result_array() as $value) {
                                 $selected = ($parent_id <> 0 && $parent_id == $value['parent_position_id']) ? 'selected = selected' : '';
                                 echo '<option value="'.$value['id'].'" '.$selected.'>'.$value['title'].'</option>';
                             }}
@@ -158,9 +158,10 @@
 									<?php
 										echo '<option value="0">Top Level</option>';
 										if($q_parent->num_rows()>0){
-										foreach ($parent->result_array() as $key => $value) {
-											$selected = ($user->parent_position_id <> 0 && $user->parent_position_id == $value['parent_position_id']) ? 'selected = selected' : '';
-											echo '<option value="'.$value['id'].'" '.$selected.'>'.$value['title'].'</option>';
+										foreach ($parent->result_array() as $value) {
+											$selected = ($user->parent_position_id == $value['id']) ? 'selected = selected' : '';
+											//echo '<option value="'.$value['id'].'" >'.$value['title'].'</option>';
+                                            echo '<option value="'.$value['id'].'" '.$selected.'>'.$value['title'].'</option>';
 										}}
 									?>
 									</select>
