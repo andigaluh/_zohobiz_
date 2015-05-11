@@ -20,7 +20,7 @@
                 <h4>Form <span class="semi-bold">Cuti</span> - Ka. Bagian / Ka. Cabang Approval</h4>
               </div>
               <div class="grid-body no-border">
-                <form class="form-no-horizontal-spacing" id="formAppLv2"> 
+                <form class="form-no-horizontal-spacing" id="formAppLv2" action="<?php echo site_url('form_cuti/do_approve_kbg') ?>" method="post"> 
                   <div class="row column-seperation">
                     <div class="col-md-5">
                       <h4>Informasi karyawan</h4>
@@ -179,7 +179,7 @@
                           <label class="form-label text-right">Note (ka. bag): </label>
                         </div>
                         <div class="col-md-9">
-                          <textarea name="notes" class="custom-txtarea-form" placeholder="Note ka. bagian isi disini"><?php echo $user->note_app_lv2 ?></textarea>
+                          <textarea name="notes2" class="custom-txtarea-form" placeholder="Note ka. bagian isi disini"><?php echo $user->note_app_lv2 ?></textarea>
                         </div>
                       </div>
                     </div>
@@ -209,9 +209,9 @@
                               (Ka. Cabang / Ka. Bagian)
                             </p>   
                           <?php }else{ ?>
-                            <input type="hidden" name="cuti_id" value="<?php echo $user->id ?>">
-                            <button id="btn_app_lv2" class="btn btn-success btn-cons"><i class="icon-ok"></i>Approve</button>
-                            <button class="btn btn-danger btn-cons"><i class="icon-remove"></i>Not Approve</button>
+                          <input type="hidden" name="cuti_id" value="<?php echo $user->id ?>">
+                            <button type="submit" id="btn_app_lv2" class="btn btn-success btn-cons" value="1" name="btn_app_lv2"><i class="icon-ok"></i>Approve</button>
+                            <button class="btn btn-danger btn-cons" type="submit" value="2" name="btn_app_lv2"><i class="icon-remove"></i>Not Approve</button>
                             <p class="">(Ka. Cabang / Ka. Bagian)</p>
                           <?php } ?>
                         </div>

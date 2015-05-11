@@ -190,8 +190,8 @@
                             </p>   
                           <?php }else{ ?>
                             <input type="hidden" name="cuti_id" value="<?php echo $user->id ?>">
-                            <button type="submit" id="btn_app_lv1" class="btn btn-success btn-cons"><i class="icon-ok"></i>Approve</button>
-                            <button class="btn btn-danger btn-cons"><i class="icon-remove"></i>Not Approve</button>
+                            <button type="submit" id="btn_app_lv1" class="btn btn-success btn-cons" value="1" name="btn_app_lv1"><i class="icon-ok"></i>Approve</button>
+                            <button class="btn btn-danger btn-cons" type="submit" value="2" name="btn_app_lv1"><i class="icon-remove"></i>Not Approve</button>
                             <p class="">(Supervisor)</p>
                           <?php } ?>
                         </div>
@@ -199,7 +199,7 @@
                         <div class="col-md-6">
                           <?php if ($user->is_app_lv2 == 1) { ?>
                             <div class="col-md-6">
-                            <p class="wf-approve-sm">
+                            <p class="wf-approve-sp">
                               <span class="semi-bold"><?php echo $nm_app_lv2 ?></span><br>
                               <span class="small"><?php echo $date_app_lv2; ?></span><br>
                               (Ka. Cabang / Ka. Bagian)
