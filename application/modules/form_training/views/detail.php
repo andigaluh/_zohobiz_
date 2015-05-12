@@ -21,18 +21,26 @@
             </div>
             <div class="grid-body no-border">
             <?php
-              if($form_training->num_rows()>0){
-                foreach($form_training->result() as $user){
+              if($_num_rows > 0){
+                foreach($form_training as $user){
+                  if ($user->tanggal == 0000-00-00) {
+                    $tanggal = "";
+                    $jam = "";
+                  }else{
+                    $tanggal = getDateFormat($user->tanggal);
+                    $jam = $user->jam;
+                  }
                 ?>
               <form class="form-no-horizontal-spacing" id=""> 
                 <div class="row column-seperation">
                   <div class="col-md-12">
+                    <?php foreach ($user_info as $ui) { ?>
                     <div class="row form-row">
                       <div class="col-md-3">
                         <label class="form-label text-right">NIK</label>
                       </div>
                       <div class="col-md-9">
-                        <input type="text" class="form-control" name="start_cuti" value="<?php echo $user_info['EMPLID']?>" disabled="disabled">
+                        <input type="text" class="form-control" name="nik" value="<?php echo $ui->nik ?>" disabled="disabled">
                       </div>
                     </div>
                     <div class="row form-row">
@@ -40,7 +48,7 @@
                         <label class="form-label text-right">Nama</label>
                       </div>
                       <div class="col-md-9">
-                        <input name="form3LastName" id="form3LastName" type="text"  class="form-control" placeholder="Nama" value="<?php echo $user->name?>" disabled="disabled">
+                        <input name="emp_name" id="emp_name" type="text"  class="form-control" placeholder="Nama" value="<?php echo $user->first_name.' '.$user->last_name ?>" disabled="disabled">
                       </div>
                     </div>
                     <div class="row form-row">
@@ -48,7 +56,7 @@
                         <label class="form-label text-right">Jabatan</label>
                       </div>
                       <div class="col-md-9">
-                        <input name="form3LastName" id="form3LastName" type="text"  class="form-control" placeholder="-" value="<?php echo $user_info['POSITION']?>" disabled="disabled">
+                        <input name="position" id="position" type="text"  class="form-control" placeholder="-" value="<?php echo $ui->position_nm ?>" disabled="disabled">
                       </div>
                     </div>
                     <div class="row form-row">
@@ -56,15 +64,16 @@
                         <label class="form-label text-right">Dept/Bagian</label>
                       </div>
                       <div class="col-md-9">
-                        <input name="form3LastName" id="form3LastName" type="text"  class="form-control" placeholder="-" value="<?php echo $user_info['ORGANIZATION']?>" disabled="disabled">
+                        <input name="org_id" id="org_id" type="text"  class="form-control" placeholder="-" value="<?php echo $ui->org_nm ?>" disabled="disabled">
                       </div>
                     </div>
+                    <?php } ?>
                     <div class="row form-row">
                       <div class="col-md-3">
                         <label class="form-label text-right">Nama Program Pelatihan</label>
                       </div>
                       <div class="col-md-9">
-                        <input name="form3LastName" id="form3LastName" type="text"  class="form-control" placeholder="Nama program pelatihan" value="<?php echo $user->training_name?>" disabled="disabled">
+                        <input name="training_nm" id="training_nm" type="text"  class="form-control" placeholder="Nama program pelatihan" value="<?php echo $user->training_name?>" disabled="disabled">
                       </div>
                     </div>
                     <div class="row form-row">
@@ -72,7 +81,7 @@
                         <label class="form-label text-right">Tujuan Pelatihan</label>
                       </div>
                       <div class="col-md-9">
-                        <input name="form3LastName" id="form3LastName" type="text"  class="form-control" placeholder="Tujuan pelatihan" value="<?php echo $user->tujuan_training?>" disabled="disabled">
+                        <input name="tujuang_training" id="tujuang_training" type="text"  class="form-control" placeholder="Tujuan pelatihan" value="<?php echo $user->tujuan_training?>" disabled="disabled">
                       </div>
                     </div>
                   </div>
@@ -87,7 +96,7 @@
                         <label class="form-label text-right">Penyelenggara</label>
                       </div>
                       <div class="col-md-9">
-                        <input name="form3LastName" id="form3LastName" type="text"  class="form-control" placeholder="Penyelenggara" value="<?php echo $user->penyelenggara?>" disabled="disabled">
+                        <input name="penyelanggara" id="penyelanggara" type="text"  class="form-control" placeholder="Penyelenggara" value="<?php echo $user->penyelenggara_nm ?>" disabled="disabled">
                       </div>
                     </div>
                     <div class="row form-row">
@@ -95,7 +104,7 @@
                         <label class="form-label text-right">Pembiayaan</label>
                       </div>
                       <div class="col-md-9">
-                        <input name="form3LastName" id="form3LastName" type="text"  class="form-control" placeholder="Pembiayaan" value="<?php echo $user->pembiayaan?>" disabled="disabled">
+                        <input name="pembiayaan" id="pembiayaan" type="text"  class="form-control" placeholder="Pembiayaan" value="<?php echo $user->pembiayaan_nm?>" disabled="disabled">
                       </div>
                     </div>
                     <div class="row form-row">
@@ -103,7 +112,7 @@
                         <label class="form-label text-right">Besar Biaya (Rp.)</label>
                       </div>
                       <div class="col-md-9">
-                        <input name="form3LastName" id="form3LastName" type="text"  class="form-control" placeholder="Besar biaya (Rp.)" value="<?php echo $user->besar_biaya?>" disabled="disabled">
+                        <input name="besar_biaya" id="besar_biaya" type="text"  class="form-control" placeholder="Besar biaya (Rp.)" value="<?php echo $user->besar_biaya ?>" disabled="disabled">
                       </div>
                     </div>
                     <div class="row form-row">
@@ -111,7 +120,7 @@
                         <label class="form-label text-right">Tempat Pelaksanaan</label>
                       </div>
                       <div class="col-md-9">
-                        <input name="form3LastName" id="form3LastName" type="text"  class="form-control" placeholder="Tempat Pelaksanaan" value="<?php echo $user->tempat?>" disabled="disabled">
+                        <input name="tempat" id="tempat" type="text"  class="form-control" placeholder="Tempat Pelaksanaan" value="<?php echo $user->tempat ?>" disabled="disabled">
                       </div>
                     </div>
                     <div class="row form-row">
@@ -119,7 +128,7 @@
                         <label class="form-label text-right">Waktu Pelaksanaan</label>
                       </div>
                       <div class="col-md-9">
-                        <input name="form3LastName" id="form3LastName" type="text"  class="form-control" placeholder="Waktu Pelaksanaan" value="<?php echo $user->tanggal?>" disabled="disabled">
+                        <input name="tanggal" id="tanggal" type="text"  class="form-control" placeholder="Waktu Pelaksanaan" value="<?php echo $tanggal ?>" disabled="disabled">
                       </div>
                     </div>
                     <div class="row form-row">
@@ -127,7 +136,7 @@
                         <label class="form-label text-right">Jam</label>
                       </div>
                       <div class="col-md-9">
-                        <input name="form3LastName" id="form3LastName" type="text"  class="form-control" placeholder="Waktu Pelaksanaan" value="<?php echo $user->jam?>" disabled="disabled">
+                        <input name="jam" id="jam" type="text"  class="form-control" placeholder="Waktu Pelaksanaan" value="<?php echo $jam ?>" disabled="disabled">
                       </div>
                     </div>
                   </div>
@@ -139,16 +148,16 @@
                         <div class="col-md-4">
                           Diusulkan oleh,<br/><br/>
                           <p class="wf-approve-sp">
-                            <span class="semi-bold"><?php echo $user->name?></span><br/>
-                            <span class="small"><?php echo $user->created_on?></span><br/>
+                            <span class="semi-bold"><?php echo $user->first_name.' '.$user->last_name ?></span><br/>
+                            <span class="small"><?php echo getDateFormat($user->created_on) ?></span><br/>
                           </p>
                         </div>
                         <div class="col-md-4">
                           Persetujuan atasan,<br/><br/>
                           <p class="wf-approve-sp">
-                            <?php if($user->is_app_lv1==1){?>
-                            <span class="semi-bold"><?php echo $user->user_app_lv1?></span><br/>
-                            <span class="small"><?php echo $user->date_app_lv1?></span>
+                            <?php if($user->is_app_lv1 == 1){?>
+                            <span class="semi-bold"><?php echo $user_app_lv1_nm ?></span><br/>
+                            <span class="small"><?php echo getDateFormat($user->date_app_lv1) ?></span>
                             <?php }else{?>
                             <span class="semi-bold"></span><br/>
                             <span class="semi-bold">(Supervisor)</span>
@@ -158,9 +167,9 @@
                         <div class="col-md-4">
                           Mengetahui HRD,<br/><br/>
                           <p class="wf-approve-sp">
-                            <?php if($user->is_app_lv2==1){?>
-                            <span class="semi-bold"><?php echo $user->user_app_lv2?></span><br/>
-                            <span class="small"><?php echo $user->date_app_lv2?></span>
+                            <?php if($user->is_app_lv2 == 1){?>
+                            <span class="semi-bold"><?php echo $user_app_lv2_nm ?></span><br/>
+                            <span class="small"><?php echo getDateFormat($user->date_app_lv2) ?></span>
                             <?php }else{?>
                             <span class="semi-bold"></span><br/>
                             <span class="semi-bold">(HRD)</span>

@@ -20,59 +20,69 @@
               <h4>Form Pengajuan <span class="semi-bold">Pelatihan</span></h4>
             </div>
             <div class="grid-body no-border">
-              <form class="form-no-horizontal-spacing" id="formAppLv1">
-              <?php if($form_training->num_rows()>0){
-                foreach($form_training->result() as $user){
-                $session_nik = get_nik($this->session->userdata('user_id'));
-                ?> 
+            <?php
+            if($_num_rows > 0){
+              foreach($form_training as $user){
+                if ($user->tanggal == 0000-00-00) {
+                  $tanggal = "";
+                  $jam = "";
+                }else{
+                  $tanggal = getDateFormat($user->tanggal);
+                  $jam = $user->jam;
+                }
+              ?>
+              <form class="form-no-horizontal-spacing" id="formAppLv1" action="<?php echo site_url() ?>form_training/do_approve_lv1" method="post">
+                <input type="hidden" name="form_training_id" value="<?php echo $user->id ?>">
                 <div class="row column-seperation">
                   <div class="col-md-12">    
+                    <?php foreach ($user_info as $ui) { ?>
                     <div class="row form-row">
-                      <div class="col-md-2">
+                      <div class="col-md-3">
                         <label class="form-label text-right">NIK</label>
                       </div>
-                      <div class="col-md-10">
-                        <input type="text" class="form-control" name="start_cuti" value="<?php echo $user_info['EMPLID']?>" disabled="disabled">
+                      <div class="col-md-9">
+                        <input type="text" class="form-control" name="nik" value="<?php echo $ui->nik ?>" disabled="disabled">
                       </div>
                     </div>
                     <div class="row form-row">
-                      <div class="col-md-2">
+                      <div class="col-md-3">
                         <label class="form-label text-right">Nama</label>
                       </div>
-                      <div class="col-md-10">
-                        <input name="form3LastName" id="form3LastName" type="text"  class="form-control" placeholder="Nama" value="<?php echo $user->name?>" disabled="disabled">
+                      <div class="col-md-9">
+                        <input name="emp_name" id="emp_name" type="text"  class="form-control" placeholder="Nama" value="<?php echo $user->first_name.' '.$user->last_name ?>" disabled="disabled">
                       </div>
                     </div>
                     <div class="row form-row">
-                      <div class="col-md-2">
+                      <div class="col-md-3">
                         <label class="form-label text-right">Jabatan</label>
                       </div>
-                      <div class="col-md-10">
-                        <input name="form3LastName" id="form3LastName" type="text"  class="form-control" placeholder="Nama" value="<?php echo $user_info['POSITION']?>" disabled="disabled">
+                      <div class="col-md-9">
+                        <input name="position" id="position" type="text"  class="form-control" placeholder="-" value="<?php echo $ui->position_nm ?>" disabled="disabled">
                       </div>
                     </div>
                     <div class="row form-row">
-                      <div class="col-md-2">
+                      <div class="col-md-3">
                         <label class="form-label text-right">Dept/Bagian</label>
                       </div>
-                      <div class="col-md-10">
-                        <input name="form3LastName" id="form3LastName" type="text"  class="form-control" placeholder="Nama" value="<?php echo $user_info['ORGANIZATION']?>" disabled="disabled">
+                      <div class="col-md-9">
+                        <input name="org_id" id="org_id" type="text"  class="form-control" placeholder="-" value="<?php echo $ui->org_nm ?>" disabled="disabled">
                       </div>
                     </div>
+                    <?php } ?>
                     <div class="row form-row">
-                      <div class="col-md-2">
+                      <div class="col-md-3">
                         <label class="form-label text-right">Nama Program Pelatihan</label>
                       </div>
-                      <div class="col-md-10">
-                        <input name="form3LastName" id="form3LastName" type="text"  class="form-control" placeholder="Nama program pelatihan" value="<?php echo $user->training_name?>" disabled="disabled">
+                      <div class="col-md-9">
+                        <input name="training_nm" id="training_nm" type="text"  class="form-control" placeholder="Nama program pelatihan" value="<?php echo $user->training_name?>" disabled="disabled">
                       </div>
                     </div>
                     <div class="row form-row">
-                      <div class="col-md-2">
+                      <div class="col-md-3">
                         <label class="form-label text-right">Tujuan Pelatihan</label>
                       </div>
-                      <div class="col-md-10">
-                        <input name="form3LastName" id="form3LastName" type="text"  class="form-control" placeholder="Tujuan pelatihan" value="<?php echo $user->tujuan_training?>" disabled="disabled">
+                      <div class="col-md-9">
+                        <input name="tujuang_training" id="tujuang_training" type="text"  class="form-control" placeholder="Tujuan pelatihan" value="<?php echo $user->tujuan_training?>" disabled="disabled">
                       </div>
                     </div>
                   </div>
@@ -83,26 +93,29 @@
                       <div class="col-md-4">
                         Diusulkan oleh,<br/><br/>
                          <p class="wf-approve-sp">
-                            <span class="semi-bold"><?php echo $user->name?></span><br/>
+                            <span class="semi-bold"><?php echo $user->first_name.' '.$user->last_name ?></span><br/>
                             <span class="small"><?php echo $user->created_on?></span><br/>
                           </p>
                       </div>
                       <div class="col-md-4">
                         Persetujuan atasan,<br/><br/>
                         <?php if ($user->is_app_lv1 == 1) { ?>
-                            <span class="semi-bold"><?php echo $name_app_lv1?></span><br/>
+                            <span class="semi-bold"><?php echo $user_app_lv1_nm?></span><br/>
                             <span class="small"><?php echo $user->date_app_lv1?></span>
-                            <?php }elseif(cek_subordinate(is_have_subordinate($session_nik),'id', $user->user_id))
-                                  {
-                                    if($user->is_app_lv1 == 0){?>
-                          <button class="btn btn-danger btn-cons" id="btn_app_lv1" type=""><i class="icon-ok"></i>Approve</button>
-                          <?php }}?>
+                        <?php } else { ?>
+                          <button type="submit" class="btn btn-danger btn-cons" id="btn_app_lv1" type=""><i class="icon-ok"></i>Approve</button>
+                        <?php } ?>
                       </div>
                       <div class="col-md-4">
                         Mengetahui HRD,<br/><br/>
                         <p class="wf-approve-sp">
-                          <span class="semi-bold">-</span><br/>
-                          <span class="small">-</span>
+                          <?php if ($user->is_app_lv2 == 1) { ?>
+                            <span class="semi-bold"><?php echo $user_app_lv2_nm?></span><br/>
+                            <span class="small"><?php echo $user->date_app_lv1?></span>  
+                          <?php } else { ?>
+                            <span class="semi-bold">-</span><br/>
+                            <span class="small">-</span>
+                          <?php } ?>
                         </p>
                       </div>
                     </div>

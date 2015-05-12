@@ -35,9 +35,11 @@
                                 </tr>
                               </thead>
                               <tbody>
+                                <?php if ($_num_rows > 0) {
+                                  foreach ($form_training as $user) { ?>
                                   <tr>
                                     <td>
-                                      <a href="<?php echo site_url('form_training/detail/'.$user->id)?>"><?php echo $user->name?></a>
+                                      <a href="<?php echo site_url('form_training/detail/'.$user->id)?>"><?php echo $user->first_name.' '.$user->last_name?></a>
                                     </td>
 
                                     <td>
@@ -49,16 +51,38 @@
                                     </td>
 
                                     <td style="text-align:center;">
-                                    <a href="#">
+                                    <?php if ($this->ion_auth->is_superior1()) {
+                                      $url_lv1 = site_url('form_training/supervisor')."/".$user->id;
+                                      $url_lv2 = site_url('form_training/hrd')."/".$user->id;
+                                    } else {
+                                      $url_lv1 = $url_lv2 = "#";
+                                    } ?>
+                                    <?php if ($user->is_app_lv1 == 0) { ?>
+                                    <a href="<?php echo $url_lv1 ?>">
                                         <button type='button' class='btn btn-info btn-small' title='Make Approval'><i class='icon-paste'></i></button>
                                     </a>
+                                    <?php } else { ?>
+                                    <span>Ya</span>
+                                    <?php } ?>
                                     </td>
                                     <td style="text-align:center;">
-                                    <?php echo $txt_app_lv2?>
+                                    <?php if ($user->is_app_lv2 == 0) { ?>
+                                    <a href="<?php echo site_url('form_training/hrd').'/'.$user->id ?>">
+                                        <button type='button' class='btn btn-info btn-small' title='Make Approval'><i class='icon-paste'></i></button>
+                                    </a>
+                                    <?php } else { ?>
+                                    <span>Ya</span>
+                                    <?php } ?>
                                     </td>
                                   </tr>
+                                  <?php }} else { ?>
+                                  <tr>
+                                      <td valign="middle" colspan="5">
+                                          <p class="text-center">No Data</p>
+                                      </td>
+                                  </tr>
+                                  <?php } ?>
                               </tbody>
-                              <?php }}?>
                           </table>
                   </div>
               </div>
