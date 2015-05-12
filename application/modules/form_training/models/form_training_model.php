@@ -306,12 +306,23 @@ class Form_training_model extends CI_Model
                 $this->tables['pembiayaan'].'.title as pembiayaan_nm',
                 $this->tables['penyelenggara'].'.title as penyelenggara_nm',
                 $this->tables['comp_session'].'.year as comp_session',
+
+                $this->tables['users_employement'].'.position_id as position_id',
+                $this->tables['users_employement'].'.organization_id as organization_id',
+                $this->tables['users_employement'].'.seniority_date as seniority_date',
+                $this->tables['organization'].'.title as organization_title',
+                $this->tables['organization'].'.parent_organization_id as parent_organization_id',
+                $this->tables['position'].'.title as position_title',
             ));
 
             $this->db->join('pembiayaan', 'users_training.pembiayaan_id = pembiayaan.id', 'left');
             $this->db->join('penyelenggara', 'users_training.penyelenggara_id = penyelenggara.id', 'left');
             $this->db->join('comp_session', 'users_training.id_comp_session = comp_session.id', 'left');
             $this->db->join('users', 'users_training.user_id = users.id', 'left');
+
+            $this->db->join('users_employement', 'users.id = users_employement.user_id', 'left');
+            $this->db->join('organization', 'users_employement.organization_id = organization.id', 'left');
+            $this->db->join('position', 'users_employement.position_id = position.id', 'left');
 
             $this->db->where('users_training.is_deleted', 0);
         }
@@ -396,8 +407,8 @@ class Form_training_model extends CI_Model
                 $this->tables['users_employement'].'.seniority_date as seniority_date',
                 $this->tables['organization'].'.title as organization_title',
                 $this->tables['position'].'.title as position_title',
-                $this->tables['users_keterangan_training_plafon'].'.hak_cuti as hak_cuti',
-                $this->tables['users_keterangan_training_plafon'].'.id_comp_session as id_comp_session',
+                $this->tables['users_training_plafon'].'.hak_cuti as hak_cuti',
+                $this->tables['users_training_plafon'].'.id_comp_session as id_comp_session',
                 $this->tables['comp_session'].'.year as session_year'
                 
             ));
@@ -405,8 +416,8 @@ class Form_training_model extends CI_Model
             $this->db->join('users_employement', 'users.id = users_employement.user_id', 'left');
             $this->db->join('organization', 'users_employement.organization_id = organization.id', 'left');
             $this->db->join('position', 'users_employement.position_id = position.id', 'left');
-            $this->db->join('users_keterangan_training_plafon', 'users.id = users_keterangan_training_plafon.user_id', 'left');
-            $this->db->join('comp_session', 'users_keterangan_training_plafon.id_comp_session = comp_session.id', 'left');
+            $this->db->join('users_training_plafon', 'users.id = users_training_plafon.user_id', 'left');
+            $this->db->join('comp_session', 'users_training_plafon.id_comp_session = comp_session.id', 'left');
 
             //$this->db->where('users.is_deleted', 0);
         }
@@ -487,7 +498,7 @@ class Form_training_model extends CI_Model
                 $this->tables['users_employement'].'.organization_id as organization_id',
             ));
 
-            $this->db->join('users_keterangan_training', 'users.id = users_keterangan_training.user_id', 'left');
+            $this->db->join('users_training', 'users.id = users_training.user_id', 'left');
             $this->db->join('users_employement', 'users.id = users_employement.user_id', 'left');
         }
 
@@ -641,10 +652,12 @@ class Form_training_model extends CI_Model
                 $this->tables['users'].'.id as user_id',
 
                 $this->tables['users_employement'].'.organization_id as org_id',
+                $this->tables['position'].'.title as position_nm',
                 $this->tables['organization'].'.title as org_nm'
             ));
 
              $this->db->join('users_employement', 'users.id = users_employement.user_id', 'left');
+             $this->db->join('position', 'position.id = users_employement.position_id','left');
              $this->db->join('organization', 'users_employement.user_id = organization.id', 'left');
         }
 
@@ -700,9 +713,9 @@ class Form_training_model extends CI_Model
         return $this;
     }
 
-    public function render_keterangan()
+   public function render_emp()
     {
-         $this->trigger_events('form_cuti_input');
+        $this->trigger_events('form_cuti');
 
         if (isset($this->_ion_select) && !empty($this->_ion_select))
         {
@@ -717,13 +730,26 @@ class Form_training_model extends CI_Model
         {
             //default selects
             $this->db->select(array(
-                $this->tables['keterangan_training'].'.*',
-                $this->tables['keterangan_training'].'.id as id',
-                $this->tables['keterangan_training'].'.id as keterangan_id',
+                //$this->tables['users'].'.*',
+                $this->tables['users'].'.id as id',
+                $this->tables['users'].'.id as user_id',
+
+                $this->tables['users'].'.first_name as first_name',
+                $this->tables['users'].'.last_name as last_name',
+                $this->tables['users_employement'].'.position_id as position_id',
+                $this->tables['users_employement'].'.organization_id as organization_id',
+                $this->tables['users_employement'].'.seniority_date as seniority_date',
+                $this->tables['organization'].'.title as organization_title',
+                $this->tables['position'].'.title as position_title',
+                $this->tables['position'].'.parent_position_id as parent_position_id'
             ));
 
+            $this->db->join('users_employement', 'users.id = users_employement.user_id', 'left');
+            $this->db->join('organization', 'users_employement.organization_id = organization.id', 'left');
+            $this->db->join('position', 'users_employement.position_id = position.id', 'left');
 
-            $this->db->where('keterangan_training.is_deleted', 0);
+
+            //$this->db->where('users.is_deleted', 0);
         }
 
         $this->trigger_events('extra_where');
@@ -773,7 +799,8 @@ class Form_training_model extends CI_Model
             $this->_ion_order_by = NULL;
         }
 
-        $this->response = $this->db->get($this->tables['keterangan_training']);
+        $this->response = $this->db->get($this->tables['users']);
+
 
         return $this;
     }
@@ -784,8 +811,8 @@ class Form_training_model extends CI_Model
 
         $this->db->trans_begin();
 
-        // delete organization from users_keterangan_training table
-        $this->db->delete($this->tables['users_keterangan_training'], array('id' => $id));
+        // delete organization from users_training table
+        $this->db->delete($this->tables['users_training'], array('id' => $id));
 
         // if user does not exist in database then it returns FALSE else removes the user from groups
         if ($this->db->affected_rows() == 0)
@@ -815,12 +842,12 @@ class Form_training_model extends CI_Model
 
         //filter out any data passed that doesnt have a matching column in the form cuti table
         //and merge the set group data and the additional data
-        if (!empty($additional_data)) $data = array_merge($this->_filter_data($this->tables['users_keterangan_training'], $additional_data), $data);
+        if (!empty($additional_data)) $data = array_merge($this->_filter_data($this->tables['users_training'], $additional_data), $data);
 
         $this->trigger_events('extra_group_set');
 
         // insert the new form_training
-        $this->db->insert($this->tables['users_keterangan_training'], $data);
+        $this->db->insert($this->tables['users_training'], $data);
         $id = $this->db->insert_id();
 
         // report success
@@ -838,10 +865,10 @@ class Form_training_model extends CI_Model
         $this->db->trans_begin();
 
         // Filter the data passed
-        $data = $this->_filter_data($this->tables['users_keterangan_training'], $data);
+        $data = $this->_filter_data($this->tables['users_training'], $data);
 
         $this->trigger_events('extra_where');
-        $this->db->update($this->tables['users_keterangan_training'], $data, array('id' => $frm_training->id));
+        $this->db->update($this->tables['users_training'], $data, array('id' => $frm_training->id));
 
         if ($this->db->trans_status() === FALSE)
         {
@@ -1137,7 +1164,7 @@ class Form_training_model extends CI_Model
         $this->trigger_events('frm_training');
 
         $this->limit(1);
-        $this->where($this->tables['users_keterangan_training'].'.id', $id);
+        $this->where($this->tables['users_training'].'.id', $id);
 
         $this->form_training();
 

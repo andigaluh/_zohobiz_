@@ -23,6 +23,88 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `users_training`
+--
+
+CREATE TABLE IF NOT EXISTS `users_training` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `id_comp_session` int(11) NOT NULL,
+  `training_name` varchar(50) NOT NULL,
+  `tujuan_training` varchar(150) NOT NULL,
+  `penyelenggara_id` int(11) NOT NULL,
+  `pembiayaan_id` int(11) NOT NULL,
+  `besar_biaya` int(15) NOT NULL,
+  `tempat` varchar(50) NOT NULL,
+  `tanggal` date NOT NULL,
+  `jam` time NOT NULL,
+  `is_app_lv1` tinyint(1) NOT NULL,
+  `user_app_lv1` int(11) NOT NULL,
+  `date_app_lv1` date NOT NULL,
+  `is_app_lv2` tinyint(1) NOT NULL,
+  `user_app_lv2` int(11) NOT NULL,
+  `date_app_lv2` date NOT NULL,
+  `created_on` date NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `edited_on` date NOT NULL,
+  `edited_by` int(11) NOT NULL,
+  `is_deleted` tinyint(1) NOT NULL,
+  `deleted_on` date NOT NULL,
+  `deleted_by` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
+
+--
+-- Table structure for table `penyelenggara`
+--
+
+CREATE TABLE IF NOT EXISTS `penyelenggara` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(50) NOT NULL,
+  `created_on` date NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `edited_on` date NOT NULL,
+  `edited_by` int(11) NOT NULL,
+  `is_deleted` tinyint(1) NOT NULL,
+  `deleted_on` date NOT NULL,
+  `deleted_by` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `penyelenggara`
+--
+
+INSERT INTO `penyelenggara` (`id`, `title`, `created_on`, `created_by`, `edited_on`, `edited_by`, `is_deleted`, `deleted_on`, `deleted_by`) VALUES
+(1, 'PT. ABC', '2015-05-11', 1, '0000-00-00', 0, 0, '0000-00-00', 0),
+(2, 'PT. DEF', '2015-05-11', 1, '0000-00-00', 0, 0, '0000-00-00', 0);
+
+--
+-- Table structure for table `pembiayaan`
+--
+
+CREATE TABLE IF NOT EXISTS `pembiayaan` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(50) NOT NULL,
+  `created_on` date NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `edited_on` date NOT NULL,
+  `edited_by` int(11) NOT NULL,
+  `is_deleted` tinyint(1) NOT NULL,
+  `deleted_on` date NOT NULL,
+  `deleted_by` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `pembiayaan`
+--
+
+INSERT INTO `pembiayaan` (`id`, `title`, `created_on`, `created_by`, `edited_on`, `edited_by`, `is_deleted`, `deleted_on`, `deleted_by`) VALUES
+(1, 'Tunai', '2015-05-11', 1, '0000-00-00', 0, 0, '0000-00-00', 0),
+(2, 'Reimburse', '2015-05-11', 1, '0000-00-00', 0, 0, '0000-00-00', 0);
+
+--
 -- Table structure for table `active_inactive`
 --
 

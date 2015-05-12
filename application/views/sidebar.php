@@ -35,8 +35,10 @@
           <li > <a href="<?php echo site_url('form_cuti/approval_hr')?>">Approval HR</a> </li>
           <li > <a href="<?php echo site_url('form_spd_dalam') ?>">Perjalanan dinas - dalam kota</a> </li>          
           <li > <a href="<?php echo site_url('form_spd_luar') ?>">Perjalanan dinas - luar kota</a> </li>            
-          <li > <a href="<?php echo site_url('form_absen') ?>">Keterangan tidak absen</a> </li>          
-          <li > <a href="<?php echo site_url('form_training') ?>">Training</a> </li>          
+          <li > <a href="<?php echo site_url('form_absen') ?>">Keterangan tidak absen</a> </li>
+          <?php echo ($this->ion_auth->is_superior1()) ? '<li > <a href="'.site_url('form_absen/index_superior1').'">Absen - Subordinate appr1</a> </li>' : "";?>          
+          <li > <a href="<?php echo site_url('form_training') ?>">Training</a> </li>
+          <?php echo ($this->ion_auth->is_superior1()) ? '<li > <a href="'.site_url('form_training/index_superior1').'">Training - Subordinate appr1</a> </li>' : "";?>        
           <li > <a href="form_medical.html">Medical</a> </li>          
           <li > <a href="<?php echo site_url('form_promosi') ?>">Promosi</a> </li>          
           <li > <a href="form_demolition.html">Demolition</a> </li>          
