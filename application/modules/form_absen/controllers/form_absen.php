@@ -69,6 +69,61 @@ class Form_absen extends MX_Controller {
         }
     }
 
+    function index_superior1($ftitle = "fn:",$sort_by = "id", $sort_order = "desc", $offset = 0)
+    {
+        $user_id = $this->session->userdata('user_id');
+        if (!$this->ion_auth->logged_in())
+        {
+            //redirect them to the login page
+            redirect('auth/login', 'refresh');
+        }
+        elseif ($this->ion_auth->is_superior1())
+        {
+            $id = $this->ion_auth->user()->row()->id;
+
+            $q_position_id = $this->form_absen_model->where('users_employement.user_id',$id)->render_emp()->row();
+
+            $position_id = $q_position_id->position_id;
+
+            $organization_id = $q_position_id->organization_id;
+
+            //die($organization_id);
+
+            $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+
+            //set sort order
+            $this->data['sort_order'] = $sort_order;
+            
+            //set sort by
+            $this->data['sort_by'] = $sort_by;
+              
+            //set filter by title
+            $this->data['ftitle_param'] = $ftitle; 
+            $exp_ftitle = explode(":",$ftitle);
+            $ftitle_re = str_replace("_", " ", $exp_ftitle[1]);
+            $ftitle_post = (strlen($ftitle_re) > 0) ? array('form_absen.title'=>$ftitle_re) : array() ;
+            
+            //set default limit in var $config['list_limit'] at application/config/ion_auth.php 
+            $this->data['limit'] = $limit = (strlen($this->input->post('limit')) > 0) ? $this->input->post('limit') : 10 ;
+
+            $this->data['offset'] = 6;
+
+            //list of filterize all form_absen  
+            $this->data['form_absen_all'] = $this->form_absen_model->like($ftitle_post)->where('users_keterangan_absen.is_deleted',0)->where('organization.parent_organization_id',$organization_id)->form_absen()->result();
+            
+            $this->data['num_rows_all'] = $this->form_absen_model->like($ftitle_post)->where('users_keterangan_absen.is_deleted',0)->where('organization.parent_organization_id',$organization_id)->form_absen()->num_rows();
+
+            //list of filterize limit form_absen for pagination  
+            $this->data['form_absen'] = $this->form_absen_model->like($ftitle_post)->where('users_keterangan_absen.is_deleted',0)->where('organization.parent_organization_id',$organization_id)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->form_absen()->result();
+
+            $this->data['_num_rows'] = $this->form_absen_model->like($ftitle_post)->where('users_keterangan_absen.is_deleted',0)->where('organization.parent_organization_id',$organization_id)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->form_absen()->num_rows();
+
+            $this->_render_page('form_absen/index', $this->data);
+        }else{
+            return show_error("You must be an superior 1 to view this page.");
+        }
+    }
+
     function detail($id)
     {
 
