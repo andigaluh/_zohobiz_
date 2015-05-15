@@ -23,7 +23,7 @@
                   </div>
                 </div>
                   <div class="grid-body no-border">
-                        WADAW <?php echo $this->ion_auth->is_superior3() ?>
+                        
                           <table class="table table-striped table-flip-scroll cf">
                               <thead>
                                 <tr>
@@ -35,8 +35,15 @@
                                 </tr>
                               </thead>
                               <tbody>
-                                <?php if ($_num_rows > 0) {
-                                  foreach ($form_training as $user) { ?>
+                                <?php
+                                $i = 0; 
+                                if ($q_subordinate1_num_rows > 0) {
+                                  foreach ($q_subordinate1 as $v_subordinate1) {
+                                    $id_subordinate1 = $v_subordinate1->user_id;
+                                    $q_subordinate2 = $this->form_training_model->where('users_training.user_app_lv1',$id_subordinate1)->where('users_training.is_deleted',0)->order_by('users_training.id', 'desc')->form_training()->result();
+                                    $subordinate2_num_rows = $this->form_training_model->where('users_training.user_app_lv1',$id_subordinate1)->where('users_training.is_deleted',0)->order_by('users_training.id', 'desc')->form_training()->num_rows();
+                                    if ($subordinate2_num_rows > 0) {
+                                       foreach ($q_subordinate2 as $user) { ?>
                                   <tr>
                                     <td>
                                       <a href="<?php echo site_url('form_training/detail/'.$user->id)?>"><?php echo $user->first_name.' '.$user->last_name?></a>
@@ -59,19 +66,24 @@
                                     </td>
                                     <td style="text-align:center;">
                                     <?php if ($user->is_app_lv2 == 0) { ?>
+                                    <a href="<?php echo site_url('form_training/hr').'/'.$user->id ?>">
                                         <button type='button' class='btn btn-info btn-small' title='Make Approval'><i class='icon-paste'></i></button>
+                                    </a>
                                     <?php } else { ?>
                                     <span>Ya</span>
                                     <?php } ?>
                                     </td>
                                   </tr>
-                                  <?php }} else { ?>
+                                  <?php $i++;
+                                  }} ?>
+                                <?php }} ?>
+                                <?php if ($i == 0) { ?>
                                   <tr>
                                       <td valign="middle" colspan="5">
                                           <p class="text-center">No Data</p>
                                       </td>
                                   </tr>
-                                  <?php } ?>
+                                <?php } ?>
                               </tbody>
                           </table>
                   </div>

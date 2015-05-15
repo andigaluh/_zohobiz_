@@ -258,5 +258,14 @@ $lang['cuti_input_subheading'] = "Cuti yang akan diambil";
 $lang['start_cuti_date'] = "Tgl. mulai cuti";
 $lang['name'] = "Nama";
 
+//form_absen
+$lang['keterangan'] = "Keterangan";
+
+//form_training
+$lang['emp_name'] = "Nama Karyawan";
+$lang['trn_name'] = "Nama Pelatihan";
+
+
+
 
 

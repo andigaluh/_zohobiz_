@@ -11,7 +11,7 @@
     <div class="clearfix"></div>
     <div class="content">  
 
-	    <div id="container">
+      <div id="container">
         <div class="row">
           <div class="col-md-12">
               <div class="grid simple ">
@@ -33,34 +33,45 @@
                                 </tr>
                               </thead>
                               <tbody>
-                                <?php if ($num_rows_all > 0) {
-                                  foreach ($form_absen as $user) { ?>
+                                <?php
+                                $i = 0; 
+                                if ($q_subordinate1_num_rows > 0) {
+                                  foreach ($q_subordinate1 as $v_subordinate1) {
+                                    $id_subordinate1 = $v_subordinate1->user_id;
+                                    $q_subordinate2 = $this->form_absen_model->where('users_keterangan_absen.user_app_lv1',$id_subordinate1)->where('users_keterangan_absen.is_deleted',0)->order_by('users_keterangan_absen.id', 'desc')->form_absen()->result();
+                                    $subordinate2_num_rows = $this->form_absen_model->where('users_keterangan_absen.user_app_lv1',$id_subordinate1)->where('users_keterangan_absen.is_deleted',0)->order_by('users_keterangan_absen.id', 'desc')->form_absen()->num_rows();
+                                    if ($subordinate2_num_rows > 0) {
+                                       foreach ($q_subordinate2 as $user) { ?>
                                   <tr>
                                     <td><a href="<?php echo site_url('form_absen/detail/'.$user->id.'') ?>"><?php echo getDateFormat($user->date_tidak_hadir) ?></a></td>
                                     <td><?php echo $user->first_name.' '.$user->last_name ?></td>
                                     <td><?php echo $user->keterangan_absen ?></td>
                                     <td style="text-align:center;">
                                         <?php if ($user->is_app_lv1 == 1) { ?>
-                                        <span>Ya</span>
-                                        <?php } else { ?>
-                                        <button type='button' class='btn btn-info btn-small' title='Make Approval'><i class='icon-paste'></i></button></a>
-                                        <?php } ?>
-                                    </td>
-                                    <td style="text-align:center;">
-                                        <?php if ($user->is_app_lv2 == 1) { ?>
-                                        <span>Ya</span>
+                                        Ya
                                         <?php } else { ?>
                                         <button type='button' class='btn btn-info btn-small' title='Make Approval'><i class='icon-paste'></i></button>
                                         <?php } ?>
+                                      </a>
+                                    </td>
+                                    <td style="text-align:center;">
+                                        <?php if ($user->is_app_lv2 == 1) { ?>
+                                        Ya
+                                        <?php } else { ?>
+                                        <a href="<?php echo site_url('form_absen/kabagian/'.$user->id.'') ?>"><button type='button' class='btn btn-info btn-small' title='Make Approval'><i class='icon-paste'></i></button></a>
+                                        <?php } ?>
                                     </td>
                                   </tr>
-                                  <?php }} else { ?>
+                                  <?php $i++; 
+                                  }}
+                                }} ?>
+                                <?php if ($i == 0) { ?>
                                   <tr>
                                       <td valign="middle" colspan="5">
                                           <p class="text-center">No Data</p>
                                       </td>
                                   </tr>
-                                  <?php } ?>
+                                <?php } ?>
                               </tbody>
                           </table>
                   </div>
@@ -68,9 +79,9 @@
           </div>
         </div>
       </div>
-	          	
-		
+              
+    
       </div>
-		
-	</div>  
-	<!-- END PAGE --> 
+    
+  </div>  
+  <!-- END PAGE --> 

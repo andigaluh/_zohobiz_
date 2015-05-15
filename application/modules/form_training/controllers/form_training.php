@@ -28,6 +28,26 @@ class Form_training extends MX_Controller {
             //redirect them to the login page
             redirect('auth/login', 'refresh');
         }
+        elseif ($this->ion_auth->is_admin()) 
+        {
+            $this->index_admin("fn:","id","desc",0);
+            
+        }
+        else
+        {
+            $this->index_member("fn:","id","desc",0);
+        }
+    }
+
+
+    function index_admin($ftitle = "fn:",$sort_by = "id", $sort_order = "desc", $offset = 0)
+    {
+        $user_id = $this->session->userdata('user_id');
+        if (!$this->ion_auth->logged_in())
+        {
+            //redirect them to the login page
+            redirect('auth/login', 'refresh');
+        }
         else
         {
             //set the flash data error message if there is one
@@ -61,6 +81,44 @@ class Form_training extends MX_Controller {
 
             $this->_render_page('form_training/index', $this->data);
         }
+    }
+
+    function index_member($ftitle = "fn:",$sort_by = "id", $sort_order = "desc", $offset = 0)
+    {
+        //redirect them to the home page because they must be an administrator to view this
+        //return show_error('You must be an administrator to view this page.');
+        $id = $this->ion_auth->user()->row()->id;
+
+        $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+
+        //set sort order
+        $this->data['sort_order'] = $sort_order;
+        
+        //set sort by
+        $this->data['sort_by'] = $sort_by;
+          
+        //set filter by title
+        $this->data['ftitle_param'] = $ftitle; 
+        $exp_ftitle = explode(":",$ftitle);
+        $ftitle_re = str_replace("_", " ", $exp_ftitle[1]);
+        $ftitle_post = (strlen($ftitle_re) > 0) ? array('form_training.title'=>$ftitle_re) : array() ;
+        
+        //set default limit in var $config['list_limit'] at application/config/ion_auth.php 
+        $this->data['limit'] = $limit = (strlen($this->input->post('limit')) > 0) ? $this->input->post('limit') : 10 ;
+
+        $this->data['offset'] = 6;
+
+        //list of filterize all form_training  
+        $this->data['form_training_all'] = $this->form_training_model->like($ftitle_post)->where('users_training.is_deleted',0)->where('users_training.user_id',$id)->form_training()->result();
+        
+        $this->data['num_rows_all'] = $this->form_training_model->like($ftitle_post)->where('users_training.is_deleted',0)->where('users_training.user_id',$id)->form_training()->num_rows();
+
+        //list of filterize limit form_training for pagination  
+        $this->data['form_training'] = $this->form_training_model->like($ftitle_post)->where('users_training.is_deleted',0)->where('users_training.user_id',$id)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->form_training()->result();
+
+        $this->data['_num_rows'] = $this->form_training_model->like($ftitle_post)->where('users_training.is_deleted',0)->where('users_training.user_id',$id)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->form_training()->num_rows();
+
+        $this->_render_page('form_training/index', $this->data);
     }
 
     function index_superior1($ftitle = "fn:",$sort_by = "id", $sort_order = "desc", $offset = 0)
@@ -108,13 +166,64 @@ class Form_training extends MX_Controller {
             $this->data['num_rows_all'] = $this->form_training_model->like($ftitle_post)->where('users_training.is_deleted',0)->where('organization.parent_organization_id',$organization_id)->form_training()->num_rows();
 
             //list of filterize limit form_training for pagination  
-            $this->data['form_training'] = $this->form_training_model->like($ftitle_post)->where('users_training.is_deleted',0)->where('organization.parent_organization_id',$organization_id)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->form_training()->result();
+            $this->data['form_training'] = $this->form_training_model->like($ftitle_post)->where('users_training.is_deleted',0)->where('position.parent_position_id',$position_id)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->form_training()->result();
+            //echo $this->db->last_query();
+            $this->data['_num_rows'] = $this->form_training_model->like($ftitle_post)->where('users_training.is_deleted',0)->where('position.parent_position_id',$position_id)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->form_training()->num_rows();
 
-            $this->data['_num_rows'] = $this->form_training_model->like($ftitle_post)->where('users_training.is_deleted',0)->where('organization.parent_organization_id',$organization_id)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->form_training()->num_rows();
-
-            $this->_render_page('form_training/index', $this->data);
+            $this->_render_page('form_training/index_superior1', $this->data);
         }else{
             return show_error("You must be an superior 1 to view this page.");
+        }
+    }
+
+    function index_superior2($ftitle = "fn:",$sort_by = "id", $sort_order = "desc", $offset = 0)
+    {
+        $user_id = $this->session->userdata('user_id');
+        if (!$this->ion_auth->logged_in())
+        {
+            //redirect them to the login page
+            redirect('auth/login', 'refresh');
+        }
+        elseif ($this->ion_auth->is_superior2())
+        {
+            $id = $this->ion_auth->user()->row()->id;
+            //die($id);
+            $q_position_id = $this->form_training_model->where('users_employement.user_id',$id)->render_emp()->row();
+
+            $this->data['position_id'] = $position_id = $q_position_id->position_id;
+
+            $this->data['organization_id'] = $organization_id = $q_position_id->organization_id;
+            //die('$organization_id='.$organization_id);
+            //die($organization_id);
+
+            $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+
+            //set sort order
+            $this->data['sort_order'] = $sort_order;
+            
+            //set sort by
+            $this->data['sort_by'] = $sort_by;
+              
+            //set filter by title
+            $this->data['ftitle_param'] = $ftitle; 
+            $exp_ftitle = explode(":",$ftitle);
+            $ftitle_re = str_replace("_", " ", $exp_ftitle[1]);
+            $ftitle_post = (strlen($ftitle_re) > 0) ? array('form_training.title'=>$ftitle_re) : array() ;
+            
+            //set default limit in var $config['list_limit'] at application/config/ion_auth.php 
+            $this->data['limit'] = $limit = (strlen($this->input->post('limit')) > 0) ? $this->input->post('limit') : 10 ;
+
+            $this->data['offset'] = 6;
+
+            //list of subordinate1  
+            $this->data['q_subordinate1'] = $this->data['q_subordinate1'] =$this->form_training_model->where('position.parent_position_id',$position_id)->render_emp()->result();
+            $this->data['q_subordinate1_num_rows'] = $this->form_training_model->where('position.parent_position_id',$position_id)->render_emp()->num_rows();
+            
+            $this->data['num_rows_all'] = $this->form_training_model->like($ftitle_post)->where('users_training.is_deleted',0)->where('position.parent_position_id',$position_id)->form_training()->num_rows();
+
+            $this->_render_page('form_training/index_superior2', $this->data);
+        }else{
+            return show_error("You must be an superior 2 to view this page.");
         }
     }
 
@@ -167,7 +276,7 @@ class Form_training extends MX_Controller {
         }
     }
 
-    function hrd($id)
+    function hr($id)
     {
 
         if (!$this->ion_auth->logged_in())
@@ -212,7 +321,7 @@ class Form_training extends MX_Controller {
             // render data
             $this->data['user_info'] = $this->form_training_model->where('users.id',$user_id)->get_user()->result();
 
-            $this->_render_page('form_training/approval/hrd', $this->data);
+            $this->_render_page('form_training/approval/hr', $this->data);
         }
     }
 
@@ -264,7 +373,7 @@ class Form_training extends MX_Controller {
         }
     }
 
-    public function do_approve_lv1()
+    public function do_approve_spv()
     {
         $user_id = $this->session->userdata('user_id');
         $date_now = date('Y-m-d');
@@ -277,11 +386,11 @@ class Form_training extends MX_Controller {
 
 
        if ($this->form_training_model->update($form_training_id,$additional_data)) {
-           redirect('form_training','refresh');
+           redirect('form_training/index_superior1','refresh');
        }
     }
 
-    public function do_approve_kbg()
+    public function do_approve_hr()
     {
         $user_id = $this->session->userdata('user_id');
         $date_now = date('Y-m-d');
@@ -294,7 +403,7 @@ class Form_training extends MX_Controller {
 
 
        if ($this->form_training_model->update($form_training_id,$additional_data)) {
-           redirect('form_training','refresh');
+           redirect('form_training/index_superior2','refresh');
        }
     }
 
@@ -386,7 +495,10 @@ class Form_training extends MX_Controller {
         {
             $this->load->library('template');
 
-                if(in_array($view, array('form_training/index')))
+                if(in_array($view, array('form_training/index',
+                                         'form_training/index_superior1',
+                                         'form_training/index_superior2',
+                    )))
                 {
                     $this->template->set_layout('default');
 
