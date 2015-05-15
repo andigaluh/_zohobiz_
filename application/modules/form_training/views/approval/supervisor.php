@@ -31,7 +31,7 @@
                   $jam = $user->jam;
                 }
               ?>
-              <form class="form-no-horizontal-spacing" id="formAppLv1" action="<?php echo site_url() ?>form_training/do_approve_lv1" method="post">
+              <form class="form-no-horizontal-spacing" id="formAppLv1" action="<?php echo site_url() ?>form_training/do_approve_spv" method="post">
                 <input type="hidden" name="form_training_id" value="<?php echo $user->id ?>">
                 <div class="row column-seperation">
                   <div class="col-md-12">    
