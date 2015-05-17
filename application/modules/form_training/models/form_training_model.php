@@ -805,6 +805,164 @@ class Form_training_model extends CI_Model
         return $this;
     }
 
+    public function render_penyelenggara()
+    {
+        $this->trigger_events('form_cuti');
+
+        if (isset($this->_ion_select) && !empty($this->_ion_select))
+        {
+            foreach ($this->_ion_select as $select)
+            {
+                $this->db->select($select);
+            }
+
+            $this->_ion_select = array();
+        }
+        else
+        {
+            //default selects
+            $this->db->select(array(
+                $this->tables['penyelenggara'].'.*',
+                $this->tables['penyelenggara'].'.id as id',
+                $this->tables['penyelenggara'].'.id as penyelenggara_id',
+
+ 
+            ));
+
+        }
+
+        $this->trigger_events('extra_where');
+
+        //run each where that was passed
+
+        if (isset($this->_ion_where) && !empty($this->_ion_where))
+        {
+            foreach ($this->_ion_where as $where)
+            {
+                $this->db->where($where);
+            }
+
+            $this->_ion_where = array();
+        }
+
+        if (isset($this->_ion_like) && !empty($this->_ion_like))
+        {
+            foreach ($this->_ion_like as $like)
+            {
+                $this->db->or_like($like);
+            }
+
+            $this->_ion_like = array();
+        }
+
+        if (isset($this->_ion_limit) && isset($this->_ion_offset))
+        {
+            $this->db->limit($this->_ion_limit, $this->_ion_offset);
+
+            $this->_ion_limit  = NULL;
+            $this->_ion_offset = NULL;
+        }
+        else if (isset($this->_ion_limit))
+        {
+            $this->db->limit($this->_ion_limit);
+
+            $this->_ion_limit  = NULL;
+        }
+
+        //set the order
+        if (isset($this->_ion_order_by) && isset($this->_ion_order))
+        {
+            $this->db->order_by($this->_ion_order_by, $this->_ion_order);
+
+            $this->_ion_order    = NULL;
+            $this->_ion_order_by = NULL;
+        }
+
+        $this->response = $this->db->get($this->tables['penyelenggara']);
+
+
+        return $this;
+    }
+
+    public function render_pembiayaan()
+    {
+        $this->trigger_events('form_cuti');
+
+        if (isset($this->_ion_select) && !empty($this->_ion_select))
+        {
+            foreach ($this->_ion_select as $select)
+            {
+                $this->db->select($select);
+            }
+
+            $this->_ion_select = array();
+        }
+        else
+        {
+            //default selects
+            $this->db->select(array(
+                $this->tables['pembiayaan'].'.*',
+                $this->tables['pembiayaan'].'.id as id',
+                $this->tables['pembiayaan'].'.id as pembiayaan_id',
+
+ 
+            ));
+
+        }
+
+        $this->trigger_events('extra_where');
+
+        //run each where that was passed
+
+        if (isset($this->_ion_where) && !empty($this->_ion_where))
+        {
+            foreach ($this->_ion_where as $where)
+            {
+                $this->db->where($where);
+            }
+
+            $this->_ion_where = array();
+        }
+
+        if (isset($this->_ion_like) && !empty($this->_ion_like))
+        {
+            foreach ($this->_ion_like as $like)
+            {
+                $this->db->or_like($like);
+            }
+
+            $this->_ion_like = array();
+        }
+
+        if (isset($this->_ion_limit) && isset($this->_ion_offset))
+        {
+            $this->db->limit($this->_ion_limit, $this->_ion_offset);
+
+            $this->_ion_limit  = NULL;
+            $this->_ion_offset = NULL;
+        }
+        else if (isset($this->_ion_limit))
+        {
+            $this->db->limit($this->_ion_limit);
+
+            $this->_ion_limit  = NULL;
+        }
+
+        //set the order
+        if (isset($this->_ion_order_by) && isset($this->_ion_order))
+        {
+            $this->db->order_by($this->_ion_order_by, $this->_ion_order);
+
+            $this->_ion_order    = NULL;
+            $this->_ion_order_by = NULL;
+        }
+
+        $this->response = $this->db->get($this->tables['pembiayaan']);
+
+
+        return $this;
+    }
+
     public function delete($id)
     {
         $this->trigger_events('pre_delete_frm_training');

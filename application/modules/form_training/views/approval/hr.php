@@ -97,7 +97,14 @@
                         <label class="form-label text-right">Penyelenggara</label>
                       </div>
                       <div class="col-md-9">
-                        <input name="penyelanggara" id="penyelanggara" type="text"  class="form-control" placeholder="Penyelenggara" value="<?php echo $user->penyelenggara_nm ?>" disabled="disabled">
+                        <select id="penyelenggara" name="penyelenggara" class="select2" style="width:100%;">
+                          <option value="0">Penyelenggara</option>
+                          <?php if ($penyelenggara_list_row > 0) {
+                            foreach ($penyelenggara_list as $pl) { ?>
+                              <option value="<?php echo $pl->id ?>"><?php echo $pl->title; ?></option>
+                           <?php }
+                          } ?>
+                        </select>
                       </div>
                     </div>
                     <div class="row form-row">
@@ -105,7 +112,14 @@
                         <label class="form-label text-right">Pembiayaan</label>
                       </div>
                       <div class="col-md-9">
-                        <input name="pembiayaan" id="pembiayaan" type="text"  class="form-control" placeholder="Pembiayaan" value="<?php echo $user->pembiayaan_nm?>" disabled="disabled">
+                        <select id="pembiayaan" name="pembiayaan" class="select2" style="width:100%;">
+                          <option value="0">Pembiayaan</option>
+                          <?php if ($pembiayaan_list_row > 0) {
+                            foreach ($pembiayaan_list as $pl) { ?>
+                              <option value="<?php echo $pl->id ?>"><?php echo $pl->title; ?></option>
+                           <?php }
+                          } ?>
+                        </select>
                       </div>
                     </div>
                     <div class="row form-row">
@@ -113,7 +127,7 @@
                         <label class="form-label text-right">Besar Biaya (Rp.)</label>
                       </div>
                       <div class="col-md-9">
-                        <input name="besar_biaya" id="besar_biaya" type="text"  class="form-control" placeholder="Besar biaya (Rp.)" value="<?php echo $user->besar_biaya ?>" disabled="disabled">
+                        <input name="besar_biaya" id="besar_biaya" type="text"  class="form-control" placeholder="Besar biaya (Rp.)" value="<?php echo $user->besar_biaya ?>">
                       </div>
                     </div>
                     <div class="row form-row">
@@ -121,7 +135,7 @@
                         <label class="form-label text-right">Tempat Pelaksanaan</label>
                       </div>
                       <div class="col-md-9">
-                        <input name="tempat" id="tempat" type="text"  class="form-control" placeholder="Tempat Pelaksanaan" value="<?php echo $user->tempat ?>" disabled="disabled">
+                        <input name="tempat" id="tempat" type="text"  class="form-control" placeholder="Tempat Pelaksanaan" value="<?php echo $user->tempat ?>">
                       </div>
                     </div>
                     <div class="row form-row">
@@ -129,7 +143,7 @@
                         <label class="form-label text-right">Waktu Pelaksanaan</label>
                       </div>
                       <div class="col-md-9">
-                        <input name="tanggal" id="tanggal" type="text"  class="form-control" placeholder="Waktu Pelaksanaan" value="<?php echo $tanggal ?>" disabled="disabled">
+                        <input name="tanggal" id="tanggal" type="text"  class="form-control" placeholder="Waktu Pelaksanaan" value="<?php echo $tanggal ?>">
                       </div>
                     </div>
                     <div class="row form-row">
@@ -137,7 +151,7 @@
                         <label class="form-label text-right">Jam</label>
                       </div>
                       <div class="col-md-9">
-                        <input name="jam" id="jam" type="text"  class="form-control" placeholder="Waktu Pelaksanaan" value="<?php echo $jam ?>" disabled="disabled">
+                        <input name="jam" id="jam" type="text"  class="form-control" placeholder="Waktu Pelaksanaan" value="<?php echo $jam ?>">
                       </div>
                     </div>
                   </div>
