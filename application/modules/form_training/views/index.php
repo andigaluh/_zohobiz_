@@ -23,7 +23,6 @@
                   </div>
                 </div>
                   <div class="grid-body no-border">
-                        WADAW <?php echo $this->ion_auth->is_superior3() ?>
                           <table class="table table-striped table-flip-scroll cf">
                               <thead>
                                 <tr>

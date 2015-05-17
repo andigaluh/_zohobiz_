@@ -176,7 +176,7 @@ class Form_training extends MX_Controller {
         }
     }
 
-    function index_superior2($ftitle = "fn:",$sort_by = "id", $sort_order = "desc", $offset = 0)
+    function index_hr($ftitle = "fn:",$sort_by = "id", $sort_order = "desc", $offset = 0)
     {
         $user_id = $this->session->userdata('user_id');
         if (!$this->ion_auth->logged_in())
@@ -184,7 +184,7 @@ class Form_training extends MX_Controller {
             //redirect them to the login page
             redirect('auth/login', 'refresh');
         }
-        elseif ($this->ion_auth->is_superior2())
+        elseif ($this->ion_auth->is_hr())
         {
             $id = $this->ion_auth->user()->row()->id;
             //die($id);
@@ -221,9 +221,9 @@ class Form_training extends MX_Controller {
             
             $this->data['num_rows_all'] = $this->form_training_model->like($ftitle_post)->where('users_training.is_deleted',0)->where('position.parent_position_id',$position_id)->form_training()->num_rows();
 
-            $this->_render_page('form_training/index_superior2', $this->data);
+            $this->_render_page('form_training/index_hr', $this->data);
         }else{
-            return show_error("You must be an superior 2 to view this page.");
+            return show_error("You must be an HR to view this page.");
         }
     }
 
@@ -263,7 +263,7 @@ class Form_training extends MX_Controller {
             if ($is_app_lv2 == 1) {
                 $user_info_lv2 = $this->form_training_model->where('users.id',$user_app_lv2)->get_user()->result();
                 foreach ($user_info_lv2 as $ui2) {
-                    $this->data['user_app_lv2_nm'] = $ui2->first_name." ".$ui1->last_name; 
+                    $this->data['user_app_lv2_nm'] = $ui2->first_name." ".$ui2->last_name; 
                 }  
             }else {
                 $this->data['user_app_lv2_nm'] = "";
@@ -319,6 +319,10 @@ class Form_training extends MX_Controller {
             }
 
             // render data
+            $this->data['penyelenggara_list'] = $this->form_training_model->where('is_deleted',0)->render_penyelenggara()->result();
+            $this->data['penyelenggara_list_row'] = $this->form_training_model->where('is_deleted',0)->render_penyelenggara()->num_rows();
+            $this->data['pembiayaan_list'] = $this->form_training_model->where('is_deleted',0)->render_pembiayaan()->result();
+            $this->data['pembiayaan_list_row'] = $this->form_training_model->where('is_deleted',0)->render_pembiayaan()->num_rows();
             $this->data['user_info'] = $this->form_training_model->where('users.id',$user_id)->get_user()->result();
 
             $this->_render_page('form_training/approval/hr', $this->data);
@@ -392,19 +396,39 @@ class Form_training extends MX_Controller {
 
     public function do_approve_hr()
     {
-        $user_id = $this->session->userdata('user_id');
-        $date_now = date('Y-m-d');
-        $form_training_id = $this->input->post('form_training_id');
+        $this->form_validation->set_rules('penyelenggara', 'Penyelenggara', 'trim|required');
+        $this->form_validation->set_rules('pembiayaan', 'Pembiayaan', 'trim|required');
+        $this->form_validation->set_rules('besar_biaya', 'Besar Biaya', 'trim|required');
+        $this->form_validation->set_rules('tempat', 'Tempat Pelaksanaan', 'trim|required');
+        $this->form_validation->set_rules('tanggal', 'Waktu Pelaksanaan', 'trim|required');
+        $this->form_validation->set_rules('jam', 'Waktu Pelaksanaan', 'trim|required');
 
-        $additional_data = array(
-        'is_app_lv2' => 1,
-        'user_app_lv2' => $user_id, 
-        'date_app_lv2' => $date_now);
+        if ($this->form_validation->run() == FALSE) {
+            echo $this->input->post('user_id')."sss ".json_encode(array('st'=>0, 'errors'=>validation_errors('<div class="alert alert-danger" role="alert">', '</div>')));
+        } else {
+            $user_id = $this->session->userdata('user_id');
+            $date_now = date('Y-m-d');
+            $form_training_id = $this->input->post('form_training_id');
+
+            $additional_data = array(
+            'is_app_lv2' => 1,
+            'user_app_lv2' => $user_id, 
+            'date_app_lv2' => $date_now,
+            'penyelenggara_id' => $this->input->post('penyelanggara'),
+            'pembiayaan_id' => $this->input->post('pembiayaan'),
+            'besar_biaya' => $this->input->post('besar_biaya'),
+            'tempat' => $this->input->post('tempat'),
+            'tanggal' => $this->input->post('tanggal'),
+            'jam' => $this->input->post('jam')
+
+            );
 
 
-       if ($this->form_training_model->update($form_training_id,$additional_data)) {
-           redirect('form_training/index_superior2','refresh');
+           if ($this->form_training_model->update($form_training_id,$additional_data)) {
+               redirect('form_training/index_hr','refresh');
+           }
        }
+        
     }
 
     function input($ftitle = "fn:",$sort_by = "id", $sort_order = "asc", $offset = 0)
@@ -497,7 +521,7 @@ class Form_training extends MX_Controller {
 
                 if(in_array($view, array('form_training/index',
                                          'form_training/index_superior1',
-                                         'form_training/index_superior2',
+                                         'form_training/index_hr',
                     )))
                 {
                     $this->template->set_layout('default');
@@ -557,7 +581,7 @@ class Form_training extends MX_Controller {
                     $this->template->add_css('bootstrap-timepicker.css');
                      
                 }elseif(in_array($view, array('form_training/approval/supervisor',
-                                              'form_training/approval/kabagian')))
+                                              'form_training/approval/hr')))
                 {
                     $this->template->set_layout('default');
 
