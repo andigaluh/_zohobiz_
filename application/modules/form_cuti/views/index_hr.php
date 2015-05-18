@@ -51,9 +51,12 @@ BEGIN PAGE CONTAINER-->
                                   // approval cuti
                                   $txt_app_lv1 = $txt_app_lv2 = $txt_app_lv3 = "-";
                                   if ($user->is_app_lv1 == 1) {
-                                    $txt_app_lv1 = '<i class="icon-ok-sign" data-toggle="tooltip" data-original-title="Approved"></i>';
+                                    $txt_app_lv1 = '<i class="icon-ok-sign"></i>';
                                   }elseif ($user->is_app_lv1 == 2) {
                                     $txt_app_lv1 = '<i class="icon-remove-sign"></i>';
+                                  }
+                                  elseif ($this->ion_auth->is_superior1()) {
+                                    $txt_app_lv1 = "<a href='".site_url('form_cuti/approval_spv/'.$id_cuti)."'>approve</a>";
                                   }
                                   else{
                                     $txt_app_lv1 = '<i class="icon-check-empty"></i>';
@@ -63,15 +66,19 @@ BEGIN PAGE CONTAINER-->
                                       $txt_app_lv2 = '<i class="icon-ok-sign"></i>';
                                   }elseif ($user->is_app_lv2 == 2) {
                                     $txt_app_lv2 = '<i class="icon-remove-sign"></i>';
+                                  }elseif ($this->ion_auth->is_superior2()) {
+                                    $txt_app_lv2 = "<a href='".site_url('form_cuti/approval_kbg/'.$id_cuti)."'>approve</a>";
                                   }
                                   else{
                                     $txt_app_lv2 = '<i class="icon-check-empty"></i>';
                                   }
 
                                   if ($user->is_app_lv3 == 1) {
-                                      $txt_app_lv3 = '<i class="icon-ok-sign"></i>';
+                                    $txt_app_lv3 = '<i class="icon-ok-sign"></i>';
                                   }elseif ($user->is_app_lv3 == 2) {
                                     $txt_app_lv3 = '<i class="icon-remove-sign"></i>';
+                                  }elseif ($this->ion_auth->is_hr()) {
+                                    $txt_app_lv3 = "<a href='".site_url('form_cuti/approval_hr/'.$id_cuti)."'>approve</a>";
                                   }
                                   else{
                                     $txt_app_lv3 = '<i class="icon-check-empty"></i>';

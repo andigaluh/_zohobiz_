@@ -20,7 +20,7 @@
                 <h4>Form <span class="semi-bold">Cuti</span> - HRD Approval</h4>
               </div>
               <div class="grid-body no-border">
-                <form class="form-no-horizontal-spacing" id="formAppLv3"> 
+                <form class="form-no-horizontal-spacing" id="formAppLv3" action="<?php echo site_url('form_cuti/do_approve_hr') ?>" method="post">
                   <div class="row column-seperation">
                     <div class="col-md-5">
                       <h4>Informasi karyawan</h4>
@@ -225,8 +225,11 @@
                             </p>   
                           <?php }else{ ?>
                             <input type="hidden" name="cuti_id" value="<?php echo $user->id ?>">
-                            <button id="btn_app_lv3" class="btn btn-success btn-cons"><i class="icon-ok"></i>Approve</button>
-                            <button class="btn btn-danger btn-cons"><i class="icon-remove"></i>Not Approve</button>
+                            <button type="submit" id="btn_app_lv3" class="btn btn-success btn-cons" value="1" name="btn_app_lv3"><i class="icon-ok"></i>Approve</button>
+                            <button class="btn btn-danger btn-cons" type="submit" value="2" name="btn_app_lv3"><i class="icon-remove"></i>Not Approve</button>
+
+                            <!-- <button id="btn_app_lv3" class="btn btn-success btn-cons"><i class="icon-ok"></i>Approve</button>
+                            <button class="btn btn-danger btn-cons"><i class="icon-remove"></i>Not Approve</button> -->
                             <p class="">(Personalia)</p>
                           <?php } ?>
                         </div>

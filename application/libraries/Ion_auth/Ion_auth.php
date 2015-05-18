@@ -501,6 +501,21 @@ class Ion_auth
     }
 
     /**
+     * is_hr
+     *
+     * @return bool
+     * @author Andi Galuh
+     **/
+    public function is_hr($id=false)
+    {
+        $this->ion_auth_model->trigger_events('is_hr');
+
+        $hr_group = $this->config->item('hr_group', 'ion_auth');
+
+        return $this->in_group($hr_group, $id);
+    }
+
+    /**
      * in_group
      *
      * @param mixed group(s) to check

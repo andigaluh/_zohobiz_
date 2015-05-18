@@ -32,7 +32,7 @@
           <li > <a href="<?php echo site_url('form_cuti')?>">Cuti</a> </li>
           <?php echo ($this->ion_auth->is_superior1()) ? '<li > <a href="'.site_url('form_cuti/index_superior1').'">Cuti - Subordinate appr1</a> </li>' : "";?>
           <?php echo ($this->ion_auth->is_superior2()) ? '<li > <a href="'.site_url('form_cuti/index_superior2').'">Cuti - Subordinate appr2</a> </li>' : "";?>
-          <li > <a href="<?php echo site_url('form_cuti/approval_hr')?>">Approval HR</a> </li>
+          <?php echo ($this->ion_auth->is_hr()) ? '<li > <a href="'.site_url('form_cuti/index_hr').'">Cuti - HR</a> </li>' : "";?>
           <li > <a href="<?php echo site_url('form_spd_dalam') ?>">Perjalanan dinas - dalam kota</a> </li>          
           <li > <a href="<?php echo site_url('form_spd_luar') ?>">Perjalanan dinas - luar kota</a> </li>            
           <li > <a href="<?php echo site_url('form_absen') ?>">Keterangan tidak absen</a> </li>
