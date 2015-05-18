@@ -35,8 +35,12 @@
           <?php echo ($this->ion_auth->is_hr()) ? '<li > <a href="'.site_url('form_cuti/index_hr').'">Cuti - HR</a> </li>' : "";?>
           <li > <a href="<?php echo site_url('form_spd_dalam') ?>">Perjalanan dinas - dalam kota</a> </li>          
           <li > <a href="<?php echo site_url('form_spd_luar') ?>">Perjalanan dinas - luar kota</a> </li>            
-          <li > <a href="<?php echo site_url('form_absen') ?>">Keterangan tidak absen</a> </li>          
-          <li > <a href="<?php echo site_url('form_training') ?>">Training</a> </li>          
+          <li > <a href="<?php echo site_url('form_absen') ?>">Keterangan tidak absen</a> </li>
+          <?php echo ($this->ion_auth->is_superior1()) ? '<li > <a href="'.site_url('form_absen/index_superior1').'">Absen - Subordinate appr1</a> </li>' : "";?>
+          <?php echo ($this->ion_auth->is_superior2()) ? '<li > <a href="'.site_url('form_absen/index_superior2').'">Absen - Subordinate appr2</a> </li>' : "";?>
+          <li > <a href="<?php echo site_url('form_training') ?>">Training</a> </li>
+          <?php echo ($this->ion_auth->is_superior1()) ? '<li > <a href="'.site_url('form_training/index_superior1').'">Training - Subordinate appr1</a> </li>' : "";?>
+          <?php echo ($this->ion_auth->is_hr()) ? '<li > <a href="'.site_url('form_training/index_hr').'">Training - Subordinate appr2</a> </li>' : "";?>                  
           <li > <a href="form_medical.html">Medical</a> </li>          
           <li > <a href="<?php echo site_url('form_promosi') ?>">Promosi</a> </li>          
           <li > <a href="form_demolition.html">Demolition</a> </li>          
@@ -44,7 +48,7 @@
           <li > <a href="form_exit.html">Exit clearance</a> </li>          
           <li > <a href="form_status.html">Status karyawan</a> </li>           
           <li > <a href="form_retirement.html">Retirement</a> </li>          
-          <li > <a href="form_resignment.html">Resignment</a> </li>          
+          <li > <a href="<?php echo site_url('form_resignment') ?>">Resignment</a> </li>          
           <li > <a href="form_recruitment.html">Recruitment</a> </li>          
         </ul>
       </li>

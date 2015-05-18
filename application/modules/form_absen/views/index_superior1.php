@@ -43,12 +43,12 @@
                                         <?php if ($user->is_app_lv1 == 1) { ?>
                                         <span>Ya</span>
                                         <?php } else { ?>
-                                        <button type='button' class='btn btn-info btn-small' title='Make Approval'><i class='icon-paste'></i></button></a>
+                                        <a href="<?php echo site_url('form_absen/supervisor').'/'.$user->id ?>"><button type='button' class='btn btn-info btn-small' title='Make Approval'><i class='icon-paste'></i></button></a>
                                         <?php } ?>
                                     </td>
                                     <td style="text-align:center;">
                                         <?php if ($user->is_app_lv2 == 1) { ?>
-                                        <span>Ya</span>
+                                        <span>Yaz</span>
                                         <?php } else { ?>
                                         <button type='button' class='btn btn-info btn-small' title='Make Approval'><i class='icon-paste'></i></button>
                                         <?php } ?>

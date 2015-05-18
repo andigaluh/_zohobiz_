@@ -28,11 +28,25 @@ class Form_training extends MX_Controller {
             //redirect them to the login page
             redirect('auth/login', 'refresh');
         }
-        elseif (!$this->ion_auth->is_admin()) //remove this elseif if you want to enable this for non-admins
+        elseif ($this->ion_auth->is_admin()) 
         {
-            //redirect them to the home page because they must be an administrator to view this
-            //return show_error('You must be an administrator to view this page.');
-            return show_error('You must be an administrator to view this page.');
+            $this->index_admin("fn:","id","desc",0);
+            
+        }
+        else
+        {
+            $this->index_member("fn:","id","desc",0);
+        }
+    }
+
+
+    function index_admin($ftitle = "fn:",$sort_by = "id", $sort_order = "desc", $offset = 0)
+    {
+        $user_id = $this->session->userdata('user_id');
+        if (!$this->ion_auth->logged_in())
+        {
+            //redirect them to the login page
+            redirect('auth/login', 'refresh');
         }
         else
         {
@@ -69,6 +83,150 @@ class Form_training extends MX_Controller {
         }
     }
 
+    function index_member($ftitle = "fn:",$sort_by = "id", $sort_order = "desc", $offset = 0)
+    {
+        //redirect them to the home page because they must be an administrator to view this
+        //return show_error('You must be an administrator to view this page.');
+        $id = $this->ion_auth->user()->row()->id;
+
+        $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+
+        //set sort order
+        $this->data['sort_order'] = $sort_order;
+        
+        //set sort by
+        $this->data['sort_by'] = $sort_by;
+          
+        //set filter by title
+        $this->data['ftitle_param'] = $ftitle; 
+        $exp_ftitle = explode(":",$ftitle);
+        $ftitle_re = str_replace("_", " ", $exp_ftitle[1]);
+        $ftitle_post = (strlen($ftitle_re) > 0) ? array('form_training.title'=>$ftitle_re) : array() ;
+        
+        //set default limit in var $config['list_limit'] at application/config/ion_auth.php 
+        $this->data['limit'] = $limit = (strlen($this->input->post('limit')) > 0) ? $this->input->post('limit') : 10 ;
+
+        $this->data['offset'] = 6;
+
+        //list of filterize all form_training  
+        $this->data['form_training_all'] = $this->form_training_model->like($ftitle_post)->where('users_training.is_deleted',0)->where('users_training.user_id',$id)->form_training()->result();
+        
+        $this->data['num_rows_all'] = $this->form_training_model->like($ftitle_post)->where('users_training.is_deleted',0)->where('users_training.user_id',$id)->form_training()->num_rows();
+
+        //list of filterize limit form_training for pagination  
+        $this->data['form_training'] = $this->form_training_model->like($ftitle_post)->where('users_training.is_deleted',0)->where('users_training.user_id',$id)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->form_training()->result();
+
+        $this->data['_num_rows'] = $this->form_training_model->like($ftitle_post)->where('users_training.is_deleted',0)->where('users_training.user_id',$id)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->form_training()->num_rows();
+
+        $this->_render_page('form_training/index', $this->data);
+    }
+
+    function index_superior1($ftitle = "fn:",$sort_by = "id", $sort_order = "desc", $offset = 0)
+    {
+        $user_id = $this->session->userdata('user_id');
+        if (!$this->ion_auth->logged_in())
+        {
+            //redirect them to the login page
+            redirect('auth/login', 'refresh');
+        }
+        elseif ($this->ion_auth->is_superior1())
+        {
+            $id = $this->ion_auth->user()->row()->id;
+
+            $q_position_id = $this->form_training_model->where('users_employement.user_id',$id)->render_emp()->row();
+
+            $position_id = $q_position_id->position_id;
+
+            $organization_id = $q_position_id->organization_id;
+
+            //die($organization_id);
+
+            $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+
+            //set sort order
+            $this->data['sort_order'] = $sort_order;
+            
+            //set sort by
+            $this->data['sort_by'] = $sort_by;
+              
+            //set filter by title
+            $this->data['ftitle_param'] = $ftitle; 
+            $exp_ftitle = explode(":",$ftitle);
+            $ftitle_re = str_replace("_", " ", $exp_ftitle[1]);
+            $ftitle_post = (strlen($ftitle_re) > 0) ? array('form_training.title'=>$ftitle_re) : array() ;
+            
+            //set default limit in var $config['list_limit'] at application/config/ion_auth.php 
+            $this->data['limit'] = $limit = (strlen($this->input->post('limit')) > 0) ? $this->input->post('limit') : 10 ;
+
+            $this->data['offset'] = 6;
+
+            //list of filterize all form_training  
+            $this->data['form_training_all'] = $this->form_training_model->like($ftitle_post)->where('users_training.is_deleted',0)->where('organization.parent_organization_id',$organization_id)->form_training()->result();
+            
+            $this->data['num_rows_all'] = $this->form_training_model->like($ftitle_post)->where('users_training.is_deleted',0)->where('organization.parent_organization_id',$organization_id)->form_training()->num_rows();
+
+            //list of filterize limit form_training for pagination  
+            $this->data['form_training'] = $this->form_training_model->like($ftitle_post)->where('users_training.is_deleted',0)->where('position.parent_position_id',$position_id)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->form_training()->result();
+            //echo $this->db->last_query();
+            $this->data['_num_rows'] = $this->form_training_model->like($ftitle_post)->where('users_training.is_deleted',0)->where('position.parent_position_id',$position_id)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->form_training()->num_rows();
+
+            $this->_render_page('form_training/index_superior1', $this->data);
+        }else{
+            return show_error("You must be an superior 1 to view this page.");
+        }
+    }
+
+    function index_hr($ftitle = "fn:",$sort_by = "id", $sort_order = "desc", $offset = 0)
+    {
+        $user_id = $this->session->userdata('user_id');
+        if (!$this->ion_auth->logged_in())
+        {
+            //redirect them to the login page
+            redirect('auth/login', 'refresh');
+        }
+        elseif ($this->ion_auth->is_hr())
+        {
+            $id = $this->ion_auth->user()->row()->id;
+            //die($id);
+            $q_position_id = $this->form_training_model->where('users_employement.user_id',$id)->render_emp()->row();
+
+            $this->data['position_id'] = $position_id = $q_position_id->position_id;
+
+            $this->data['organization_id'] = $organization_id = $q_position_id->organization_id;
+            //die('$organization_id='.$organization_id);
+            //die($organization_id);
+
+            $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+
+            //set sort order
+            $this->data['sort_order'] = $sort_order;
+            
+            //set sort by
+            $this->data['sort_by'] = $sort_by;
+              
+            //set filter by title
+            $this->data['ftitle_param'] = $ftitle; 
+            $exp_ftitle = explode(":",$ftitle);
+            $ftitle_re = str_replace("_", " ", $exp_ftitle[1]);
+            $ftitle_post = (strlen($ftitle_re) > 0) ? array('form_training.title'=>$ftitle_re) : array() ;
+            
+            //set default limit in var $config['list_limit'] at application/config/ion_auth.php 
+            $this->data['limit'] = $limit = (strlen($this->input->post('limit')) > 0) ? $this->input->post('limit') : 10 ;
+
+            $this->data['offset'] = 6;
+
+            //list of subordinate1  
+            $this->data['q_subordinate1'] = $this->data['q_subordinate1'] =$this->form_training_model->where('position.parent_position_id',$position_id)->render_emp()->result();
+            $this->data['q_subordinate1_num_rows'] = $this->form_training_model->where('position.parent_position_id',$position_id)->render_emp()->num_rows();
+            
+            $this->data['num_rows_all'] = $this->form_training_model->like($ftitle_post)->where('users_training.is_deleted',0)->where('position.parent_position_id',$position_id)->form_training()->num_rows();
+
+            $this->_render_page('form_training/index_hr', $this->data);
+        }else{
+            return show_error("You must be an HR to view this page.");
+        }
+    }
+
     function detail($id)
     {
 
@@ -77,19 +235,13 @@ class Form_training extends MX_Controller {
             //redirect them to the login page
             redirect('auth/login', 'refresh');
         }
-        elseif (!$this->ion_auth->is_admin()) //remove this elseif if you want to enable this for non-admins
-        {
-            //redirect them to the home page because they must be an administrator to view this
-            //return show_error('You must be an administrator to view this page.');
-            return show_error('You must be an administrator to view this page.');
-        }
         else
         {
             //set the flash data error message if there is one
             $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
 
-            $form_training = $this->data['form_training'] = $this->form_training_model->where('users_keterangan_training.id',$id)->form_training()->result();
-            $this->data['_num_rows'] = $this->form_training_model->where('users_keterangan_training.id',$id)->form_training()->num_rows();
+            $form_training = $this->data['form_training'] = $this->form_training_model->where('users_training.id',$id)->form_training()->result();
+            $this->data['_num_rows'] = $this->form_training_model->where('users_training.id',$id)->form_training()->num_rows();
 
             foreach ($form_training as $fa) {
                 $user_id = $fa->user_id;
@@ -111,22 +263,20 @@ class Form_training extends MX_Controller {
             if ($is_app_lv2 == 1) {
                 $user_info_lv2 = $this->form_training_model->where('users.id',$user_app_lv2)->get_user()->result();
                 foreach ($user_info_lv2 as $ui2) {
-                    $this->data['user_app_lv2_nm'] = $ui2->first_name." ".$ui1->last_name; 
+                    $this->data['user_app_lv2_nm'] = $ui2->first_name." ".$ui2->last_name; 
                 }  
             }else {
                 $this->data['user_app_lv2_nm'] = "";
             }
 
             // render data
-            $this->data['keterangan_training'] = $this->form_training_model->render_keterangan()->result();
-            $this->data['num_rows_keterangan_training'] = $this->form_training_model->render_keterangan()->num_rows();
             $this->data['user_info'] = $this->form_training_model->where('users.id',$user_id)->get_user()->result();
 
             $this->_render_page('form_training/detail', $this->data);
         }
     }
 
-    function kabagian($id)
+    function hr($id)
     {
 
         if (!$this->ion_auth->logged_in())
@@ -134,19 +284,13 @@ class Form_training extends MX_Controller {
             //redirect them to the login page
             redirect('auth/login', 'refresh');
         }
-        elseif (!$this->ion_auth->is_admin()) //remove this elseif if you want to enable this for non-admins
-        {
-            //redirect them to the home page because they must be an administrator to view this
-            //return show_error('You must be an administrator to view this page.');
-            return show_error('You must be an administrator to view this page.');
-        }
         else
         {
             //set the flash data error message if there is one
             $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
 
-            $form_training = $this->data['form_training'] = $this->form_training_model->where('users_keterangan_training.id',$id)->form_training()->result();
-            $this->data['_num_rows'] = $this->form_training_model->where('users_keterangan_training.id',$id)->form_training()->num_rows();
+            $form_training = $this->data['form_training'] = $this->form_training_model->where('users_training.id',$id)->form_training()->result();
+            $this->data['_num_rows'] = $this->form_training_model->where('users_training.id',$id)->form_training()->num_rows();
 
             foreach ($form_training as $fa) {
                 $user_id = $fa->user_id;
@@ -175,11 +319,13 @@ class Form_training extends MX_Controller {
             }
 
             // render data
-            $this->data['keterangan_training'] = $this->form_training_model->render_keterangan()->result();
-            $this->data['num_rows_keterangan_training'] = $this->form_training_model->render_keterangan()->num_rows();
+            $this->data['penyelenggara_list'] = $this->form_training_model->where('is_deleted',0)->render_penyelenggara()->result();
+            $this->data['penyelenggara_list_row'] = $this->form_training_model->where('is_deleted',0)->render_penyelenggara()->num_rows();
+            $this->data['pembiayaan_list'] = $this->form_training_model->where('is_deleted',0)->render_pembiayaan()->result();
+            $this->data['pembiayaan_list_row'] = $this->form_training_model->where('is_deleted',0)->render_pembiayaan()->num_rows();
             $this->data['user_info'] = $this->form_training_model->where('users.id',$user_id)->get_user()->result();
 
-            $this->_render_page('form_training/approval/kabagian', $this->data);
+            $this->_render_page('form_training/approval/hr', $this->data);
         }
     }
 
@@ -190,19 +336,13 @@ class Form_training extends MX_Controller {
             //redirect them to the login page
             redirect('auth/login', 'refresh');
         }
-        elseif (!$this->ion_auth->is_admin()) //remove this elseif if you want to enable this for non-admins
-        {
-            //redirect them to the home page because they must be an administrator to view this
-            //return show_error('You must be an administrator to view this page.');
-            return show_error('You must be an administrator to view this page.');
-        }
         else
         {
             //set the flash data error message if there is one
             $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
 
-            $form_training = $this->data['form_training'] = $this->form_training_model->where('users_keterangan_training.id',$id)->form_training()->result();
-            $this->data['_num_rows'] = $this->form_training_model->where('users_keterangan_training.id',$id)->form_training()->num_rows();
+            $form_training = $this->data['form_training'] = $this->form_training_model->where('users_training.id',$id)->form_training()->result();
+            $this->data['_num_rows'] = $this->form_training_model->where('users_training.id',$id)->form_training()->num_rows();
 
             foreach ($form_training as $fa) {
                 $user_id = $fa->user_id;
@@ -231,8 +371,6 @@ class Form_training extends MX_Controller {
             }
 
             // render data
-            $this->data['keterangan_training'] = $this->form_training_model->render_keterangan()->result();
-            $this->data['num_rows_keterangan_training'] = $this->form_training_model->render_keterangan()->num_rows();
             $this->data['user_info'] = $this->form_training_model->where('users.id',$user_id)->get_user()->result();
 
             $this->_render_page('form_training/approval/supervisor', $this->data);
@@ -252,25 +390,45 @@ class Form_training extends MX_Controller {
 
 
        if ($this->form_training_model->update($form_training_id,$additional_data)) {
-           redirect('form_training','refresh');
+           redirect('form_training/index_superior1','refresh');
        }
     }
 
-    public function do_approve_kbg()
+    public function do_approve_hr()
     {
-        $user_id = $this->session->userdata('user_id');
-        $date_now = date('Y-m-d');
-        $form_training_id = $this->input->post('form_training_id');
+        $this->form_validation->set_rules('penyelenggara', 'Penyelenggara', 'trim|required');
+        $this->form_validation->set_rules('pembiayaan', 'Pembiayaan', 'trim|required');
+        $this->form_validation->set_rules('besar_biaya', 'Besar Biaya', 'trim|required');
+        $this->form_validation->set_rules('tempat', 'Tempat Pelaksanaan', 'trim|required');
+        $this->form_validation->set_rules('tanggal', 'Waktu Pelaksanaan', 'trim|required');
+        $this->form_validation->set_rules('jam', 'Waktu Pelaksanaan', 'trim|required');
 
-        $additional_data = array(
-        'is_app_lv2' => 1,
-        'user_app_lv2' => $user_id, 
-        'date_app_lv2' => $date_now);
+        if ($this->form_validation->run() == FALSE) {
+            echo $this->input->post('user_id')."sss ".json_encode(array('st'=>0, 'errors'=>validation_errors('<div class="alert alert-danger" role="alert">', '</div>')));
+        } else {
+            $user_id = $this->session->userdata('user_id');
+            $date_now = date('Y-m-d');
+            $form_training_id = $this->input->post('form_training_id');
+
+            $additional_data = array(
+            'is_app_lv2' => 1,
+            'user_app_lv2' => $user_id, 
+            'date_app_lv2' => $date_now,
+            'penyelenggara_id' => $this->input->post('penyelanggara'),
+            'pembiayaan_id' => $this->input->post('pembiayaan'),
+            'besar_biaya' => $this->input->post('besar_biaya'),
+            'tempat' => $this->input->post('tempat'),
+            'tanggal' => $this->input->post('tanggal'),
+            'jam' => $this->input->post('jam')
+
+            );
 
 
-       if ($this->form_training_model->update($form_training_id,$additional_data)) {
-           redirect('form_training','refresh');
+           if ($this->form_training_model->update($form_training_id,$additional_data)) {
+               redirect('form_training/index_hr','refresh');
+           }
        }
+        
     }
 
     function input($ftitle = "fn:",$sort_by = "id", $sort_order = "asc", $offset = 0)
@@ -282,20 +440,14 @@ class Form_training extends MX_Controller {
             //redirect them to the login page
             redirect('auth/login', 'refresh');
         }
-        elseif (!$this->ion_auth->is_admin()) //remove this elseif if you want to enable this for non-admins
-        {
-            //redirect them to the home page because they must be an administrator to view this
-            //return show_error('You must be an administrator to view this page.');
-            return show_error('You must be an administrator to view this page.');
-        }
         else
         {
             //set the flash data error message if there is one
             $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
 
             // render data
-            $this->data['keterangan_training'] = $this->form_training_model->render_keterangan()->result();
-            $this->data['num_rows_keterangan_training'] = $this->form_training_model->render_keterangan()->num_rows();
+            //$this->data['keterangan_training'] = $this->form_training_model->render_keterangan()->result();
+            //$this->data['num_rows_keterangan_training'] = $this->form_training_model->render_keterangan()->num_rows();
             $this->data['user_info'] = $this->form_training_model->where('user_id',$user_id)->get_user()->result();
 
             $this->_render_page('form_training/input', $this->data);
@@ -304,14 +456,12 @@ class Form_training extends MX_Controller {
 
     public function add()
     {
-
-        $this->form_validation->set_rules('date_tidak_hadir', 'Tanggal Absen', 'trim|required');
-        $this->form_validation->set_rules('keterangan', 'Keterangan Absen', 'trim|required');
-        $this->form_validation->set_rules('alasan', 'Alasan Absen', 'trim|required');
+        $this->form_validation->set_rules('training_name', 'Nama Program Pelatihan', 'trim|required');
+        $this->form_validation->set_rules('tujuan_training', 'Tujuan Program Pelatihan', 'trim|required');
         
         if($this->form_validation->run() == FALSE)
         {
-            echo json_encode(array('st'=>0, 'errors'=>validation_errors('<div class="alert alert-danger" role="alert">', '</div>')));
+            echo $this->input->post('user_id')."sss ".json_encode(array('st'=>0, 'errors'=>validation_errors('<div class="alert alert-danger" role="alert">', '</div>')));
         }
         else
         {
@@ -325,9 +475,8 @@ class Form_training extends MX_Controller {
 
             $additional_data = array(
                 'id_comp_session'       => $comp_session_now,
-                'date_tidak_hadir'      => date('Y-m-d', strtotime($this->input->post('date_tidak_hadir'))),
-                'keterangan_id'         => $this->input->post('keterangan'),
-                'alasan'                => $this->input->post('alasan'),
+                'training_name'         => $this->input->post('training_name'),
+                'tujuan_training'       => $this->input->post('tujuan_training'),
                 'created_on'            => date('Y-m-d',strtotime('now')),
                 'created_by'            => $this->session->userdata('user_id')
             );
@@ -370,7 +519,10 @@ class Form_training extends MX_Controller {
         {
             $this->load->library('template');
 
-                if(in_array($view, array('form_training/index')))
+                if(in_array($view, array('form_training/index',
+                                         'form_training/index_superior1',
+                                         'form_training/index_hr',
+                    )))
                 {
                     $this->template->set_layout('default');
 
@@ -429,7 +581,7 @@ class Form_training extends MX_Controller {
                     $this->template->add_css('bootstrap-timepicker.css');
                      
                 }elseif(in_array($view, array('form_training/approval/supervisor',
-                                              'form_training/approval/kabagian')))
+                                              'form_training/approval/hr')))
                 {
                     $this->template->set_layout('default');
 
