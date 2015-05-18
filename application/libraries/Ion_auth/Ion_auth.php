@@ -485,21 +485,6 @@ class Ion_auth
         return $this->in_group($superior2_group, $id);
     }
 
-     /**
-     * is_hr
-     *
-     * @return bool
-     * @author denimaru
-     **/
-    public function is_hr($id=false)
-    {
-        $this->ion_auth_model->trigger_events('is_hr');
-
-        $hr_group = $this->config->item('hr_group', 'ion_auth');
-
-        return $this->in_group($hr_group, $id);
-    }
-
     /**
      * is_hr
      *
