@@ -128,7 +128,10 @@
                         <label class="form-label text-right">Waktu Pelaksanaan</label>
                       </div>
                       <div class="col-md-9">
-                        <input name="tanggal" id="tanggal" type="text"  class="form-control" placeholder="Waktu Pelaksanaan" value="<?php echo $tanggal ?>" disabled="disabled">
+                        <div class="input-append date success no-padding">
+                          <input class="form-control" name="tanggal" type="text" value="<?php echo $tanggal ?>" disabled="disabled">
+                          <span class="add-on"><span class="arrow"></span><i class="icon-th"></i></span> 
+                        </div>
                       </div>
                     </div>
                     <div class="row form-row">
@@ -136,7 +139,15 @@
                         <label class="form-label text-right">Jam</label>
                       </div>
                       <div class="col-md-9">
-                        <input name="jam" id="jam" type="text"  class="form-control" placeholder="Waktu Pelaksanaan" value="<?php echo $jam ?>" disabled="disabled">
+                        <div class="controls">
+                          <div class="input-append bootstrap-timepicker-component">
+                            <input class="timepicker-24 span12" type="text" name="jam" value="<?php echo $jam ?>" disabled="disabled">
+                            <span class="add-on">
+                              <span class="arrow"></span>
+                              <i class="icon-time"></i>
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
