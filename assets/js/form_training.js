@@ -5,7 +5,7 @@ $(document).ready(function() {
                 showMeridian: false
      });
      				
-	$(".select2").select2();
+	//$(".select2").select2();
 
     //Date Pickers
       $('.input-append.date').datepicker({

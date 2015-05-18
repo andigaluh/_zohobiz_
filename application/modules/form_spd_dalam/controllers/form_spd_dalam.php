@@ -355,9 +355,6 @@ class Form_spd_dalam extends MX_Controller {
                     $this->template->add_js('bootstrap-datepicker.js');
                     $this->template->add_js('jquery.slimscroll.js');
                     $this->template->add_js('bootstrap-timepicker.js');
-                    $this->template->add_js('bootstrap-timepicker.js');
-                    $this->template->add_js('bootstrap-timepicker.js');
-                    $this->template->add_js('bootstrap-timepicker.js');
                     $this->template->add_js('form_spd_dalam_input.js');
                     
                     $this->template->add_css('jquery-ui-1.10.1.custom.min.css');

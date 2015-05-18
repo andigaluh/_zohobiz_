@@ -418,11 +418,12 @@ class Form_training extends MX_Controller {
             'pembiayaan_id' => $this->input->post('pembiayaan'),
             'besar_biaya' => $this->input->post('besar_biaya'),
             'tempat' => $this->input->post('tempat'),
-            'tanggal' => $this->input->post('tanggal'),
+            'tanggal' => date('Y-m-d', strtotime($this->input->post('tanggal'))),
             'jam' => $this->input->post('jam')
 
             );
 
+            //die(print_r($additional_data));
 
            if ($this->form_training_model->update($form_training_id,$additional_data)) {
                redirect('form_training/index_hr','refresh');
@@ -602,11 +603,15 @@ class Form_training extends MX_Controller {
                     $this->template->add_js('jquery.bootstrap.wizard.min.js');
                     $this->template->add_js('jquery.validate.min.js');
                     $this->template->add_js('date_form.js');
+                    $this->template->add_js('bootstrap-datepicker.js');
+                    $this->template->add_js('bootstrap-timepicker.js');
                     $this->template->add_js('form_training.js');
 
                     
                     $this->template->add_css('jquery-ui-1.10.1.custom.min.css');
                     $this->template->add_css('plugins/select2/select2.css');
+                    $this->template->add_css('datepicker.css');
+                    $this->template->add_css('bootstrap-timepicker.css');
                     
                 }
 
