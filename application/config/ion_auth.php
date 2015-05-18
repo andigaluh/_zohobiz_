@@ -124,6 +124,7 @@ $config['default_group']              = 'members';           // Default group, u
 $config['admin_group']                = 'admin';             // Default administrators group, use name
 $config['superior1_group']            = 'spv';             // Default superior level 1 group, use name
 $config['superior2_group']            = 'kabag';             // Default superior level 2 group, use name
+$config['hr_group']            		  = 'hr';             // Default HR group, use name
 $config['identity']                   = 'email';             // A database column which is used to login with
 $config['min_password_length']        = 8;                   // Minimum Required Length of Password
 $config['max_password_length']        = 20;                  // Maximum Allowed Length of Password

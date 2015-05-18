@@ -217,6 +217,52 @@ class Form_cuti extends MX_Controller {
         }
     }
 
+    function index_hr($ftitle = "fn:",$sort_by = "id", $sort_order = "desc", $offset = 0)
+    {
+        $user_id = $this->session->userdata('user_id');
+        if (!$this->ion_auth->logged_in())
+        {
+            //redirect them to the login page
+            redirect('auth/login', 'refresh');
+        }
+        elseif ($this->ion_auth->is_hr())
+        {
+            //set the flash data error message if there is one
+            $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+
+            //set sort order
+            $this->data['sort_order'] = $sort_order;
+            
+            //set sort by
+            $this->data['sort_by'] = $sort_by;
+              
+            //set filter by title
+            $this->data['ftitle_param'] = $ftitle; 
+            $exp_ftitle = explode(":",$ftitle);
+            $ftitle_re = str_replace("_", " ", $exp_ftitle[1]);
+            $ftitle_post = (strlen($ftitle_re) > 0) ? array('form_cuti.title'=>$ftitle_re) : array() ;
+            
+            //set default limit in var $config['list_limit'] at application/config/ion_auth.php 
+            $this->data['limit'] = $limit = (strlen($this->input->post('limit')) > 0) ? $this->input->post('limit') : 10 ;
+
+            $this->data['offset'] = 6;
+
+            //list of filterize all form_cuti  
+            $this->data['form_cuti_all'] = $this->form_cuti_model->like($ftitle_post)->where('users_cuti.is_deleted',0)->form_cuti()->result();
+            
+            $this->data['num_rows_all'] = $this->form_cuti_model->like($ftitle_post)->where('users_cuti.is_deleted',0)->form_cuti()->num_rows();
+
+            //list of filterize limit form_cuti for pagination  
+            $this->data['form_cuti'] = $this->form_cuti_model->like($ftitle_post)->where('users_cuti.is_deleted',0)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->form_cuti()->result();
+
+            $this->data['_num_rows'] = $this->form_cuti_model->like($ftitle_post)->where('users_cuti.is_deleted',0)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->form_cuti()->num_rows();
+
+            $this->_render_page('form_cuti/index_hr', $this->data);
+        }else{
+            return show_error("You must be an HR to view this page.");
+        }
+    }
+
     function input($ftitle = "fn:",$sort_by = "id", $sort_order = "asc", $offset = 0)
     {
         $user_id = $this->session->userdata('user_id');
@@ -388,22 +434,36 @@ class Form_cuti extends MX_Controller {
             $this->data['user_pengganti'] = $q_user_pengganti->row();
 
             $this->_render_page('form_cuti/approval/kabagian', $this->data);
-            
-            /*$user_id = 1;
+        }else
+        {
+            return show_error('You must be an Superior 2 to view this page.');
+        }
+    }
+
+    function approval_hr($cuti_id,$ftitle = "fn:",$sort_by = "id", $sort_order = "asc", $offset = 0)
+    {
+
+        if (!$this->ion_auth->logged_in())
+        {
+            //redirect them to the login page
+            redirect('auth/login', 'refresh');
+        }
+        elseif ($this->ion_auth->is_hr()) //remove this elseif if you want to enable this for non-admins
+        {
+            $user_id = $this->session->userdata('user_id');
 
             $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
+           
+            $cuti_details = $this->data['form_cuti'] = $this->form_cuti_model->where('users_cuti.id',$cuti_id)->form_cuti_supervisor()->result();
 
+             $this->data['_num_rows'] = $this->form_cuti_model->where('users_cuti.id',$cuti_id)->form_cuti()->num_rows();
 
-            $this->data['ftitle_param'] = $ftitle; 
-            $exp_ftitle = explode(":",$ftitle);
-            $ftitle_re = str_replace("_", " ", $exp_ftitle[1]);
-            $ftitle_post = (strlen($ftitle_re) > 0) ? array('form_cuti.title'=>$ftitle_re) : array() ;
-
-            $cuti_details = $this->data['form_cuti'] = $this->form_cuti_model->like($ftitle_post)->where('users_cuti.id',1)->form_cuti_supervisor()->result();
-
-            $this->data['_num_rows'] = $this->form_cuti_model->like($ftitle_post)->where('users_cuti.id',1)->form_cuti()->num_rows();
-
-            $data_result = $this->form_cuti_model->where('users.id',$user_id)->get_org_id()->result();
+            foreach ($cuti_details as $cuti_detail) {
+                $id_user = $cuti_detail->user_id;
+                $user_pengganti = $cuti_detail->user_pengganti;
+            }
+            
+            $data_result = $this->form_cuti_model->where('users.id',$id_user)->get_org_id()->result();
             foreach ($data_result as $dr) {
                 $org_id = $dr->organization_id;
             }
@@ -428,31 +488,16 @@ class Form_cuti extends MX_Controller {
             }
 
             $this->data['alasan_cuti'] = $this->form_cuti_model->render_alasan()->result();
-            $this->data['user_pengganti'] = $this->form_cuti_model->where('users_employement.organization_id',$org_id)->render_pengganti()->result();
+            $q_user_pengganti = $this->form_cuti_model->where('users.id',$user_pengganti)->render_pengganti();
 
-            $this->_render_page('form_cuti/approval/kabagian', $this->data);*/
-        }else
-        {
-            return show_error('You must be an Superior 2 to view this page.');
-        }
-    }
+            $this->data['user_pengganti'] = $q_user_pengganti->row();
 
-    function approval_hr($ftitle = "fn:",$sort_by = "id", $sort_order = "asc", $offset = 0)
-    {
-
-        if (!$this->ion_auth->logged_in())
-        {
-            //redirect them to the login page
-            redirect('auth/login', 'refresh');
-        }
-        elseif (!$this->ion_auth->is_admin()) //remove this elseif if you want to enable this for non-admins
-        {
-            //redirect them to the home page because they must be an administrator to view this
-            //return show_error('You must be an administrator to view this page.');
-            return show_error('You must be an administrator to view this page.');
+            $this->_render_page('form_cuti/approval/hr', $this->data);
         }
         else
         {
+            return show_error('You must be a HR user to view this page.');
+        /*
 
             //get user_id
             $user_id = 1;
@@ -502,7 +547,7 @@ class Form_cuti extends MX_Controller {
             $this->data['alasan_cuti'] = $this->form_cuti_model->render_alasan()->result();
             $this->data['user_pengganti'] = $this->form_cuti_model->where('users_employement.organization_id',$org_id)->render_pengganti()->result();
 
-            $this->_render_page('form_cuti/approval/hr', $this->data);
+            $this->_render_page('form_cuti/approval/hr', $this->data);*/
         }
     }
 
@@ -622,12 +667,6 @@ class Form_cuti extends MX_Controller {
         $cuti_id = $this->input->post('cuti_id');
         $is_app_lv2 = $this->input->post('btn_app_lv2');
 
-        /*$additional_data = array(
-        'is_app_lv2' => 1,
-        'note_app_lv2' => $this->input->post('notes'), 
-        'user_app_lv2' => $user_id, 
-        'date_app_lv2' => $date_now);*/
-
         if($is_app_lv2 == 1){
              $additional_data = array(
                 'is_app_lv2' => $is_app_lv2 ,
@@ -654,14 +693,24 @@ class Form_cuti extends MX_Controller {
         $user_id = $this->session->userdata('user_id');
         $date_now = date('Y-m-d');
         $cuti_id = $this->input->post('cuti_id');
+        $is_app_lv3 = $this->input->post('btn_app_lv3');
 
-        $additional_data = array(
-        'is_app_lv3' => 1,
-        'user_app_lv3' => $user_id, 
-        'date_app_lv3' => $date_now);
+        if($is_app_lv3 == 1){
+             $additional_data = array(
+                'is_app_lv3' => $is_app_lv3 , 
+                'user_app_lv3' => $user_id, 
+                'date_app_lv3' => $date_now
+            );
+        }else{
+            $additional_data = array(
+                'is_app_lv3' => $is_app_lv3 ,
+                'user_app_lv3' => $user_id, 
+                'date_app_lv3' => $date_now
+            );
+        }
 
        if ($this->form_cuti_model->update($cuti_id,$additional_data)) {
-           return TRUE;
+           redirect('form_cuti/index_hr','refresh');
        }
     }
 
@@ -731,7 +780,7 @@ class Form_cuti extends MX_Controller {
         {
             $this->load->library('template');
 
-                if(in_array($view, array('form_cuti/index','form_cuti/index_superior1','form_cuti/index_superior2')))
+                if(in_array($view, array('form_cuti/index','form_cuti/index_superior1','form_cuti/index_superior2','form_cuti/index_hr')))
                 {
                     $this->template->set_layout('default');
 
