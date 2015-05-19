@@ -28,49 +28,30 @@
               <a href="#" class="" id="layout-condensed-toggle" ><div class="iconset top-menu-toggle-dark"></div> </a> 
             </li>        
           </ul>
-          <!--<ul class="nav quick-section">
-             <li class="quicklinks"> <a href="#" class="" ><div class="iconset top-reload"></div> </a> </li> 
-            <li class="quicklinks"> <span class="h-seperate"></span></li>
-            <li class="quicklinks"> <a href="#" class="" ><div class="iconset top-tiles"></div></a> </li>
-            <div class="input-prepend inside search-form no-boarder">
-                <span class="add-on"> <a href="#" class="" ><div class="iconset top-search"></div></a></span>
-                <input name="" type="text"  class="no-boarder " placeholder="Pencarian" style="width:250px;">
-            </div> 
-          </ul>-->
       </div>
       <!-- END TOP NAVIGATION MENU -->
+      <!-- BEGIN CHAT TOGGLER -->
+      <div class="pull-right">
+        <div class="chat-toggler">
+          <a data-toggle="dropdown" class="dropdown-toggle  pull-right" href="#">           
+            <div class="user-details"> 
+              <div class="username">
+      
+                <span class="bold"><?php echo $this->session->userdata('username')?></span>
+              </div>            
+            </div> 
+            <div class="iconset top-down-arrow"></div> 
+          </a>
+          <ul class="dropdown-menu  pull-right" role="menu" aria-labelledby="dropdownMenu">
+            <li class="divider"></li>                
+            <li><?php echo anchor(site_url('auth/logout'), '<i class="icon-off"></i>&nbsp;&nbsp;'.lang('logout_link_label'), array('title' => lang('logout_link_label')));?></li>
+          </ul>      
+        </div>
+      </div>
+    <!-- END CHAT TOGGLER -->
     </div> 
     <!-- END TOP NAVIGATION MENU --> 
   </div>
   <!-- END TOP NAVIGATION BAR --> 
 </div>
 <!-- END HEADER -->
-<!-- <header class="navbar navbar-inverse navbar-static-top">
-    <div class="container">
-        <div class="navbar-header">
-            <button data-target=".navbar-collapse" data-toggle="collapse" class="navbar-toggle" type="button">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a href="<?php echo site_url(); ?>" class="navbar-brand">CodeIgniter Skeleton</a>
-        </div>
-        <nav class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="<?php echo site_url(); ?>">Home</a></li>
-                <li><a href="<?php echo site_url('addons'); ?>">Add-ons</a></li>
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        Example <b class="caret"></b>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="<?php echo site_url('todo'); ?>">Todo</a></li>
-                    </ul>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a target="_blank" href="https://github.com/anvoz/CodeIgniter-Skeleton">Github</a></li>
-            </ul>
-        </nav>
-    </div>
-</header> -->

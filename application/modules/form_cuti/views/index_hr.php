@@ -17,7 +17,7 @@ BEGIN PAGE CONTAINER-->
                 <div class="grid-title no-border">
                   <h4><?php echo lang('list_of_submission'); ?> <span class="semi-bold"><?php echo lang('form_cuti_subheading'); ?></span></h4>
                   <div class="tools"> 
-                    <a href="<?php echo site_url('form_cuti/input'); ?>" class="config"></a>
+                    <a href="<?php echo site_url('form_cuti/input'); ?>" class="icon-plus-sign-alt custom-icon-space icon-2x"></a>
                   </div>
                 </div>
                   <div class="grid-body no-border">

@@ -37,7 +37,7 @@
         <!-- / -->
 
         <script src="<?php echo assets_url('js/jquery-1.8.3.min.js'); ?>"></script>
-        <script src="<?php echo assets_url('js/bootstrap.min.js'); ?>"></script>
+        <!--<script src="<?php echo assets_url('js/bootstrap.min.js'); ?>"></script>-->
         
         <!-- Extra javascript -->
         <?php echo $js; ?>

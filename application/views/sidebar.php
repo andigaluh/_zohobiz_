@@ -15,7 +15,7 @@
       <div class="user-info">
         <div class="greeting">Welcome</div>
         <div class="username"><?php echo $this->session->userdata('username')?></div>
-        <div class="status"><?php echo anchor(site_url('auth/logout'), lang('logout_link_label'), array('title' => lang('logout_link_label')));?></div>
+        <div class="status">Status<a href="#"><div class="status-icon green"></div>Online</a></div>
         <br/> <br/>
       </div>
     </div>

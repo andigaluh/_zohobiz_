@@ -791,6 +791,10 @@ class Form_cuti extends MX_Controller {
                     $this->template->add_js('jquery.sidr.min.js');
                     $this->template->add_js('breakpoints.js');
                     $this->template->add_js('select2.min.js');
+                    $this->template->add_js('jquery.unveil.js');
+                    $this->template->add_js('jqueryblockui.js');
+                    $this->template->add_js('jquery.animateNumbers.js');
+                    $this->template->add_js('jquery.mixitup.min.js');
 
                     $this->template->add_js('core.js');
                     $this->template->add_js('purl.js');
