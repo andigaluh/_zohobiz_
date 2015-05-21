@@ -263,7 +263,7 @@ BEGIN PAGE CONTAINER-->
                         
                         <div class="col-md-6">
                           <?php if ($user->is_app_lv1 == 1) { ?>
-                            <p class="wf-approve-sp">
+                            <p class="wf-approve-sm">
                               <span class="semi-bold"><?php echo $nm_app_lv1 ?></span><br>
                               <span class="small"><?php echo $date_app_lv1 ?></span><br>
                               (Supervisor)
