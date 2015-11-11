@@ -675,9 +675,53 @@ $('#search_act_inactive').on("submit",function(response){
         return false;
     });
 
+$('#search_comp_group').on("submit",function(response){
+        $.post($('#search_comp_group').attr('action'), $('#search_comp_group').serialize(),function(json){
+            var url = $.url();
+            var uri = url.segment(2);
+           
+            
+            function getTable2() 
+            {
+                $('#tabel').load(json.base_url+'competency_group/get_table/fn:'+json.title);
+            }
 
+            if(json.st == 0){
+                $('#MsgGood').text('Search Failed').fadeIn();
+            }else{
+                getTable2();
+            }
+        }, 'json');
+        return false;
+    });
+
+$('#search_comp_def').on("submit",function(response){
+        $.post(
+            $('#search_comp_def').attr('action'), 
+            $('#search_comp_def').serialize(),
+            function(json){
+                var url = $.url();
+                var uri = url.segment(2);
+               
+                
+                function getTable2() 
+                {
+                    $('#tabel').load(json.base_url+'competency_def/get_table/fn:'+json.title);
+                }
+
+                if(json.st == 0){
+                    $('#MsgGood').text('Search Failed').fadeIn();
+                }else{
+                    getTable2();
+                }
+            },
+         'json'
+         );
+        return false;
+    });
 
  $('#parent_id').select2();
+ $('#parent_group_id').select2();
 
  $('#position_id_detail').on("change",function(response){
     var pos_id = $(this).val();

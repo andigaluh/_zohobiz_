@@ -476,6 +476,17 @@ $lang['keterangan'] = "Keterangan";
 $lang['emp_name'] = "Nama Karyawan";
 $lang['trn_name'] = "Nama Pelatihan";
 
+//competency group
+$lang['comp_group_subheading'] = "Competency Group";
+$lang['add_comp_group'] = "Add Competency Group";
+$lang['edit_comp_group'] = 'Edit Competency Group';
+
+//competency def
+$lang['comp_def_subheading'] = "Competency Definition";
+$lang['add_comp_def'] = "Add Competency Definition";
+$lang['edit_comp_def'] = 'Edit Competency Definition';
+$lang['code_label'] = 'Code';
+$lang['comp_group_label'] = 'Group competency';
 
 
 
