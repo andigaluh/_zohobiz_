@@ -185,7 +185,7 @@
                             $('#MsgBad2<?=$user->id?>').html(json.errors).fadeIn();
                         }else{
                             getTable();getModal();;
-                            //$("[data-dismiss=modal]").trigger({ type: "click" });
+                            $("[data-dismiss=modal]").trigger({ type: "click" });
                             $('#MsgBad2<?=$user->id?>').hide();
                             $('#MsgGood').text('Data Updated').fadeIn().delay(3000).fadeOut("slow");
                             setTimeout(function(){location.reload()},2000);

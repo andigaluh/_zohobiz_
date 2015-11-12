@@ -13,6 +13,8 @@ class Competency_def extends MX_Controller {
         
         $this->load->database();
         $this->load->model('competency_def/competency_def_model','competency_def_model');
+        $this->load->model('competency_group/competency_group_model','competency_group_model');
+        $this->load->model('competency_level/competency_level_model','competency_level_model');
         
         $this->form_validation->set_error_delimiters($this->config->item('error_start_delimiter', 'ion_auth'), $this->config->item('error_end_delimiter', 'ion_auth'));
 
@@ -82,6 +84,15 @@ class Competency_def extends MX_Controller {
                 'value' => $this->form_validation->set_value('title'),
             );
 
+            $competency_group = $this->competency_group_model->select('id,title')->where('is_deleted',0)->competency_group();
+            $return = array();
+            //$return[0] = strtoupper('please select');
+                foreach($competency_group->result_array() as $row){
+                    $return[$row['id']] = $row['title'];
+                }
+            $this->data['options_competency_group'] =  $return;
+               
+            
             $this->_render_page('competency_def/index', $this->data);
         }
     }
@@ -270,7 +281,16 @@ class Competency_def extends MX_Controller {
         }
         else
         {
-			$this->data['competency_def'] = $this->competency_def_model->competency_def()->result();
+			$this->data['competency_def'] = $this->competency_def_model->where('is_deleted',0)->competency_def()->result();
+
+            $competency_group = $this->competency_group_model->select('id,title')->where('is_deleted',0)->competency_group();
+            $return = array();
+            //$return[0] = strtoupper('please select');
+                foreach($competency_group->result_array() as $row){
+                    $return[$row['id']] = $row['title'];
+
+                }
+            $this->data['options_competency_group'] =  $competency_group;
 
 			$this->load->view('competency_def/modal/index', $this->data);
 		}
@@ -304,6 +324,8 @@ class Competency_def extends MX_Controller {
     public function update($id)
     {
         $this->form_validation->set_rules('title', lang('title'), 'trim|required');
+        $this->form_validation->set_rules('code', lang('code_label'), 'trim|required');
+        $this->form_validation->set_rules('competency_group_id', lang('comp_group_label'), 'trim|required');
         
         if($this->form_validation->run() == FALSE)
         {
@@ -313,11 +335,26 @@ class Competency_def extends MX_Controller {
         {         
             $data = array(
                     'title'             => $this->input->post('title'),
+                    'code'              => $this->input->post('code'),
+                    'comp_group_id'     => $this->input->post('competency_group_id'),
                     'edited_on'         => date('Y-m-d',strtotime('now')),
                     'edited_by'         => $this->session->userdata('user_id'),
                     );
 
             $this->competency_def_model->update($id, $data);
+
+            $competency_level = $this->competency_level_model->where('competency_def_id',$id)->where('is_deleted',0)->competency_level()->result();
+            foreach ($competency_level as $value) {
+                $id_level = $value->id;
+                $data_level = array(
+                        'title'             => $this->input->post('title_level'.$id_level),
+                        'description'       => $this->input->post('description_level'.$id_level),
+                        'edited_on'         => date('Y-m-d',strtotime('now')),
+                        'edited_by'         => $this->session->userdata('user_id'),
+                    );
+                $this->competency_level_model->update($id_level, $data_level);
+
+            }
 
             echo json_encode(array('st'=>1));
             
@@ -341,7 +378,9 @@ class Competency_def extends MX_Controller {
     public function add()
     {
 
-        $this->form_validation->set_rules('title', 'Title', 'trim|required');
+        $this->form_validation->set_rules('title', $this->lang->line('title'), 'trim|required');
+        $this->form_validation->set_rules('code', $this->lang->line('code_label'), 'trim|required');
+        $this->form_validation->set_rules('competency_group_id', $this->lang->line('comp_group_label'), 'trim|required');
         
         if($this->form_validation->run() == FALSE)
         {
@@ -353,17 +392,86 @@ class Competency_def extends MX_Controller {
             $title    = $this->input->post('title');
 
             $additional_data = array(
-                'created_on'        => date('Y-m-d',strtotime('now')),
-                'created_by'        => $this->session->userdata('user_id'),
+                'created_on'            => date('Y-m-d',strtotime('now')),
+                'created_by'            => $this->session->userdata('user_id'),
+                'code'                  => $this->input->post('code'),
+                'comp_group_id'   => $this->input->post('competency_group_id'),
             );
 
-            if ($this->form_validation->run() == true && $this->competency_def_model->create_($title, $additional_data))
+            if ($this->form_validation->run() == true)
             {
+                $create = $this->competency_def_model->create_($title, $additional_data);
+
+                for ($i=1; $i <= 4; $i++) { 
+                    $title_level = 'empty';
+                    $additional_data_level = array(
+                        'created_on'            => date('Y-m-d',strtotime('now')),
+                        'created_by'            => $this->session->userdata('user_id'),
+                        'level'                  => $i,
+                        'competency_def_id'   => $create,
+                        'description'   => 'empty',
+                        'title'   => 'empty',
+                    );
+
+                    $this->db->insert('competency_level', $additional_data_level);
+                    //$this->competency_def_model->create_level($title_level, $additional_data_level);
+                }
+
                 echo json_encode(array('st'=>1));   
             }else{
                 echo json_encode(array('st'=>0, 'errors'=>validation_errors('<div class="alert alert-danger" role="alert">', '</div>')));
             }
         }
+    }
+
+     public function add__()
+    {
+
+        /*$this->form_validation->set_rules('title', $this->lang->line('title'), 'trim|required');
+        $this->form_validation->set_rules('code', $this->lang->line('code_label'), 'trim|required');
+        $this->form_validation->set_rules('competency_group_id', $this->lang->line('comp_group_label'), 'trim|required');
+        
+        if($this->form_validation->run() == FALSE)
+        {
+            echo json_encode(array('st'=>0, 'errors'=>validation_errors('<div class="alert alert-danger" role="alert">', '</div>')));
+        }
+        else
+        {*/
+           
+            $title    = $this->input->post('title');
+
+            $additional_data = array(
+                'created_on'            => date('Y-m-d',strtotime('now')),
+                'created_by'            => $this->session->userdata('user_id'),
+                'code'                  => $this->input->post('code'),
+                'competency_group_id'   => $this->input->post('competency_group_id'),
+            );
+
+            /*if ($this->form_validation->run() == true)
+            {*/
+                $create = $this->competency_def_model->create_($title, $additional_data);
+
+                for ($i=1; $i <= 4; $i++) { 
+                    $title_level = 'empty';
+                    $additional_data_level = array(
+                        'created_on'            => date('Y-m-d',strtotime('now')),
+                        'created_by'            => $this->session->userdata('user_id'),
+                        'level'                  => $i,
+                        'competency_def_id'   => $create,
+                        'description'   => 'empty',
+                        'title'   => 'empty',
+                    );
+
+                    $this->db->insert('competency_level', $additional_data_level);
+                    //$this->competency_def_model->create_level($title_level, $additional_data_level);
+                }
+
+                echo json_encode(array('st'=>1, 'last_id'=>$create));   
+            /*}
+            else{
+                echo json_encode(array('st'=>0, 'errors'=>validation_errors('<div class="alert alert-danger" role="alert">', '</div>')));
+            }*/
+        //}
     }
 
     function _get_csrf_nonce()

@@ -69,6 +69,7 @@ $config['tables']['pembiayaan']  = 'pembiayaan';
 $config['tables']['penyelenggara']  = 'penyelenggara';
 $config['tables']['competency_group']  = 'competency_group';
 $config['tables']['competency_def']  = 'competency_def';
+$config['tables']['competency_level']  = 'competency_level';
 
 
 /*

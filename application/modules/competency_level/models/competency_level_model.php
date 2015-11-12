@@ -1,6 +1,6 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Competency_def_model extends CI_Model
+class Competency_level_model extends CI_Model
 {
      /**
      * Holds an array of tables used
@@ -275,14 +275,14 @@ class Competency_def_model extends CI_Model
     }
 
     /**
-     * competency_def
+     * competency_level
      *
-     * @return object competency_def
+     * @return object competency_level
      * @author Deni
      **/
-    public function competency_def()
+    public function competency_level()
     {
-        $this->trigger_events('competency_def');
+        $this->trigger_events('competency_level');
 
         if (isset($this->_ion_select) && !empty($this->_ion_select))
         {
@@ -297,9 +297,9 @@ class Competency_def_model extends CI_Model
         {
             //default selects
             $this->db->select(array(
-                $this->tables['competency_def'].'.*',
-                $this->tables['competency_def'].'.id as id',
-                $this->tables['competency_def'].'.id as competency_def_id'
+                $this->tables['competency_level'].'.*',
+                $this->tables['competency_level'].'.id as id',
+                $this->tables['competency_level'].'.id as competency_level_id'
             ));
         }
 
@@ -349,19 +349,19 @@ class Competency_def_model extends CI_Model
             $this->_ion_order_by = NULL;
         }
 
-        $this->response = $this->db->get($this->tables['competency_def']);
+        $this->response = $this->db->get($this->tables['competency_level']);
 
         return $this;
     }
 
     public function delete($id)
     {
-        $this->trigger_events('pre_delete_competency_def');
+        $this->trigger_events('pre_delete_competency_level');
 
         $this->db->trans_begin();
 
-        // delete organization from competency_def table
-        $this->db->delete($this->tables['competency_def'], array('id' => $id));
+        // delete organization from competency_level table
+        $this->db->delete($this->tables['competency_level'], array('id' => $id));
 
         // if user does not exist in database then it returns FALSE else removes the user from groups
         if ($this->db->affected_rows() == 0)
@@ -372,54 +372,19 @@ class Competency_def_model extends CI_Model
         if ($this->db->trans_status() === FALSE)
         {
             $this->db->trans_rollback();
-            $this->trigger_events(array('post_delete_competency_def', 'post_delete_competency_def_unsuccessful'));
+            $this->trigger_events(array('post_delete_competency_level', 'post_delete_competency_level_unsuccessful'));
             $this->set_error('delete_unsuccessful');
             return FALSE;
         }
 
         $this->db->trans_commit();
 
-        $this->trigger_events(array('post_delete_competency_def', 'post_delete_competency_def_successful'));
+        $this->trigger_events(array('post_delete_competency_level', 'post_delete_competency_level_successful'));
         $this->set_message('delete_successful');
         return TRUE;
     }
 
     public function create_($title = FALSE, $additional_data = array())
-    {
-        // bail if the group name was not passed
-        if(!$title)
-        {
-            $this->set_error('title_required');
-            return FALSE;
-        }
-
-        // bail if the group name already exists
-        $existing_competency_def = $this->db->get_where($this->tables['competency_def'], array('title' => $title))->num_rows();
-        /*if($existing_competency_def !== 0)
-        {
-            $this->set_error('competency_def_already_exists');
-            return FALSE;
-        }*/
-
-        $data = array('title'=>$title);
-
-        //filter out any data passed that doesnt have a matching column in the competency_def table
-        //and merge the set group data and the additional data
-        if (!empty($additional_data)) $data = array_merge($this->_filter_data($this->tables['competency_def'], $additional_data), $data);
-
-        $this->trigger_events('extra_group_set');
-
-        // insert the new competency_def
-        $this->db->insert($this->tables['competency_def'], $data);
-        $id = $this->db->insert_id();
-
-        // report success
-        $this->set_message('competency_def_creation_successful');
-        // return the brand new id
-        return $id;
-    }
-
-    public function create_level($title = FALSE, $additional_data = array())
     {
         // bail if the group name was not passed
         if(!$title)
@@ -438,13 +403,13 @@ class Competency_def_model extends CI_Model
 
         $data = array('title'=>$title);
 
-        //filter out any data passed that doesnt have a matching column in the competency_def table
+        //filter out any data passed that doesnt have a matching column in the competency_level table
         //and merge the set group data and the additional data
         if (!empty($additional_data)) $data = array_merge($this->_filter_data($this->tables['competency_level'], $additional_data), $data);
 
         $this->trigger_events('extra_group_set');
 
-        // insert the new competency_def
+        // insert the new competency_level
         $this->db->insert($this->tables['competency_level'], $data);
         $id = $this->db->insert_id();
 
@@ -456,30 +421,30 @@ class Competency_def_model extends CI_Model
 
     public function update($id, array $data)
     {
-        $this->trigger_events('pre_update_competency_def');
+        $this->trigger_events('pre_update_competency_level');
 
-        $competency_def = $this->comp_def($id)->row();
+        $competency_level = $this->comp_level($id)->row();
 
         $this->db->trans_begin();
 
         // Filter the data passed
-        $data = $this->_filter_data($this->tables['competency_def'], $data);
+        $data = $this->_filter_data($this->tables['competency_level'], $data);
 
         $this->trigger_events('extra_where');
-        $this->db->update($this->tables['competency_def'], $data, array('id' => $competency_def->id));
+        $this->db->update($this->tables['competency_level'], $data, array('id' => $competency_level->id));
 
         if ($this->db->trans_status() === FALSE)
         {
             $this->db->trans_rollback();
 
-            $this->trigger_events(array('post_update_competency_def', 'post_update_competency_def_unsuccessful'));
+            $this->trigger_events(array('post_update_competency_level', 'post_update_competency_level_unsuccessful'));
             $this->set_error('update_unsuccessful');
             return FALSE;
         }
 
         $this->db->trans_commit();
 
-        $this->trigger_events(array('post_update_competency_def', 'post_update_competency_def_unsuccessful'));
+        $this->trigger_events(array('post_update_competency_level', 'post_update_competency_level_unsuccessful'));
         $this->set_message('update_successful');
         return TRUE;
     }
@@ -676,14 +641,14 @@ class Competency_def_model extends CI_Model
         return $filtered_data;
     }
 
-    public function comp_def($id = NULL)
+    public function comp_level($id = NULL)
     {
-        $this->trigger_events('comp_group');
+        $this->trigger_events('comp_level');
 
         $this->limit(1);
-        $this->where($this->tables['competency_def'].'.id', $id);
+        $this->where($this->tables['competency_level'].'.id', $id);
 
-        $this->competency_def();
+        $this->competency_level();
 
         return $this;
     }

@@ -488,5 +488,11 @@ $lang['edit_comp_def'] = 'Edit Competency Definition';
 $lang['code_label'] = 'Code';
 $lang['comp_group_label'] = 'Group competency';
 
+//competency level
+$lang['comp_level_subheading'] = "Level competency";
+$lang['add_comp_level'] = "Add Level Competency";
+$lang['edit_comp_level'] = 'Edit Level Competency';
+$lang['level_label'] = 'Level';
+$lang['title_label'] = 'Title';
 
 
