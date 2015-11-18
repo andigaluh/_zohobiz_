@@ -652,7 +652,4 @@ class Competency_group_model extends CI_Model
 
         return $this;
     }
-
-    
-    
 }

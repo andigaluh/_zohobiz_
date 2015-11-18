@@ -43,7 +43,6 @@
                             <div class="col-md-10">
                                 <select name="competency_group_id" class="select2" id="competency_group_id<?php echo $user->id?>" style="width:100%">
                                 <?php
-                                    echo '<option value="0">'.$user->comp_group_id.'</option>';
                                     foreach ($options_competency_group->result_array() as $key => $value) {
                                         $selected = ($user->comp_group_id <> 0 && $user->comp_group_id == $value['id']) ? 'selected = selected' : '';
                                         echo '<option value="'.$value['id'].'" '.$selected.'>'.$value['title'].'</option>';
@@ -105,7 +104,7 @@
         <!-- End Edit Modal-->
 
         <!--Delete Modal-->
-        <div class="modal fade" id="deleteModal<?php echo $user->id?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal fade" id="deleteModal<?php echo $user->id?>" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

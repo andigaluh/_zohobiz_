@@ -299,7 +299,8 @@ class Competency_def_model extends CI_Model
             $this->db->select(array(
                 $this->tables['competency_def'].'.*',
                 $this->tables['competency_def'].'.id as id',
-                $this->tables['competency_def'].'.id as competency_def_id'
+                $this->tables['competency_def'].'.id as competency_def_id',
+                $this->tables['competency_group'].'.title as competency_group_title',
             ));
         }
 
@@ -348,6 +349,8 @@ class Competency_def_model extends CI_Model
             $this->_ion_order    = NULL;
             $this->_ion_order_by = NULL;
         }
+
+        $this->db->join($this->tables['competency_group'], $this->tables['competency_group'].'.id = '.$this->tables['competency_def'].'.comp_group_id');
 
         $this->response = $this->db->get($this->tables['competency_def']);
 

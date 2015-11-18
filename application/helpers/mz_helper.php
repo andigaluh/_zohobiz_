@@ -195,10 +195,38 @@ if (!function_exists('GetAll')){
 			if($exp[0] == "group") $CI->db->group_by($key);
 		}
 		
-		if($tbl == "kg_news_subcategory" || $tbl == "contents" || $tbl == "news" || $tbl=="news_category" || $tbl=="kg_view_news")
-		$CI->db->where("id_lang", GetIdLang());
+		//if($tbl == "kg_news_subcategory" || $tbl == "contents" || $tbl == "news" || $tbl=="news_category" || $tbl=="kg_view_news")
+		//$CI->db->where("id_lang", GetIdLang());
 		
 		$q = $CI->db->where($filter)->get($tbl);
+		
+		return $q;
+	}
+}
+
+if (!function_exists('GetAll_')){
+	function GetAll_($tbl,$filter=array())
+	{
+		$CI =& get_instance();
+		foreach($filter as $key=> $value)
+		{
+			$exp = explode("/",$value);
+			if(isset($exp[1]))
+			{
+				if($exp[0] == "where") $CI->db->where($key, $exp[1]);
+				else if($exp[0] == "like") $CI->db->like($key, $exp[1]);
+				else if($exp[0] == "order") $CI->db->order_by($key, $exp[1]);
+				else if($key == "limit") $CI->db->limit($exp[1], $exp[0]);
+			}
+			else if($exp[0] == "where") $CI->db->where($key);
+			
+			if($exp[0] == "group") $CI->db->group_by($key);
+		}
+		
+		//if($tbl == "kg_news_subcategory" || $tbl == "contents" || $tbl == "news" || $tbl=="news_category" || $tbl=="kg_view_news")
+		//$CI->db->where("id_lang", GetIdLang());
+		
+		$q = $CI->db->get($tbl);
 		
 		return $q;
 	}
