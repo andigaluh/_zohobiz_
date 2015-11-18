@@ -23,7 +23,7 @@ class Competency_def extends MX_Controller {
 
     }
 
-    function index($ftitle = "fn:",$sort_by = "id", $sort_order = "asc", $offset = 0)
+    function index($ftitle = "fn:",$sort_by = "id", $sort_order = "desc", $offset = 0)
     {
         if (!$this->ion_auth->logged_in())
         {
@@ -56,14 +56,14 @@ class Competency_def extends MX_Controller {
             $this->data['offset'] = 6;
 
             //list of filterize all competency_def  
-            $this->data['competency_def_all'] = $this->competency_def_model->like($ftitle_post)->where('is_deleted',0)->competency_def()->result();
+            $this->data['competency_def_all'] = $this->competency_def_model->like($ftitle_post)->where('competency_def.is_deleted',0)->competency_def()->result();
             
-            $this->data['num_rows_all'] = $this->competency_def_model->like($ftitle_post)->where('is_deleted',0)->competency_def()->num_rows();
+            $this->data['num_rows_all'] = $this->competency_def_model->like($ftitle_post)->where('competency_def.is_deleted',0)->competency_def()->num_rows();
 
             //list of filterize limit competency_def for pagination  
-            $this->data['competency_def'] = $this->competency_def_model->like($ftitle_post)->where('is_deleted',0)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->competency_def()->result();
+            $this->data['competency_def'] = $this->competency_def_model->like($ftitle_post)->where('competency_def.is_deleted',0)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->competency_def()->result();
 
-            $this->data['_num_rows'] = $this->competency_def_model->like($ftitle_post)->where('is_deleted',0)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->competency_def()->num_rows();
+            $this->data['_num_rows'] = $this->competency_def_model->like($ftitle_post)->where('competency_def.is_deleted',0)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->competency_def()->num_rows();
 
              //config pagination
              $config['base_url'] = base_url().'competency_def/index/fn:'.$exp_ftitle[1].'/'.$sort_by.'/'.$sort_order.'/';
@@ -164,14 +164,14 @@ class Competency_def extends MX_Controller {
             $this->data['offset'] = 6;
 
             //list of filterize all competency_def  
-            $this->data['competency_def_all'] = $this->competency_def_model->like($ftitle_post)->where('is_deleted',0)->competency_def()->result();
+            $this->data['competency_def_all'] = $this->competency_def_model->like($ftitle_post)->where('competency_def.is_deleted',0)->competency_def()->result();
             
-            $this->data['num_rows_all'] = $this->competency_def_model->like($ftitle_post)->where('is_deleted',0)->competency_def()->num_rows();
+            $this->data['num_rows_all'] = $this->competency_def_model->like($ftitle_post)->where('competency_def.is_deleted',0)->competency_def()->num_rows();
 
             //list of filterize limit competency_def for pagination  
-            $this->data['competency_def'] = $this->competency_def_model->like($ftitle_post)->where('is_deleted',0)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->competency_def()->result();
+            $this->data['competency_def'] = $this->competency_def_model->like($ftitle_post)->where('competency_def.is_deleted',0)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->competency_def()->result();
 
-            $this->data['_num_rows'] = $this->competency_def_model->like($ftitle_post)->where('is_deleted',0)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->competency_def()->num_rows();
+            $this->data['_num_rows'] = $this->competency_def_model->like($ftitle_post)->where('competency_def.is_deleted',0)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->competency_def()->num_rows();
 
              //config pagination
              $config['base_url'] = base_url().'competency_def/index/fn:'.$exp_ftitle[1].'/'.$sort_by.'/'.$sort_order.'/';
@@ -196,7 +196,7 @@ class Competency_def extends MX_Controller {
         }
     }
 
-    function get_table($ftitle = "fn:",$sort_by = "id", $sort_order = "asc", $offset = 0)
+    function get_table($ftitle = "fn:",$sort_by = "id", $sort_order = "desc", $offset = 0)
     {
 
         if (!$this->ion_auth->logged_in())
@@ -233,14 +233,14 @@ class Competency_def extends MX_Controller {
             $this->data['offset'] = $offset = $this->uri->segment(6);
 
             //list of filterize all competency_def  
-            $this->data['competency_def_all'] = $this->competency_def_model->like($ftitle_post)->where('is_deleted',0)->competency_def()->result();
-
-            $this->data['num_rows_all'] = $this->competency_def_model->like($ftitle_post)->where('is_deleted',0)->competency_def()->num_rows();
+            $this->data['competency_def_all'] = $this->competency_def_model->like($ftitle_post)->where('competency_def.is_deleted',0)->competency_def()->result();
+            
+            $this->data['num_rows_all'] = $this->competency_def_model->like($ftitle_post)->where('competency_def.is_deleted',0)->competency_def()->num_rows();
 
             //list of filterize limit competency_def for pagination  
-            $this->data['competency_def'] = $this->competency_def_model->like($ftitle_post)->where('is_deleted',0)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->competency_def()->result();
+            $this->data['competency_def'] = $this->competency_def_model->like($ftitle_post)->where('competency_def.is_deleted',0)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->competency_def()->result();
 
-            $this->data['_num_rows'] = $this->competency_def_model->like($ftitle_post)->where('is_deleted',0)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->competency_def()->num_rows();
+            $this->data['_num_rows'] = $this->competency_def_model->like($ftitle_post)->where('competency_def.is_deleted',0)->limit($limit)->offset($offset)->order_by($sort_by, $sort_order)->competency_def()->num_rows();
 
              //config pagination
              $config['base_url'] = base_url().'competency_def/index/fn:'.$exp_ftitle[1].'/'.$sort_by.'/'.$sort_order.'/';
@@ -281,7 +281,7 @@ class Competency_def extends MX_Controller {
         }
         else
         {
-			$this->data['competency_def'] = $this->competency_def_model->where('is_deleted',0)->competency_def()->result();
+			$this->data['competency_def'] = $this->competency_def_model->where('competency_def.is_deleted',0)->competency_def()->result();
 
             $competency_group = $this->competency_group_model->select('id,title')->where('is_deleted',0)->competency_group();
             $return = array();
@@ -403,14 +403,22 @@ class Competency_def extends MX_Controller {
                 $create = $this->competency_def_model->create_($title, $additional_data);
 
                 for ($i=1; $i <= 4; $i++) { 
-                    $title_level = 'empty';
+                    if($i==1){
+                        $title_level = 'Semi Skilled';
+                    }elseif($i==2){
+                        $title_level = 'Skilled';
+                    }elseif($i==3){
+                        $title_level = 'Very Skilled';
+                    }else{
+                        $title_level = 'Expert';
+                    }
+
                     $additional_data_level = array(
                         'created_on'            => date('Y-m-d',strtotime('now')),
                         'created_by'            => $this->session->userdata('user_id'),
                         'level'                  => $i,
                         'competency_def_id'   => $create,
-                        'description'   => 'empty',
-                        'title'   => 'empty',
+                        'title'   => $title_level,
                     );
 
                     $this->db->insert('competency_level', $additional_data_level);

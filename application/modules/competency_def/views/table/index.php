@@ -9,6 +9,7 @@
                 </div>
             </th>
             <th width="10%"><?php echo anchor('competency_def/index/'.$ftitle_param.'/title/'.(($sort_order == 'asc' && $sort_by == 'title') ? 'desc' : 'asc'), lang('index_ftitle_th'));?></th>
+            <th width="10%"><?php echo lang('comp_group_label');?></th>
             <th width="10%"><?php echo lang('index_action_th');?></th>                                  
         </tr>
     </thead>
@@ -23,6 +24,7 @@
                         </div>
                     </td>
                     <td valign="middle"><?php echo $user->title;?></td>
+                    <td valign="middle"><?php echo $user->competency_group_title;?></td>
                     <td valign="middle">
                         <button type="button" class="btn btn-info btn-small" data-toggle="modal" data-target="#editModal<?php echo $user->id?>" title="<?php echo lang('edit_button')?>"><i class="icon-paste"></i></button>
                         
